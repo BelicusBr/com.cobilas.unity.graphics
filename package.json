@@ -7,7 +7,7 @@
   "unityRelease": "0b5",
   "type": "library",
   "dependencies": {
-    "com.cobilas.unity.utility": "1.0.0",
+    "com.cobilas.unity.utility": "[URL]https://github.com/BelicusBr/com.cobilas.unity.utility.git[/URL]",
     "com.cobilas.unity.mono": "1.0.0",
     "com.cobilas.unity.management.container": "1.0.0",
     "com.cobilas.unity.extensions": "1.0.0",
@@ -15,10 +15,7 @@
     "com.cobilas.cobilascore": "1.0.0"
   },
   "repository": {
-    "url" : "https://github.com/BelicusBr/com.cobilas.unity.graphics.git",
+    "url" : "git+[URL]https://github.com/BelicusBr/com.cobilas.unity.graphics.git[/URL]",
     "type" : "git"
-  },
-  "relatedPackages": {
-    "com.cobilas.unity.graphics.tests": "1.0.0-pre.4"
   }
 }
