@@ -7,13 +7,12 @@
   "unityRelease": "0b5",
   "type": "library",
   "dependencies": {
-    "com.mambojambostudios.unity-atoms": "ssh://git@github.com/AdamRamberg/unity-atoms.git",
-    "com.cobilas.unity.utility": "[URL]https://github.com/BelicusBr/com.cobilas.unity.utility.git#1.0.0[/URL]",
-    "com.cobilas.unity.mono": "[URL]https://github.com/BelicusBr/com.cobilas.unity.mono.git#1.0.0[/URL]",
-    "com.cobilas.unity.management.container": "[URL]https://github.com/BelicusBr/com.cobilas.unity.management.container.git#1.0.0[/URL]",
-    "com.cobilas.unity.extensions": "[URL]https://github.com/BelicusBr/com.cobilas.unity.extensions.git#1.0.0[/URL]",
-    "com.cobilas.unity.editor.utility": "[URL]https://github.com/BelicusBr/com.cobilas.unity.editor.utility.git#1.0.0[/URL]",
-    "com.cobilas.cobilascore": "[URL]https://github.com/BelicusBr/com.cobilas.cobilascore.git#1.0.0[/URL]"
+    "com.cobilas.unity.utility": "1.0.0",
+    "com.cobilas.unity.mono": "1.0.0",
+    "com.cobilas.unity.management.container": "1.0.0",
+    "com.cobilas.unity.extensions": "1.0.0",
+    "com.cobilas.unity.editor.utility": "1.0.0",
+    "com.cobilas.cobilascore": "1.0.0"
   },
   "repository": {
     "url" : "https://github.com/BelicusBr/com.cobilas.unity.graphics.git",
