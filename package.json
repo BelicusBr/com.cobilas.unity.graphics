@@ -1,6 +1,6 @@
 {
   "name": "com.cobilas.unity.graphics",
-  "version": "1.0.0",
+  "version": "1.0.0-b.4",
   "displayName": "Cobilas Graphics",
   "description": "Pacote que adiciona e manipula elementos",
   "unity": "2019.1",
@@ -13,9 +13,6 @@
     "com.cobilas.unity.extensions": "1.0.0",
     "com.cobilas.unity.editor.utility": "1.0.0",
     "com.cobilas.cobilascore": "1.0.0"
-  },
-  "publishConfig": {
-    "registry":"https://npm.pkg.github.com/@BelicusBr"
   },
   "repository": {
     "url" : "https://github.com/BelicusBr/com.cobilas.unity.graphics.git",
