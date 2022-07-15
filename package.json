@@ -22,6 +22,6 @@
     "type" : "git"
   },
   "relatedPackages": {
-    "com.cobilas.unity.graphics": "1.0.0-b.2"
+    "com.cobilas.unity.graphics": "1.0.0-b.3"
   }
 }
