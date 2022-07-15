@@ -1,0 +1,29 @@
+{
+    "name": "Cobilas.Unity.Graphics.IGU.TestsFramework",
+    "references": [
+        "UnityEngine.TestRunner",
+        "UnityEditor.TestRunner",
+        "Cobilas.Unity.Graphics",
+        "Cobilas.Unity.Mono",
+        "Cobilas.Unity.Utility",
+        "Cobilas.Unity.Extensions"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": true,
+    "overrideReferences": true,
+    "precompiledReferences": [
+        "nunit.framework.dll",
+        "Cobilas.Collections.dll",
+        "Cobilas.IO.Alf.Alfbt.dll",
+        "Cobilas.IO.Alf.Management.Alfbt.dll",
+        "CobilasCore.dll",
+        "CobilasCore.Extension.dll"
+    ],
+    "autoReferenced": false,
+    "defineConstraints": [
+        "UNITY_INCLUDE_TESTS"
+    ],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
