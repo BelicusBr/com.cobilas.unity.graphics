@@ -7,7 +7,7 @@
   "unityRelease": "0b5",
   "type": "library",
   "dependencies": {
-    "com.mambojambostudios.unity-atoms": "https://github.com/AdamRamberg/unity-atoms.git#v1.0.0",
+    "com.mambojambostudios.unity-atoms": "ssh://git@github.com/AdamRamberg/unity-atoms.git#v1.0.0",
     "com.cobilas.unity.utility": "[URL]https://github.com/BelicusBr/com.cobilas.unity.utility.git#1.0.0[/URL]",
     "com.cobilas.unity.mono": "[URL]https://github.com/BelicusBr/com.cobilas.unity.mono.git#1.0.0[/URL]",
     "com.cobilas.unity.management.container": "[URL]https://github.com/BelicusBr/com.cobilas.unity.management.container.git#1.0.0[/URL]",
