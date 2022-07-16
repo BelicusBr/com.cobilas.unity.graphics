@@ -6,7 +6,7 @@
   "unity": "2019.1",
   "unityRelease": "0b5",
   "type": "library",
-  "dependencies": {
+  "relatedPackages": {
     "com.cobilas.unity.utility": "1.0.0",
     "com.cobilas.unity.mono": "1.0.0",
     "com.cobilas.unity.management.container": "1.0.0",
@@ -15,7 +15,7 @@
     "com.cobilas.cobilascore": "1.0.0"
   },
   "repository": {
-    "url" : "https://github.com/BelicusBr/com.cobilas.unity.graphics.git",
-    "type" : "git"
+    "url": "https://github.com/BelicusBr/com.cobilas.unity.graphics.git",
+    "type": "git"
   }
 }
