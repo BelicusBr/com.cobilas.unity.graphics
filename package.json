@@ -12,7 +12,7 @@
     "name": "Cobilas CTB"
   },
   
-  "gitDependency": {
+  "gitDependencies": {
 	"com.cobilas.unity.utility": {
 		"type" : "github",
 		"version" : "1.0.0",
@@ -48,5 +48,9 @@
   "repository": {
     "url": "https://github.com/BelicusBr/com.cobilas.unity.graphics.git",
     "type": "git"
+  },
+    
+  "relatedPackages": {
+    "com.cobilas.unity.graphics": "1.0.0-pre.4"
   }
 }
