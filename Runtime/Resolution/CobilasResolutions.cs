@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 using Cobilas.Collections;
- 
+
 namespace Cobilas.Unity.Graphics.Resolutions {
     using UEResolution = UnityEngine.Resolution;
     public static class CobilasResolutions {
