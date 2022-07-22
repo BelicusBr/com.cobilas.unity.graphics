@@ -1,6 +1,6 @@
 {
   "name": "com.cobilas.unity.graphics",
-  "version": "1.0.0-b0.35",
+  "version": "1.0.0-b0.39",
   "displayName": "Cobilas Graphics",
   "description": "Pacote que adiciona e manipula elementos",
   "unity": "2019.1",
@@ -46,6 +46,6 @@
     "type": "git"
   },
   "relatedPackages": {
-    "com.cobilas.unity.graphics": "1.0.0-b0.35"
+    "com.cobilas.unity.graphics": "1.0.0-b0.39"
   }
 }
