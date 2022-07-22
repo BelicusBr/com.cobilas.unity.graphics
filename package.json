@@ -5,51 +5,46 @@
   "description": "Pacote que adiciona e manipula elementos",
   "unity": "2019.1",
   "unityRelease": "0b5",
-
   "type": "library",
-  
   "author": {
     "name": "Cobilas CTB"
   },
-  
   "gitDependencies": {
-	"com.cobilas.unity.utility": {
-		"type" : "github",
-		"version" : "1.0.0",
-		"userName" : "BelicusBr"
-	},
+    "com.cobilas.unity.utility": {
+      "type": "github",
+      "version": "1.0.0",
+      "userName": "BelicusBr"
+    },
     "com.cobilas.unity.mono": {
-		"type" : "github",
-		"version" : "1.0.0",
-		"userName" : "BelicusBr"
-	},
+      "type": "github",
+      "version": "1.0.0",
+      "userName": "BelicusBr"
+    },
     "com.cobilas.unity.management.container": {
-		"type" : "github",
-		"version" : "1.0.0",
-		"userName" : "BelicusBr"
-	},
+      "type": "github",
+      "version": "1.0.0",
+      "userName": "BelicusBr"
+    },
     "com.cobilas.unity.extensions": {
-		"type" : "github",
-		"version" : "1.0.0",
-		"userName" : "BelicusBr"
-	},
+      "type": "github",
+      "version": "1.0.0",
+      "userName": "BelicusBr"
+    },
     "com.cobilas.unity.editor.utility": {
-		"type" : "github",
-		"version" : "1.0.0",
-		"userName" : "BelicusBr"
-	},
+      "type": "github",
+      "version": "1.0.0",
+      "userName": "BelicusBr"
+    },
     "com.cobilas.cobilascore": {
-		"type" : "github",
-		"version" : "1.0.0",
-		"userName" : "BelicusBr"
-	}
+      "type": "github",
+      "version": "1.0.0",
+      "userName": "BelicusBr"
+    }
   },
-
   "repository": {
     "url": "https://github.com/BelicusBr/com.cobilas.unity.graphics.git",
     "type": "git"
   },
-    
   "relatedPackages": {
     "com.cobilas.unity.graphics": "1.0.0-b0.35"
   }

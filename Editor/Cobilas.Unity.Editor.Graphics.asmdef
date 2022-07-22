@@ -28,19 +28,14 @@
             "define": "COBILAS_MONO"
         },
         {
-            "name": "com.cobilas.unity.utility",
+            "name": "com.cobilas.cobilascore",
             "expression": "1.0",
-            "define": "COBILAS_UTILITY"
+            "define": "COBILAS_CORE"
         },
         {
             "name": "com.cobilas.unity.editor.utility",
             "expression": "1.0",
             "define": "COBILAS_EDITOR_UTILITY"
-        },
-        {
-            "name": "com.cobilas.unity.extensions",
-            "expression": "1.0",
-            "define": "COBILAS_EXTENSIONS"
         }
     ],
     "noEngineReferences": false
