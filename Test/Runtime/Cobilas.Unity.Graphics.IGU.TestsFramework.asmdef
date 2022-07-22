@@ -1,11 +1,9 @@
 {
     "name": "Cobilas.Unity.Graphics.IGU.TestsFramework",
     "references": [
-        "UnityEngine.TestRunner",
-        "UnityEditor.TestRunner",
-        "Cobilas.Unity.Graphics",
         "Cobilas.Unity.Mono",
         "Cobilas.Unity.Utility",
+        "Cobilas.Unity.Graphics",
         "Cobilas.Unity.Extensions"
     ],
     "includePlatforms": [],
@@ -13,17 +11,33 @@
     "allowUnsafeCode": true,
     "overrideReferences": true,
     "precompiledReferences": [
-        "nunit.framework.dll",
-        "Cobilas.Collections.dll",
-        "Cobilas.IO.Alf.Alfbt.dll",
-        "Cobilas.IO.Alf.Management.Alfbt.dll",
         "CobilasCore.dll",
+        "Cobilas.Collections.dll",
         "CobilasCore.Extension.dll"
     ],
     "autoReferenced": false,
-    "defineConstraints": [
-        "UNITY_INCLUDE_TESTS"
+    "defineConstraints": [],
+    "versionDefines": [
+        {
+            "name": "com.cobilas.unity.mono",
+            "expression": "1.0",
+            "define": "COBILAS_MONO"
+        },
+        {
+            "name": "com.cobilas.unity.extensions",
+            "expression": "1.0",
+            "define": "COBILAS_EXTENSIONS"
+        },
+        {
+            "name": "com.cobilas.cobilascore",
+            "expression": "1.0",
+            "define": "COBILAS_CORE"
+        },
+        {
+            "name": "com.cobilas.unity.utility",
+            "expression": "1.0",
+            "define": "COBILAS_UTILITY"
+        }
     ],
-    "versionDefines": [],
     "noEngineReferences": false
 }
