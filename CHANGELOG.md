@@ -24,6 +24,6 @@
 - Add folder:Editor
 - Add folder:Test
 - Add folder:Runtime
-## [0.0.1] 22/07/2022
+## [0.0.1] 15/07/2022
 ### Repositorio com.cobilas.unity.graphics iniciado
 - Lançado para o GitHub
