@@ -1,5 +1,16 @@
 # Changelog
-## [1.0.0-beta.41] 22/07/2022
+## [1.0.0-beta.42] 23/07/2022
+- Fix CHANGELOG.md
+- Fix package.json
+- Add IGUHorizontalScrollbarDraw.cs
+- Add IGUHorizontalScrollbarDraw.cs
+- Add IGUVerticalSliderDraw.cs
+- Add IGUVerticalSliderDraw.cs
+- Add IGUTest.cs
+- Change IGUPropertyDrawer.cs
+- Change IGUObjectDraw.cs
+- Change IGUObjectPropertyDrawer.cs
+## [1.0.0-beta.41] 23/07/2022
 - Add CHANGELOG.md
 - Fix package.json
 ## [1.0.0-beta.40] 22/07/2022

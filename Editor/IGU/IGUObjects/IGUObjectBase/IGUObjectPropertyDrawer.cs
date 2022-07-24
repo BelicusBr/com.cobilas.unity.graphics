@@ -45,7 +45,6 @@ namespace Cobilas.Unity.Editor.Graphics.IGU {
         protected void FinishPosition() {
             if (!isInitPosition) throw new UnityException("InitPosition not started!!!");
             isInitPosition = false;
-            //curretPosition = MoveDownWithBlankSpace(curretPosition);
         }
 
         protected float GetHeight() => myHeight;

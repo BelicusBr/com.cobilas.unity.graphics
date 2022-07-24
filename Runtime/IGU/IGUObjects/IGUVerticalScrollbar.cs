@@ -4,13 +4,13 @@ using Cobilas.Unity.Graphics.IGU.Events;
 namespace Cobilas.Unity.Graphics.IGU.Elements {
     public class IGUVerticalScrollbar : IGUSliderObject {
         private float oldValue;
-        [SerializeField] protected float verticalScrollbarThumbSize;
+        [SerializeField] protected float scrollbarThumbSize;
         [SerializeField] protected IGUOnSliderValueEvent onModifiedScrollbar;
         [SerializeField] protected IGUOnSliderIntValueEvent onModifiedScrollbarInt;
 
         public IGUOnSliderValueEvent OnModifiedScrollbar => onModifiedScrollbar;
         public IGUOnSliderIntValueEvent OnModifiedScrollbarInt => onModifiedScrollbarInt;
-        public float VerticalScrollbarThumbSize { get => verticalScrollbarThumbSize; set => verticalScrollbarThumbSize = value; }
+        public float ScrollbarThumbSize { get => scrollbarThumbSize; set => scrollbarThumbSize = value; }
 
         public override void OnIGU() {
             if (!myConfg.IsVisible) return;
@@ -25,7 +25,7 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
             MaxMinSlider temp = isInt ? maxMinSlider.ToMaxMinSliderInt() : maxMinSlider;
             value = Mathf.Clamp(value, temp.Min, temp.Max);
 
-            value = GUI.VerticalScrollbar(rectTemp, isInt ? ValueToInt : value, verticalScrollbarThumbSize, temp.Min, temp.Max, sliderObjectStyle);
+            value = GUI.VerticalScrollbar(rectTemp, isInt ? ValueToInt : value, scrollbarThumbSize, temp.Min, temp.Max, sliderObjectStyle);
 
             if (oldValue != (oldValue = value)) {
                 onModifiedScrollbar.Invoke(value);
@@ -33,7 +33,7 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
             }
         }
 
-        public static IGUVerticalScrollbar CreateIGUInstance(string name, float value, float verticalScrollbarThumbSize, MaxMinSlider maxMin) {
+        public static IGUVerticalScrollbar CreateIGUInstance(string name, float value, float scrollbarThumbSize, MaxMinSlider maxMin) {
             IGUVerticalScrollbar verticalScrollbar = Internal_CreateIGUInstance<IGUVerticalScrollbar>(name, value, maxMin);
             verticalScrollbar.maxMinSlider = maxMin;
             verticalScrollbar.myConfg = IGUConfig.Default;
@@ -41,15 +41,15 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
             verticalScrollbar.myColor = IGUColor.DefaultBoxColor;
             verticalScrollbar.onModifiedScrollbar = new IGUOnSliderValueEvent();
             verticalScrollbar.onModifiedScrollbarInt = new IGUOnSliderIntValueEvent();
-            verticalScrollbar.verticalScrollbarThumbSize = verticalScrollbarThumbSize;
+            verticalScrollbar.scrollbarThumbSize = scrollbarThumbSize;
             return verticalScrollbar;
         }
 
-        public static IGUVerticalScrollbar CreateIGUInstance(string name, float verticalScrollbarThumbSize, MaxMinSlider maxMin)
-            => CreateIGUInstance(name, 0f, verticalScrollbarThumbSize, maxMin);
+        public static IGUVerticalScrollbar CreateIGUInstance(string name, float scrollbarThumbSize, MaxMinSlider maxMin)
+            => CreateIGUInstance(name, 0f, scrollbarThumbSize, maxMin);
 
-        public static IGUVerticalScrollbar CreateIGUInstance(string name, float verticalScrollbarThumbSize)
-            => CreateIGUInstance(name, verticalScrollbarThumbSize, MaxMinSlider.Default);
+        public static IGUVerticalScrollbar CreateIGUInstance(string name, float scrollbarThumbSize)
+            => CreateIGUInstance(name, scrollbarThumbSize, MaxMinSlider.Default);
 
         public static IGUVerticalScrollbar CreateIGUInstance(string name)
             => CreateIGUInstance(name, 0);

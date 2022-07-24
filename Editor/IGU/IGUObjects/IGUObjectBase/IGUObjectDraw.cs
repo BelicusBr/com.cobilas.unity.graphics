@@ -13,11 +13,15 @@ namespace Cobilas.Unity.Editor.Graphics.IGU {
             position.height = SingleLineHeight;
             InitPosition(position);
             BuildRun();
-            using (SerializedObject serialized = new SerializedObject(property.objectReferenceValue)) {
-                serialized.Update();
-                if (property.isExpanded = Foldout(serialized))
-                    internalOnGUI?.Invoke(serialized);
-                serialized.ApplyModifiedProperties();
+            try {
+                using (SerializedObject serialized = new SerializedObject(property.objectReferenceValue)) {
+                    serialized.Update();
+                    if (property.isExpanded = Foldout(serialized))
+                        internalOnGUI?.Invoke(serialized);
+                    serialized.ApplyModifiedProperties();
+                }
+            } catch (Exception e) {
+                Debug.LogException(e);
             }
             FinishPosition();
         }

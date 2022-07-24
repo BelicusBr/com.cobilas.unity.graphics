@@ -22,9 +22,14 @@ namespace Cobilas.Unity.Editor.Graphics.IGU {
                 if (att2 != null)
                     listFieldDrawer.Add(att2.TargetField, (PropertyDrawer)Activator.CreateInstance(types[I]));
                 if (att != null) {
-                    PropertyDrawer drawer = (PropertyDrawer)Activator.CreateInstance(types[I]);
-                    if (att.UseForChildren) listUseForChildren.Add(att.TypeTarget, drawer);
-                    else list.Add(att.TypeTarget, drawer);
+                    try {
+                        PropertyDrawer drawer = (PropertyDrawer)Activator.CreateInstance(types[I]);
+                        if (att.UseForChildren) listUseForChildren.Add(att.TypeTarget, drawer);
+                        else list.Add(att.TypeTarget, drawer);
+                    } catch (Exception e) {
+                        UnityEngine.Debug.Log("Invalid cast|" + types[I]);
+                        throw e;
+                    }
                 }
             }
         }
