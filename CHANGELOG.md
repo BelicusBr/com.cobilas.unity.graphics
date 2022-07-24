@@ -1,4 +1,27 @@
 # Changelog
+## [1.0.0-beta.43] 24/07/2022
+- Fix CHANGELOG.md
+- Fix package.json
+- Add IGUButtonDraw.cs
+- Add IGUCheckBoxDraw.cs
+- Add IGUComboBoxDraw.cs
+- Add IGULabelDraw.cs
+- Add IGUNumericBoxDraw.cs
+- Add IGUNumericBoxIntDraw.cs
+- Add IGUPictureBox.cs
+- Add IGURepeatButtonDraw.cs
+- Add IGUScrollViewDraw.cs
+- Add IGUSelectionGridDraw.cs
+- Add IGUWindowDraw.cs
+- Fix IGUComboBox.cs
+- > Á propriedade `bool:IGUComboBox.AdjustComboBoxView { get; set; }` foi adicionada.
+- > Á propriedade `bool:IGUComboBox.CloseComboBoxView { get; set; }` foi adicionada.
+- Fix IGUScrollView.cs
+- > Removido a instrução `GUI.SetNextControlName(name);` de `IGUScrollView.OnIGU();`.
+- Fix IGUWindow.cs
+- > A instrução `GUI.SetNextControlName(name);` foi realocada do método `IGUWindow.OnIGU();` para `IGUObject.InternalOnIGU()`.
+- Fix IGUCheckBox.cs
+- > Removido o atributo [SerializeField] de `bool oneClick;`.
 ## [1.0.0-beta.42] 23/07/2022
 - Fix CHANGELOG.md
 - Fix package.json

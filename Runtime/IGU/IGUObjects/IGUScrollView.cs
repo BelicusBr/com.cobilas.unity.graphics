@@ -49,8 +49,6 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
 
             if (oldScrollPosition != (oldScrollPosition = scrollPosition))
                 onScrollView.Invoke(scrollPosition);
-
-            GUI.SetNextControlName(name);
         }
 
         /// <summary>

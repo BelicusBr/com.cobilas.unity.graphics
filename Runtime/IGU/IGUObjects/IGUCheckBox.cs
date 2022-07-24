@@ -5,7 +5,7 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
     public class IGUCheckBox : IGUTextObject {
         public const string DefaultContantIGUCheckBox = "IGU check box";
 
-        [SerializeField] private bool oneClick;
+        private bool oneClick;
         [SerializeField] protected bool _checked;
         [SerializeField] protected GUIStyle checkBoxStyle;
         [SerializeField] protected IGUOnClickEvent onClick;

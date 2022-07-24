@@ -31,7 +31,6 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
 
             Rect rectTemp2 = GUI.Window(ID, rectTemp, internalIndowFunction, mycontent, windowStyle);
 
-            GUI.SetNextControlName(name);
             if (rectTemp != rectTemp2) {
                 onMovingWindow.Invoke(rectTemp2.position);
                 _ = myRect.SetModifiedPosition(rectTemp2.position);
