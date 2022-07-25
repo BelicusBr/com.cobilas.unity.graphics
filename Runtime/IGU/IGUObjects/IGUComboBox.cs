@@ -34,6 +34,7 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
         protected event Action<GUIStyle, IGUScrollView> IGUComboBoxButtonOnIGU;
 
         public IGUOnClickEvent OnClick => onClick;
+        public IGUComboBoxButton[] BoxButtons => boxButtons;
         public IGUComboBoxClickEvent OnSelectedIndex => onSelectedIndex;
         public IGUOnClickEvent OnActivatedComboBox => onActivatedComboBox;
         public int Index { get => index; set => SetDisplayText(index = value); }
@@ -161,7 +162,7 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
             if (ArrayManipulation.EmpytArray(contents)) copyList = (IGUContent[])null;
             else contents = (IGUContent[])(copyList = contents).Clone();
 #endif
-            IGUComboBoxButton[] Res = null;
+            IGUComboBoxButton[] Res = new IGUComboBoxButton[0];
             for (int I = 0; I < ArrayManipulation.ArrayLength(contents); I++)
                 ArrayManipulation.Add(new IGUComboBoxButton(I, GetInstanceID(), contents[I]), ref Res);
             return Res;
@@ -225,6 +226,7 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
             comboBox.myRect = IGURect.DefaultButton;
             comboBox.onClick = new IGUOnClickEvent();
             comboBox.myColor = IGUColor.DefaultBoxColor;
+            comboBox.boxButtons = new IGUComboBoxButton[0];
             comboBox.closeOnClickComboBoxViewButton = true;
             comboBox.onActivatedComboBox = new IGUOnClickEvent();
             comboBox.onSelectedIndex = new IGUComboBoxClickEvent();

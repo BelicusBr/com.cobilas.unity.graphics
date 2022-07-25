@@ -1,4 +1,11 @@
 # Changelog
+## [1.0.0-beta.44] 25/07/2022
+- Fix CHANGELOG.md
+- Fix package.json
+- Fix IGUSelectionGridDraw.cs
+- Fix IGUComboBoxDraw.cs
+- Fix IGUComboBox.cs
+- > Á propriedade `IGUComboBoxButton[]: IGUComboBox.BoxButtons { get; }` foi adicionada.
 ## [1.0.0-beta.43] 24/07/2022
 - Fix CHANGELOG.md
 - Fix package.json

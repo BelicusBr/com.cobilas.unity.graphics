@@ -1,12 +1,15 @@
-﻿using UnityEditor;
+﻿using System;
+using UnityEditor;
 using UnityEngine;
 using UnityEditorInternal;
+using System.Collections.Generic;
+using Cobilas.Unity.Graphics.IGU;
 using Cobilas.Unity.Graphics.IGU.Elements;
 
 namespace Cobilas.Unity.Editor.Graphics.IGU {
     [IGUCustomDrawer(typeof(IGUSelectionGrid))]
     public class IGUSelectionGridDraw : IGUObjectDraw {
-        private ReorderableList reorderable;
+        private Dictionary<int, int> SelectIndex = new Dictionary<int, int>();
 
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
             => base.OnGUI(position, property, label);
@@ -71,19 +74,61 @@ namespace Cobilas.Unity.Editor.Graphics.IGU {
         }
 
         protected void RunSelectionGridToggles(SerializedObject serialized) {
-            reorderable = new ReorderableList(serialized, serialized.FindProperty("selectionGridToggles"));
-            reorderable.elementHeight = SingleRowHeightWithBlankSpace;
-            reorderable.drawElementCallback = DrawElement;
+            IGUSelectionGrid box = serialized.targetObject as IGUSelectionGrid;
+            IGUSelectionGridToggle[] boxBTs = box.SelectionGridToggles;
+            int BoxID = box.GetInstanceID();
+
+            if (!SelectIndex.ContainsKey(BoxID))
+                SelectIndex.Add(BoxID, -1);
+
+            int SecIndex = SelectIndex[BoxID];
+
+            ReorderableList reorderable = new ReorderableList(
+                new List<IGUSelectionGridToggle>(boxBTs), boxBTs.GetType().GetElementType(),
+                false, true, true, true
+                );
+
+            reorderable.elementHeight = (SingleLineHeight * 3f) + BlankSpace;
+            reorderable.drawHeaderCallback = (r) => EditorGUI.LabelField(r, GetGUIContent("ComboBox buttons"));
+            reorderable.onSelectCallback = (r) => SecIndex = r.index;
+
+            reorderable.drawElementCallback = (r, i, a, f) => {
+                IGUSelectionGridToggle item = reorderable.list[i] as IGUSelectionGridToggle;
+                r.height = SingleLineHeight;
+                item.Content.Text = EditorGUI.TextField(r, GetGUIContent("Text"), item.Content.Text);
+                item.Content.Image = (Texture)EditorGUI.ObjectField(r = MoveDown(r), GetGUIContent("Image"), item.Content.Image, typeof(Texture), true);
+                item.Content.Tooltip = EditorGUI.TextField(MoveDown(r), GetGUIContent("Tooltip"), item.Content.Tooltip);
+            };
+            if (SecIndex > -1) reorderable.index = SecIndex;
+            reorderable.onRemoveCallback = (r) => {
+                List<IGUSelectionGridToggle> temp = r.list as List<IGUSelectionGridToggle>;
+                temp.RemoveAt(r.index);
+                SelectIndex[BoxID] = SecIndex = r.index - 1;
+                if (temp.Count > 0)
+                {
+                    List<IGUContent> contents = new List<IGUContent>(
+                    Array.ConvertAll<IGUSelectionGridToggle, IGUContent>(temp.ToArray(), (t) => new IGUContent(t.Content))
+                    );
+                    box.SetSelectionGridToggleList(contents.ToArray());
+                }
+                else box.SetSelectionGridToggleList(new IGUContent[0]);
+            };
+            reorderable.onAddCallback = (r) => {
+                List<IGUSelectionGridToggle> temp = r.list as List<IGUSelectionGridToggle>;
+                List<IGUContent> contents = new List<IGUContent>(
+                Array.ConvertAll<IGUSelectionGridToggle, IGUContent>(temp.ToArray(), (t) => new IGUContent(t.Content))
+                );
+                contents.Add(new IGUContent($"Item {contents.Count}"));
+                box.SetSelectionGridToggleList(contents.ToArray());
+            };
             reorderable.DoList(GetRect());
+            SelectIndex[BoxID] = SecIndex;
             _ = MoveDown(reorderable.GetHeight() + BlankSpace);
-        }
-
-        private void DrawElement(Rect rect, int index, bool isActive, bool isFocused) {
-            SerializedProperty property = reorderable.serializedProperty.GetArrayElementAtIndex(index);
-            SerializedProperty property_text = property.FindPropertyRelative("checkBox.content.text");
-
-            rect.height = SingleLineHeight;
-            EditorGUI.PropertyField(rect, property_text, GetGUIContent($"Item({index})"));
+            //reorderable = new ReorderableList(serialized, serialized.FindProperty("selectionGridToggles"));
+            //reorderable.elementHeight = SingleRowHeightWithBlankSpace;
+            //reorderable.drawElementCallback = DrawElement;
+            //reorderable.DoList(GetRect());
+            //_ = MoveDown(reorderable.GetHeight() + BlankSpace);
         }
     }
 }

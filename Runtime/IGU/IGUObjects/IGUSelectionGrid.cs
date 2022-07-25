@@ -97,7 +97,7 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
             if (ArrayManipulation.EmpytArray(contents)) copyList = (IGUContent[])null;
             else contents = (IGUContent[])(copyList = contents).Clone();
 #endif
-            IGUSelectionGridToggle[] res = null;
+            IGUSelectionGridToggle[] res = new IGUSelectionGridToggle[0];
             for (int I = 0, floorX = 0, floorY = 0; I < ArrayManipulation.ArrayLength(contents); I++, floorX++) {
                 if (floorX >= _xCount) {
                     floorX = 0;
@@ -179,6 +179,7 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
             selectionGrid.myColor = IGUColor.DefaultBoxColor;
             selectionGrid.myRect = IGURect.DefaultSelectionGrid;
             selectionGrid.onSelectedIndex = new IGUOnSliderIntValueEvent();
+            selectionGrid.selectionGridToggles = new IGUSelectionGridToggle[0];
             selectionGrid.SetSelectionGridToggleList(contents);
             return selectionGrid;
         }
