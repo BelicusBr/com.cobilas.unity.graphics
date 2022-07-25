@@ -1,4 +1,9 @@
 # Changelog
+## [1.0.0] 25/07/2022
+### Beta do repositorio com.cobilas.unity.graphics finalizado.
+- Lançado para o GitHub
+- Fix CHANGELOG.md
+- Fix package.json
 ## [1.0.0-beta.44] 25/07/2022
 - Fix CHANGELOG.md
 - Fix package.json
