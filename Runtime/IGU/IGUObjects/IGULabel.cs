@@ -24,7 +24,9 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
             labelStyle.richText = richText;
             GUIContent mycontent = GetGUIContent(DefaultIGULabel);
 
-            Rect rectTemp = new Rect(GetPosition(), autoSize ? labelStyle.CalcSize(mycontent) : myRect.Size);
+            myRect = myRect.SetSize(autoSize ? labelStyle.CalcSize(mycontent) : myRect.Size);
+
+            Rect rectTemp = new Rect(GetPosition(), myRect.Size);
 
             GUI.Label(rectTemp, mycontent, labelStyle);
 

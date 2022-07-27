@@ -68,7 +68,7 @@ namespace Cobilas.Unity.Graphics.IGU {
 
         internal void Remove(IGUContainer container) {
             if (!Contains(container)) return;
-            onIGU += (container as IIGUContainer).OnIGU;
+            onIGU -= (container as IIGUContainer).OnIGU;
             ArrayManipulation.Remove(container, ref containers);
         }
     }

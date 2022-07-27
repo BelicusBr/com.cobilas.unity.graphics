@@ -1,4 +1,13 @@
 # Changelog
+## [1.0.1] 27/07/2022
+- Fix CHANGELOG.md
+- Fix package.json
+- Fix IGULabelDraw.cs
+- Fix IGUComboBoxDraw.cs
+- Change IGUPasswordFieldDraw.cs
+- Fix IGUCheckBoxDraw.cs
+- Fix IGUDrawer.cs
+- > O método `internal void Remove(IGUContainer);` foi corrigido.
 ## [1.0.0] 25/07/2022
 ### Beta do repositorio com.cobilas.unity.graphics finalizado.
 - Lançado para o GitHub

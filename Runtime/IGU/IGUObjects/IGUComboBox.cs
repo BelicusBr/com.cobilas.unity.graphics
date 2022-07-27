@@ -111,7 +111,7 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
 
                 scrollViewBackgroundStyle = GetDefaultValue(scrollViewBackgroundStyle, GUI.skin.box);
 
-                GUI.Box(new Rect(comboBoxScrollView.MyRect.ModifiedPosition, comboBoxScrollView.MyRect.Size),
+                GUI.Box(new Rect(comboBoxScrollView.MyRect.ModifiedPosition + myRect.ModifiedPosition, comboBoxScrollView.MyRect.Size),
                     IGUTextObject.GetGUIContentTemp(""), scrollViewBackgroundStyle);
 
                 comboBoxScrollView.OnIGU();

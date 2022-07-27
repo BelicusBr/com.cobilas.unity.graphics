@@ -1,7 +1,9 @@
 ﻿using UnityEngine;
 using UnityEditor;
+using Cobilas.Unity.Graphics.IGU.Elements;
 
 namespace Cobilas.Unity.Editor.Graphics.IGU {
+    [IGUCustomDrawer(typeof(IGUCheckBox))]
     public class IGUCheckBoxDraw : IGUTextObjectDraw {
 
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)

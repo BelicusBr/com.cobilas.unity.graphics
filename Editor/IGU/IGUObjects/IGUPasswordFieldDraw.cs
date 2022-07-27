@@ -3,8 +3,7 @@ using UnityEngine;
 using Cobilas.Unity.Graphics.IGU;
 using Cobilas.Unity.Graphics.IGU.Elements;
 
-namespace Cobilas.Unity.Editor.Graphics.IGU
-{
+namespace Cobilas.Unity.Editor.Graphics.IGU {
     [IGUCustomDrawer(typeof(IGUPasswordField))]
     public class IGUPasswordFieldDraw : IGUTextFieldObjectDraw {
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
