@@ -1,4 +1,8 @@
 # Changelog
+## [1.0.2] 31/07/2022
+- Fix CHANGELOG.md
+- Fix package.json
+- Change CobilasResolutions.cs
 ## [1.0.1] 27/07/2022
 - Fix CHANGELOG.md
 - Fix package.json

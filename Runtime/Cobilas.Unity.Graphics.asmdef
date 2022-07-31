@@ -3,7 +3,8 @@
     "references": [
         "Cobilas.Unity.Mono",
         "Cobilas.Unity.Management.Container",
-        "Cobilas.Unity.Extensions"
+        "Cobilas.Unity.Extensions",
+        "Cobilas.Unity.Management.Runtime"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
@@ -34,6 +35,11 @@
             "name": "com.cobilas.unity.management.container",
             "expression": "1.0",
             "define": "COBILAS_MGT_CONTAINER"
+        },
+        {
+            "name": "com.cobilas.unity.management.runtime",
+            "expression": "1.0",
+            "define": "COBILAS_MGT_RUNTIME"
         }
     ],
     "noEngineReferences": false
