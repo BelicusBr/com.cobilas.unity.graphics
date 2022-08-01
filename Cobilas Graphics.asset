@@ -19,12 +19,6 @@ MonoBehaviour:
     _URL: https://github.com/BelicusBr/com.cobilas.unity.gitpackage.git
     branch: 1.0.2
   - start: 1
-    _URL: https://github.com/BelicusBr/com.cobilas.unity.mono.git
-    branch: 1.0.5
-  - start: 1
-    _URL: https://github.com/BelicusBr/com.cobilas.unity.extensions.git
-    branch: 1.0.11
-  - start: 1
     _URL: https://github.com/BelicusBr/com.cobilas.unity.management.container.git
     branch: 1.0.5
   - start: 1
@@ -36,3 +30,9 @@ MonoBehaviour:
   - start: 1
     _URL: https://github.com/BelicusBr/com.cobilas.unity.editor.utility.git
     branch: 1.0.7
+  - start: 1
+    _URL: https://github.com/BelicusBr/com.cobilas.unity.mono.git
+    branch: 1.0.6
+  - start: 1
+    _URL: https://github.com/BelicusBr/com.cobilas.unity.extensions.git
+    branch: 1.0.12
