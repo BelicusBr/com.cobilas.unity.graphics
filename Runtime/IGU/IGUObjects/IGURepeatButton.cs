@@ -18,20 +18,29 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
 
             buttonStyle = GetDefaultValue(buttonStyle, GUI.skin.button);
             Rect rectTemp = new Rect(GetPosition(), myRect.Size);
+            Event current = Event.current;
 
-            if (clicked[0] = GUI.RepeatButton(rectTemp, GetGUIContent(DefaultContentIGURepeatButton), buttonStyle)) {
-                onRepeatClick.Invoke();
-                if (onClicked) {
-                    onClicked = false;
-                    onClick.Invoke();
-                }
+            bool restemp = GUI.RepeatButton(rectTemp, GetGUIContent(DefaultContentIGURepeatButton), buttonStyle);
+
+            if (restemp) {
+                if (IGUDrawer.Drawer.GetMouseButton(myConfg.MouseType)) RepeatButtonClick();
             } else {
+                clicked[0] = false;
                 onClicked = true;
             }
 
             if (useTooltip)
-                if (rectTemp.Contains(Event.current.mousePosition))
+                if (rectTemp.Contains(current.mousePosition))
                     DrawTooltip();
+        }
+
+        private void RepeatButtonClick() {
+            onRepeatClick.Invoke();
+            clicked[0] = true;
+            if (onClicked) {
+                onClicked = false;
+                onClick.Invoke();
+            }
         }
 
         protected override void DrawTooltip()

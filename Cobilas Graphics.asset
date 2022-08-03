@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Cobilas Graphics
   m_EditorClassIdentifier: 
   _URL: https://github.com/BelicusBr/com.cobilas.unity.graphics.git
-  branch: 1.0.3
+  branch: 1.0.4
   repos:
   - start: 1
     _URL: https://github.com/BelicusBr/com.cobilas.unity.gitpackage.git

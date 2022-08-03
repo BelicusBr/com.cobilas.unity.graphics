@@ -3,7 +3,6 @@ using Cobilas.Unity.Graphics.IGU.Events;
 
 namespace Cobilas.Unity.Graphics.IGU.Elements {
     public class IGUHorizontalSlider : IGUSliderObject {
-        private float oldValue;
         [SerializeField] protected GUIStyle horizontalSliderThumb;
         [SerializeField] protected IGUOnSliderValueEvent onModifiedSlider;
         [SerializeField] protected IGUOnSliderIntValueEvent onModifiedSliderInt;
@@ -26,11 +25,14 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
             MaxMinSlider temp = isInt ? maxMinSlider.ToMaxMinSliderInt() : maxMinSlider;
             value = Mathf.Clamp(value, temp.Min, temp.Max);
 
-            value = GUI.HorizontalSlider(rectTemp, isInt ? ValueToInt : value, temp.Min, temp.Max, sliderObjectStyle, horizontalSliderThumb);
+            float valuetemp = GUI.HorizontalSlider(rectTemp, isInt ? ValueToInt : value, temp.Min, temp.Max, sliderObjectStyle, horizontalSliderThumb);
 
-            if (oldValue != (oldValue = value)) {
-                onModifiedSlider.Invoke(value);
-                onModifiedSliderInt.Invoke((int)value);
+            if (valuetemp != value) {
+                if (IGUDrawer.Drawer.GetMouseButton(myConfg.MouseType)) {
+                    value = valuetemp;
+                    onModifiedSlider.Invoke(value);
+                    onModifiedSliderInt.Invoke((int)value);
+                }
             }
         }
 

@@ -37,6 +37,8 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
             SetGUISettings(oldSettings);
             Event current = Event.current;
 
+            UnfocusControl(current);
+
             if (rectTemp.Contains(current.mousePosition)) {
                 if (current.clickCount > 0 && GUI.GetNameOfFocusedControl() == name) {
                     isFocused = true;

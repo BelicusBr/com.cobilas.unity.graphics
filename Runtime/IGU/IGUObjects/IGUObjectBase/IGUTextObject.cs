@@ -4,7 +4,7 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
     public abstract class IGUTextObject : IGUObject {
         [SerializeField] protected bool useTooltip;
         [SerializeField] protected IGUContent content;
-        [SerializeField] protected GUIStyle tooltipStyle;
+        /*[SerializeField]*/ protected GUIStyle tooltipStyle;
 
         private static readonly GUIContent GUIContentTemp = new GUIContent();
 
@@ -27,14 +27,10 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
         }
 
         protected virtual void DrawTooltip() {
-            tooltipStyle = GetDefaultValue(tooltipStyle, GUI.skin.box);
-            Rect rectTemp = new Rect(Event.current.mousePosition, tooltipStyle.CalcSize(GetGUIContentTemp(ToolTip)));
-            GUI.enabled = true;
-            Matrix4x4 oldmatrix = GUI.matrix;
-            GUIUtility.RotateAroundPivot(0, rectTemp.position);
-            GUI.Box(rectTemp, GetGUIContentTemp(ToolTip), tooltipStyle);
-            GUI.matrix = oldmatrix;
-            GUI.enabled = myConfg.IsEnabled;
+            IGUDrawer.Drawer.SetTootipText(ToolTip);
+            IGUDrawer.Drawer.GUIStyleTootip(tooltipStyle);
+            IGUDrawer.Drawer.SetTootipPosition(Event.current.mousePosition);
+            IGUDrawer.Drawer.OpenTooltip();
         }
 
         public static GUIContent GetGUIContentTemp(string text, string tooltip, Texture image) {

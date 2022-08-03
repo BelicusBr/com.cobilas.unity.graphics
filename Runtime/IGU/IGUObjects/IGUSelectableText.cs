@@ -30,6 +30,8 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
 
             Text = ModifyText(GetGUIContent(""), current, rectTemp, selectableTextStyle).text;
 
+            UnfocusControl(current);
+
             SetGUISettings(oldSettings);
 
             if (useTooltip)

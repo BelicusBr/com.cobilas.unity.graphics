@@ -27,6 +27,14 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
             => SetGUISettings(settings.CursorColor, settings.SelectionColor, settings.CursorFlashSpeed,
                 settings.DoubleClickSelectsWord, settings.TripleClickSelectsLine);
 
+        protected void UnfocusControl(Event current) {
+            if (!IGUDrawer.Drawer.GetMouseButtonDown(myConfg.MouseType)) {
+                GUI.SetNextControlName("IGU_Unfocus_Control");
+                GUI.Label(Rect.zero, GUIContent.none, GUIStyle.none);
+                GUI.FocusControl("IGU_Unfocus_Control");
+            }
+        }
+
         private void SetGUISettings(
             Color cursorColor, Color selectionColor, float cursorFlashSpeed,
             bool doubleClickSelectsWord, bool tripleClickSelectsLine

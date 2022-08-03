@@ -14,7 +14,6 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
     public class IGUScrollView : IGUObject {
 
         public event Action<IGUScrollView> ScrollViewAction;
-        private Vector2 oldScrollPosition;
         protected Vector2 scrollPosition;
         [SerializeField] protected Rect viewRect;
         [SerializeField] protected bool alwaysShowVertical;
@@ -43,12 +42,13 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
 
             Rect rectTemp = new Rect(GetPosition(), myRect.Size);
 
-            scrollPosition = GUI.BeginScrollView(rectTemp, scrollPosition, viewRect, alwaysShowHorizontal, alwaysShowVertical, horizontalScrollbarStyle, verticalScrollbarStyle);
+            Vector2 scrollPositiontemp = GUI.BeginScrollView(rectTemp, scrollPosition, viewRect, alwaysShowHorizontal, alwaysShowVertical, horizontalScrollbarStyle, verticalScrollbarStyle);
             ScrollViewAction?.Invoke(this);
             GUI.EndScrollView();
 
-            if (oldScrollPosition != (oldScrollPosition = scrollPosition))
-                onScrollView.Invoke(scrollPosition);
+            if (scrollPositiontemp != scrollPosition)
+                if (IGUDrawer.Drawer.GetMouseButton(myConfg.MouseType)) 
+                    onScrollView.Invoke(scrollPosition = scrollPositiontemp);
         }
 
         /// <summary>

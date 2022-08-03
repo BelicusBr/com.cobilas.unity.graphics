@@ -15,10 +15,12 @@ namespace Cobilas.Unity.Editor.Graphics.IGU {
             SerializedProperty prop_isVisible = property.FindPropertyRelative("isVisible");
             SerializedProperty prop_isEnabled = property.FindPropertyRelative("isEnabled");
             SerializedProperty prop_depth = property.FindPropertyRelative("depth");
+            SerializedProperty prop_type = property.FindPropertyRelative("type");
 
             bool foldout = prop_foldout.boolValue;
             bool isVisible = prop_isVisible.boolValue;
             bool isEnabled = prop_isEnabled.boolValue;
+            int mouseType = prop_type.enumValueIndex;
             int depth = prop_depth.intValue;
 
             if (foldout = EditorGUI.Foldout(position, foldout, label)) {
@@ -27,11 +29,13 @@ namespace Cobilas.Unity.Editor.Graphics.IGU {
                 isVisible = EditorGUI.Toggle(position = MoveDownWithBlankSpace(position), IGUTextObject.GetGUIContentTemp("is visible"), isVisible);
                 isEnabled = EditorGUI.Toggle(position = MoveDownWithBlankSpace(position), IGUTextObject.GetGUIContentTemp("is enabled"), isEnabled);
                 depth = EditorGUI.IntField(position = MoveDownWithBlankSpace(position), IGUTextObject.GetGUIContentTemp("depth"), depth);
+                MouseButtonType buttonType = (MouseButtonType)EditorGUI.EnumPopup(position = MoveDownWithBlankSpace(position), IGUTextObject.GetGUIContentTemp("mouse type"), (MouseButtonType)mouseType);
                 EditorGUI.indentLevel--;
                 if (EditorGUI.EndChangeCheck()) {
                     prop_depth.intValue = depth;
                     prop_isVisible.boolValue = isVisible;
                     prop_isEnabled.boolValue = isEnabled;
+                    prop_type.enumValueIndex = (int)buttonType;
                 }
             }
             prop_foldout.boolValue = foldout;
@@ -39,7 +43,7 @@ namespace Cobilas.Unity.Editor.Graphics.IGU {
 
         public override float GetPropertyHeight(SerializedProperty property, GUIContent label) {
             if (!property.FindPropertyRelative("foldout").boolValue) return SingleLineHeight;
-            return (SingleLineHeight * 4f) + (BlankSpace * 3f);
+            return (SingleRowHeightWithBlankSpace * 5f);
         }
     }
 }

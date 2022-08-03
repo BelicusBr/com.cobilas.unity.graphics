@@ -98,7 +98,7 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
 
             comboBoxButton.OnIGU();
             if (!rectTemp.Contains(current.mousePosition))
-                if (current.clickCount > 0)
+                if (IGUDrawer.Drawer.GetMouseButtonUp(myConfg.MouseType))
                     activatedComboBox = false;
 
             if (activatedComboBox) {

@@ -8,6 +8,7 @@ namespace Cobilas.Unity.Graphics.IGU
         [SerializeField] private bool isVisible;
         [SerializeField] private bool isEnabled;
         [SerializeField] private int depth;
+        [SerializeField] private MouseButtonType type;
 #if UNITY_EDITOR
         [HideInInspector] public bool foldout;
 #endif
@@ -15,13 +16,15 @@ namespace Cobilas.Unity.Graphics.IGU
         public int Depth => depth;
         public bool IsVisible => isVisible;
         public bool IsEnabled => isEnabled;
+        public MouseButtonType MouseType => type;
 
-        public static IGUConfig Default => new IGUConfig(true, true, 0);
+        public static IGUConfig Default => new IGUConfig(true, true, 0, MouseButtonType.Left);
 
-        public IGUConfig(bool isVisible, bool isEnabled, int depth) {
+        public IGUConfig(bool isVisible, bool isEnabled, int depth, MouseButtonType type) {
             this.isVisible = isVisible;
             this.isEnabled = isEnabled;
             this.depth = depth;
+            this.type = type;
 #if UNITY_EDITOR
             foldout = false;
 #endif
@@ -34,7 +37,7 @@ namespace Cobilas.Unity.Graphics.IGU
         }
 #endif
         public override int GetHashCode()
-            => base.GetHashCode() >> isEnabled.GetHashCode() ^ isVisible.GetHashCode() << depth.GetHashCode();
+            => base.GetHashCode() >> isEnabled.GetHashCode() ^ isVisible.GetHashCode() << type.GetHashCode() ^ depth.GetHashCode();
 
         public override bool Equals(object obj)
             => obj is IGUConfig config && Equals(config);
@@ -45,6 +48,11 @@ namespace Cobilas.Unity.Graphics.IGU
 
         public IGUConfig SetVisible(bool isVisible) {
             this.isVisible = isVisible;
+            return this;
+        }
+
+        public IGUConfig SetMouseButtonType(MouseButtonType type) {
+            this.type = type;
             return this;
         }
 

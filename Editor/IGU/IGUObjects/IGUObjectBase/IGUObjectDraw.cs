@@ -14,12 +14,11 @@ namespace Cobilas.Unity.Editor.Graphics.IGU {
             InitPosition(position);
             BuildRun();
             try {
-                using (SerializedObject serialized = new SerializedObject(property.objectReferenceValue)) {
-                    serialized.Update();
-                    if (property.isExpanded = Foldout(serialized))
-                        internalOnGUI?.Invoke(serialized);
-                    serialized.ApplyModifiedProperties();
-                }
+                SerializedObject serialized = new SerializedObject(property.objectReferenceValue);
+                serialized.Update();
+                if (property.isExpanded = Foldout(serialized))
+                    internalOnGUI?.Invoke(serialized);
+                serialized.ApplyModifiedProperties();
             } catch (Exception e) {
                 Debug.LogException(e);
             }

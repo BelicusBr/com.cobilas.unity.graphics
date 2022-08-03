@@ -25,11 +25,14 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
             MaxMinSlider temp = isInt ? maxMinSlider.ToMaxMinSliderInt() : maxMinSlider;
             value = Mathf.Clamp(value, temp.Min, temp.Max);
 
-            value = GUI.HorizontalScrollbar(rectTemp, isInt ? ValueToInt : value, scrollbarThumbSize, temp.Min, temp.Max, sliderObjectStyle);
+            float valuetemp = GUI.HorizontalScrollbar(rectTemp, isInt ? ValueToInt : value, scrollbarThumbSize, temp.Min, temp.Max, sliderObjectStyle);
 
-            if (oldValue != (oldValue = value)) {
-                onModifiedScrollbar.Invoke(value);
-                onModifiedScrollbarInt.Invoke((int)value);
+            if (valuetemp != value) {
+                if (IGUDrawer.Drawer.GetMouseButton(myConfg.MouseType)) {
+                    value = valuetemp;
+                    onModifiedScrollbar.Invoke(value);
+                    onModifiedScrollbarInt.Invoke((int)value);
+                }
             }
         }
 

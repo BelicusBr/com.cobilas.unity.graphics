@@ -30,15 +30,18 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
             int ID = GUIUtility.GetControlID(FocusType.Passive);
 
             Rect rectTemp2 = GUI.Window(ID, rectTemp, internalIndowFunction, mycontent, windowStyle);
+            Event current = Event.current;
 
             if (rectTemp != rectTemp2) {
-                onMovingWindow.Invoke(rectTemp2.position);
-                _ = myRect.SetModifiedPosition(rectTemp2.position);
-                _ = myRect.SetSize(rectTemp2.size);
+                if (IGUDrawer.Drawer.GetMouseButton(myConfg.MouseType)) {
+                    onMovingWindow.Invoke(rectTemp2.position);
+                    _ = myRect.SetModifiedPosition(rectTemp2.position);
+                    _ = myRect.SetSize(rectTemp2.size);
+                }
             }
 
             if (useTooltip)
-                if (dragFlap.Contains(Event.current.mousePosition))
+                if (dragFlap.Contains(current.mousePosition))
                     DrawTooltip();
         }
 

@@ -14,7 +14,7 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
         public IGUOnClickEvent OnClick => onClick;
         public virtual bool Clicked => GetClicked();
         public GUIStyle ButtonStyle { get => buttonStyle; set => buttonStyle = value; }
-
+        
         public override void OnIGU() {
             if (!myConfg.IsVisible) return;
             GUI.color = myColor.MyColor;
@@ -25,13 +25,17 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
             buttonStyle = GetDefaultValue(buttonStyle, GUI.skin.button);
             Rect rectTemp = new Rect(GetPosition(), myRect.Size);
 
+            Event current = Event.current;
+
             if (GUI.Button(rectTemp, GetGUIContent(DefaultContentIGUButton), buttonStyle)) {
-                onClick.Invoke();
-                clicked[1] = true;
+                if (IGUDrawer.Drawer.GetMouseButtonUp(myConfg.MouseType)) {
+                    onClick.Invoke();
+                    clicked[1] = true;
+                }
             }
 
             if (useTooltip)
-                if (rectTemp.Contains(Event.current.mousePosition))
+                if (rectTemp.Contains(current.mousePosition))
                     DrawTooltip();
         }
 
