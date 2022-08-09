@@ -53,9 +53,16 @@ namespace Cobilas.Unity.Packages.com.cobilas.unity.graphics.Test.Runtime
         }
 
         private void OnGUI() {
-            //GUI.Button(new Rect(0, 0, 130, 25), GUIContent.none);
-            //GUI.Button(new Rect(0, 10, 130, 25), GUIContent.none);
-            //GUI.Button(new Rect(0, 15, 130, 25), GUIContent.none);
+            //Event current = Event.current;
+            //switch (current.type) {
+            //    case EventType.KeyDown:
+            //        Debug.Log("D:" + current.keyCode);
+            //        Debug.Log("D:" + current.character);
+            //        break;
+            //    case EventType.KeyUp:
+            //        Debug.Log("U:" + current.keyCode);
+            //        break;
+            //}
         }
 
         public void Print(string txt)
