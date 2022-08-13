@@ -32,7 +32,7 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
         protected virtual void OnDestroy() {
             if (container != null)
                 if (container.Remove(this))
-                    Debug.Log($"Remove {name} in {container.name} container.");
+                    Debug.Log(string.Format("{0} removed from container", name));
         }
 
         protected virtual void OnDisable() { }
@@ -40,6 +40,29 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
         protected virtual void OnEnable() { }
 
         public virtual void OnIGU() { }
+
+        public IGUContainer ApplyToContainer(string name) {
+            IGUContainer res = IGUContainer.CreateIGUContainer(name);
+            res.Add(this);
+            return res;
+        }
+
+        public IGUContainer ApplyToGenericContainer() {
+            IGUContainer res = IGUContainer.CreateGenericIGUContainer();
+            res.Add(this);
+            return res;
+        }
+
+        public IGUContainer ApplyToPermanentGenericContainer() {
+            IGUContainer res = IGUContainer.CreatePermanentGenericIGUContainer();
+            res.Add(this);
+            return res;
+        }
+
+        public void RemoveFromContainer() {
+            if (container != null)
+                container.Remove(this);
+        }
 
         void IIGUObject.InternalOnIGU() {
             Matrix4x4 oldMatrix = GUI.matrix;

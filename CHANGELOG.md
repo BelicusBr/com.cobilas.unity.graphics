@@ -1,4 +1,6 @@
 # Changelog
+## [1.0.5] 13/08/2022
+- Change Runtime\IGU\IGUObjects\IGUObjectBase\IGUObject.cs
 ## [1.0.5] 12/08/2022
 - Change package.json
 - Change Runtime\Cobilas.Unity.Graphics.asmdef
