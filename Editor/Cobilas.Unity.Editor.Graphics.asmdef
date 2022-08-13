@@ -21,22 +21,6 @@
     "defineConstraints": [
         "UNITY_EDITOR"
     ],
-    "versionDefines": [
-        {
-            "name": "com.cobilas.unity.mono",
-            "expression": "1.0",
-            "define": "COBILAS_MONO"
-        },
-        {
-            "name": "com.cobilas.cobilascore",
-            "expression": "1.0",
-            "define": "COBILAS_CORE"
-        },
-        {
-            "name": "com.cobilas.unity.editor.utility",
-            "expression": "1.0",
-            "define": "COBILAS_EDITOR_UTILITY"
-        }
-    ],
+    "versionDefines": [],
     "noEngineReferences": false
 }

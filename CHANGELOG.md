@@ -1,4 +1,10 @@
 # Changelog
+## [1.0.5] 13/08/2022
+- Change Runtime\IGU\IGUObjects\IGUObjectBase\IGUObject.cs
+## [1.0.5] 12/08/2022
+- Change package.json
+- Change Runtime\Cobilas.Unity.Graphics.asmdef
+- Change Editor\Cobilas.Unity.Editor.Graphics.asmdef
 ## [1.0.4] 03/08/2022
 - Fix CHANGELOG.md
 - Fix package.json
