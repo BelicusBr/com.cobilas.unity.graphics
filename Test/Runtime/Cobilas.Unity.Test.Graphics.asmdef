@@ -1,0 +1,22 @@
+{
+    "name": "Cobilas.Unity.Test.Graphics",
+    "references": [
+        "Cobilas.Unity.Mono",
+        "Cobilas.Unity.Utility",
+        "Cobilas.Unity.Graphics",
+        "Cobilas.Unity.Extensions"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": true,
+    "overrideReferences": true,
+    "precompiledReferences": [
+        "CobilasCore.dll",
+        "Cobilas.Collections.dll",
+        "CobilasCore.Extension.dll"
+    ],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

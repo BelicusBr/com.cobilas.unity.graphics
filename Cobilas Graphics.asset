@@ -13,26 +13,23 @@ MonoBehaviour:
   m_Name: Cobilas Graphics
   m_EditorClassIdentifier: 
   _URL: https://github.com/BelicusBr/com.cobilas.unity.graphics.git
-  branch: 1.0.4
+  branch: 1.0.5
   repos:
   - start: 1
     _URL: https://github.com/BelicusBr/com.cobilas.unity.gitpackage.git
     branch: 1.0.2
   - start: 1
-    _URL: https://github.com/BelicusBr/com.cobilas.unity.management.container.git
-    branch: 1.0.5
-  - start: 1
-    _URL: https://github.com/BelicusBr/com.cobilas.unity.management.runtime.git
-    branch: 1.0.7
-  - start: 1
-    _URL: https://github.com/BelicusBr/com.cobilas.cobilascore.git
-    branch: 1.0.31
-  - start: 1
-    _URL: https://github.com/BelicusBr/com.cobilas.unity.editor.utility.git
-    branch: 1.0.7
-  - start: 1
-    _URL: https://github.com/BelicusBr/com.cobilas.unity.mono.git
-    branch: 1.0.6
-  - start: 1
     _URL: https://github.com/BelicusBr/com.cobilas.unity.extensions.git
     branch: 1.0.12
+  - start: 1
+    _URL: https://github.com/BelicusBr/com.cobilas.cobilascore.git
+    branch: 1.0.32
+  - start: 1
+    _URL: https://github.com/BelicusBr/com.cobilas.unity.utility.git
+    branch: 1.0.14
+  - start: 1
+    _URL: https://github.com/BelicusBr/com.cobilas.unity.management.runtime.git
+    branch: 1.0.8
+  - start: 1
+    _URL: https://github.com/BelicusBr/com.cobilas.unity.mono.git
+    branch: 1.0.7
