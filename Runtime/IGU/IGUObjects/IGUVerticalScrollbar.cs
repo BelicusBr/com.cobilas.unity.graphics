@@ -39,7 +39,6 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
             IGUVerticalScrollbar verticalScrollbar = Internal_CreateIGUInstance<IGUVerticalScrollbar>(name, value, maxMin);
             verticalScrollbar.maxMinSlider = maxMin;
             verticalScrollbar.myConfg = IGUConfig.Default;
-            verticalScrollbar.myRect = IGURect.DefaultTextArea;
             verticalScrollbar.myColor = IGUColor.DefaultBoxColor;
             verticalScrollbar.onModifiedScrollbar = new IGUOnSliderValueEvent();
             verticalScrollbar.onModifiedScrollbarInt = new IGUOnSliderIntValueEvent();

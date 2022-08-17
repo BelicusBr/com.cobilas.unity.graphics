@@ -6,11 +6,14 @@ using Cobilas.Unity.Graphics.IGU.Elements;
 namespace Cobilas.Unity.Editor.Graphics.IGU {
     [IGUCustomDrawer(typeof(IGUNumericBoxInt))]
     public class IGUNumericBoxIntDraw : IGUObjectDraw {
-        public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
-            => base.OnGUI(position, property, label);
 
-        public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
-            => base.GetPropertyHeight(property, label);
+        protected override void IOnGUI(Rect position, SerializedObject serialized)
+            => base.IOnGUI(position, serialized);
+
+        protected override float IGetPropertyHeight(SerializedObject serialized) {
+            return base.IGetPropertyHeight(serialized) + (SingleRowHeightWithBlankSpace * 2) +
+                GetHeightMaxMinSliderValue(serialized);
+        }
 
         protected override void DrawBackgroundProperty(Rect position, float height)
             => base.DrawBackgroundProperty(position, height);
@@ -45,6 +48,9 @@ namespace Cobilas.Unity.Editor.Graphics.IGU {
             EditorGUI.PropertyField(GetRect(), value, GetGUIContent("Addition value"));
             _ = MoveDown();
         }
+
+        protected virtual float GetHeightMaxMinSliderValue(SerializedObject serialized)
+            => IGUPropertyDrawer.GetPropertyFieldDrawer($"#{nameof(MaxMinSliderInt)}").GetPropertyHeight(serialized.FindProperty("maxMinSlider"), null);
 
         protected virtual void RunMinMax(SerializedObject serialized) {
             SerializedProperty maxMinSlider = serialized.FindProperty("maxMinSlider");

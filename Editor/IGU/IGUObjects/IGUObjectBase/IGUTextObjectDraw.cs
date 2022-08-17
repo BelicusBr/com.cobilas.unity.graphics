@@ -7,11 +7,11 @@ using Cobilas.Unity.Graphics.IGU.Elements;
 namespace Cobilas.Unity.Editor.Graphics.IGU {
     [IGUCustomDrawer(typeof(IGUTextObject), true)]
     public class IGUTextObjectDraw : IGUObjectDraw {
-        public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
-            => base.OnGUI(position, property, label);
+        protected override void IOnGUI(Rect position, SerializedObject serialized)
+            => base.IOnGUI(position, serialized);
 
-        public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
-            => base.GetPropertyHeight(property, label);
+        protected override float IGetPropertyHeight(SerializedObject serialized)
+            => base.IGetPropertyHeight(serialized) + GetHeightIGUContent(serialized) + SingleRowHeightWithBlankSpace;
 
         protected override void DrawBackgroundProperty(Rect position, float height)
             => base.DrawBackgroundProperty(position, height);
@@ -41,6 +41,9 @@ namespace Cobilas.Unity.Editor.Graphics.IGU {
             _ = EditorGUI.PropertyField(GetRect(), useTooltip, GetGUIContent("Use tooltip"));
             hide_Tooltip.boolValue = useTooltip.boolValue;
         }
+
+        protected virtual float GetHeightIGUContent(SerializedObject serialized)
+            => IGUPropertyDrawer.GetPropertyFieldDrawer($"#{nameof(IGUContent)}").GetPropertyHeight(serialized.FindProperty("content"), null);
 
         protected virtual void RunIGUContent(SerializedObject serialized) {
             SerializedProperty content = serialized.FindProperty("content");

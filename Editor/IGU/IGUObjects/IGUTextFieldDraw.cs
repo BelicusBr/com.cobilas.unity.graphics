@@ -6,11 +6,18 @@ using Cobilas.Unity.Graphics.IGU.Elements;
 namespace Cobilas.Unity.Editor.Graphics.IGU {
     [IGUCustomDrawer(typeof(IGUTextField))]
     public class IGUTextFieldDraw : IGUTextFieldObjectDraw {
-        public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
-            => base.OnGUI(position, property, label);
 
-        public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
-            => base.GetPropertyHeight(property, label);
+        protected override void IOnGUI(Rect position, SerializedObject serialized)
+            => base.IOnGUI(position, serialized);
+
+        protected override float IGetPropertyHeight(SerializedObject serialized) {
+
+            return (base.IGetPropertyHeight(serialized) - SingleLineHeight) + 
+                (SingleRowHeightWithBlankSpace * 3f) +
+                EditorGUI.GetPropertyHeight(serialized.FindProperty("onClick")) +
+                EditorGUI.GetPropertyHeight(serialized.FindProperty("onKeyDown")) +
+                EditorGUI.GetPropertyHeight(serialized.FindProperty("onCharDown"));
+        }
 
         protected override Rect MoveDown()
             => base.MoveDown();
@@ -63,8 +70,9 @@ namespace Cobilas.Unity.Editor.Graphics.IGU {
 
         protected void RunIsFocused(SerializedObject serialized) {
             SerializedProperty isFocused = serialized.FindProperty("isFocused");
-            using (GetDisabledScope(true))
+            EditorGUI.BeginDisabledGroup(true);
                 EditorGUI.PropertyField(GetRect(), isFocused, GetGUIContent("Is focused"));
+            EditorGUI.EndDisabledGroup();
             _ = MoveDown();
         }
 
@@ -78,6 +86,12 @@ namespace Cobilas.Unity.Editor.Graphics.IGU {
             SerializedProperty isTextArea = serialized.FindProperty("isTextArea");
             if (isTextArea.boolValue) RunIGUContentTA(serialized);
             else RunIGUContentTF(serialized);
+        }
+
+        protected override float GetHeightIGUContent(SerializedObject serialized) {
+            SerializedProperty isTextArea = serialized.FindProperty("isTextArea");
+            if (isTextArea.boolValue) return IGUPropertyDrawer.GetPropertyFieldDrawer($"#TA{nameof(IGUContent)}").GetPropertyHeight(serialized.FindProperty("content"), null);
+            return IGUPropertyDrawer.GetPropertyFieldDrawer($"#TF{nameof(IGUContent)}").GetPropertyHeight(serialized.FindProperty("content"), null);
         }
 
         private void RunIGUContentTA(SerializedObject serialized) {

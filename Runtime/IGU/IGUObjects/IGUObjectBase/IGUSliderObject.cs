@@ -22,6 +22,7 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
 
         protected static T Internal_CreateIGUInstance<T>(string name, float value, bool isInt, MaxMinSlider maxmin) where T : IGUSliderObject {
             T sliderObject = Internal_CreateIGUInstance<T>(name);
+            sliderObject.myRect = IGURect.DefaultSlider;
             sliderObject.isInt = isInt;
             sliderObject.value = value;
             sliderObject.maxMinSlider = maxmin;

@@ -6,11 +6,16 @@ namespace Cobilas.Unity.Editor.Graphics.IGU {
     [IGUCustomDrawer(typeof(IGUCheckBox))]
     public class IGUCheckBoxDraw : IGUTextObjectDraw {
 
-        public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
-            => base.OnGUI(position, property, label);
+        protected override void IOnGUI(Rect position, SerializedObject serialized)
+            => base.IOnGUI(position, serialized);
 
-        public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
-            => base.GetPropertyHeight(property, label);
+        protected override float IGetPropertyHeight(SerializedObject serialized) {
+            return base.IGetPropertyHeight(serialized) + SingleRowHeightWithBlankSpace +
+                EditorGUI.GetPropertyHeight(serialized.FindProperty("onClick")) +
+                EditorGUI.GetPropertyHeight(serialized.FindProperty("checkBoxOn")) +
+                EditorGUI.GetPropertyHeight(serialized.FindProperty("checkBoxOff")) +
+                EditorGUI.GetPropertyHeight(serialized.FindProperty("onChecked"));
+        }
 
         protected override void DrawBackgroundProperty(Rect position, float height)
             => base.DrawBackgroundProperty(position, height);

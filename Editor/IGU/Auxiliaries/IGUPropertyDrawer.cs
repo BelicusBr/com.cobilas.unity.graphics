@@ -7,10 +7,10 @@ using Cobilas.Unity.Graphics.IGU.Elements;
 
 namespace Cobilas.Unity.Editor.Graphics.IGU {
     public static class IGUPropertyDrawer {
-        public delegate void IGUPropertyDrawerCallback(Type type, PropertyDrawer drawer);
-        private static Dictionary<Type, PropertyDrawer> list = new Dictionary<Type, PropertyDrawer>();
-        private static Dictionary<Type, PropertyDrawer> listSubClass = new Dictionary<Type, PropertyDrawer>();
-        private static Dictionary<Type, PropertyDrawer> listUseForChildren = new Dictionary<Type, PropertyDrawer>();
+        public delegate void IGUPropertyDrawerCallback(Type type, IGUObjectPropertyDrawer drawer);
+        private static Dictionary<Type, IGUObjectPropertyDrawer> list = new Dictionary<Type, IGUObjectPropertyDrawer>();
+        private static Dictionary<Type, IGUObjectPropertyDrawer> listSubClass = new Dictionary<Type, IGUObjectPropertyDrawer>();
+        private static Dictionary<Type, IGUObjectPropertyDrawer> listUseForChildren = new Dictionary<Type, IGUObjectPropertyDrawer>();
         private static Dictionary<string, PropertyDrawer> listFieldDrawer = new Dictionary<string, PropertyDrawer>();
 
         [InitializeOnLoadMethod]
@@ -23,18 +23,18 @@ namespace Cobilas.Unity.Editor.Graphics.IGU {
                     listFieldDrawer.Add(att2.TargetField, (PropertyDrawer)Activator.CreateInstance(types[I]));
                 if (att != null) {
                     try {
-                        PropertyDrawer drawer = (PropertyDrawer)Activator.CreateInstance(types[I]);
+                        IGUObjectPropertyDrawer drawer = (IGUObjectPropertyDrawer)Activator.CreateInstance(types[I]);
                         if (att.UseForChildren) listUseForChildren.Add(att.TypeTarget, drawer);
                         else list.Add(att.TypeTarget, drawer);
                     } catch (Exception e) {
-                        UnityEngine.Debug.Log("Invalid cast|" + types[I]);
+                        UnityEngine.Debug.LogError("Invalid cast|" + types[I]);
                         throw e;
                     }
                 }
             }
         }
 
-        public static PropertyDrawer GetPropertyDrawer(Type type) {
+        public static IGUObjectPropertyDrawer GetPropertyDrawer(Type type) {
             if (list.ContainsKey(type)) return list[type];
             else {
                 if (listUseForChildren.ContainsKey(type)) return listUseForChildren[type];
@@ -43,7 +43,7 @@ namespace Cobilas.Unity.Editor.Graphics.IGU {
                 GetSubClassList(type, list);
                 foreach (var item in list) {
                     if (listUseForChildren.ContainsKey(item)) {
-                        PropertyDrawer res;
+                        IGUObjectPropertyDrawer res;
                         listSubClass.Add(type, res = listUseForChildren[item]);
                         return res;
                     }

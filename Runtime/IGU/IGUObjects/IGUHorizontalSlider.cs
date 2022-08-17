@@ -39,7 +39,6 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
         public static IGUHorizontalSlider CreateIGUInstance(string name, float value, MaxMinSlider maxMin) {
             IGUHorizontalSlider horizontalSlider = Internal_CreateIGUInstance<IGUHorizontalSlider>(name, value, maxMin);
             horizontalSlider.myConfg = IGUConfig.Default;
-            horizontalSlider.myRect = IGURect.DefaultTextArea;
             horizontalSlider.myColor = IGUColor.DefaultBoxColor;
             horizontalSlider.onModifiedSlider = new IGUOnSliderValueEvent();
             horizontalSlider.onModifiedSliderInt = new IGUOnSliderIntValueEvent();

@@ -6,11 +6,15 @@ namespace Cobilas.Unity.Editor.Graphics.IGU {
     [IGUCustomDrawer(typeof(IGUWindow))]
     public class IGUWindowDraw : IGUTextObjectDraw {
 
-        public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
-            => base.OnGUI(position, property, label);
+        protected override void IOnGUI(Rect position, SerializedObject serialized)
+            => base.IOnGUI(position, serialized);
 
-        public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
-            => base.GetPropertyHeight(property, label);
+        protected override float IGetPropertyHeight(SerializedObject serialized) {
+
+            return base.IGetPropertyHeight(serialized) +
+                (EditorGUI.GetPropertyHeight(SerializedPropertyType.Rect, GetGUIContent("Drag flap")) + BlankSpace) +
+                EditorGUI.GetPropertyHeight(serialized.FindProperty("onMovingWindow"));
+        }
 
         protected override void DrawBackgroundProperty(Rect position, float height)
             => base.DrawBackgroundProperty(position, height);

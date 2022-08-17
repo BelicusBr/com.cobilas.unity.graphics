@@ -1,4 +1,3 @@
-using System;
 using UnityEngine;
 using UnityEditor;
 using Cobilas.Unity.Graphics.IGU;
@@ -7,11 +6,12 @@ using Cobilas.Unity.Graphics.IGU.Elements;
 namespace Cobilas.Unity.Editor.Graphics.IGU {
     [IGUCustomDrawer(typeof(IGUTextFieldObject), true)]
     public class IGUTextFieldObjectDraw : IGUTextObjectDraw {
-        public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
-            => base.OnGUI(position, property, label);
+        protected override void IOnGUI(Rect position, SerializedObject serialized)
+            => base.IOnGUI(position, serialized);
 
-        public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
-            => base.GetPropertyHeight(property, label);
+        protected override float IGetPropertyHeight(SerializedObject serialized)
+            => base.IGetPropertyHeight(serialized) +
+            IGUPropertyDrawer.GetPropertyFieldDrawer($"#{nameof(IGUTextSettings)}").GetPropertyHeight(serialized.FindProperty("settings"), null);
 
         protected override GUIContent GetGUIContent(string text)
             => base.GetGUIContent(text);
@@ -32,6 +32,9 @@ namespace Cobilas.Unity.Editor.Graphics.IGU {
             base.BuildRun();
             internalOnGUI += RunIGUTextSettings;
         }
+
+        protected override float GetHeightIGUContent(SerializedObject serialized)
+            => base.GetHeightIGUContent(serialized);
 
         protected override void RunIGUContent(SerializedObject serialized)
             => base.RunIGUContent(serialized);

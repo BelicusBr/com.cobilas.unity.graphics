@@ -5,11 +5,14 @@ using Cobilas.Unity.Graphics.IGU.Elements;
 namespace Cobilas.Unity.Editor.Graphics.IGU {
     [IGUCustomDrawer(typeof(IGURepeatButton))]
     public class IGURepeatButtonDraw : IGUButtonDraw {
-        public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
-            => base.OnGUI(position, property, label);
 
-        public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
-            => base.GetPropertyHeight(property, label);
+        protected override void IOnGUI(Rect position, SerializedObject serialized)
+            => base.IOnGUI(position, serialized);
+
+        protected override float IGetPropertyHeight(SerializedObject serialized) {
+            return base.IGetPropertyHeight(serialized) +
+                EditorGUI.GetPropertyHeight(serialized.FindProperty("onRepeatClick"));
+        }
 
         protected override void DrawBackgroundProperty(Rect position, float height)
             => base.DrawBackgroundProperty(position, height);

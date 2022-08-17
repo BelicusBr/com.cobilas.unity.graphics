@@ -1,6 +1,7 @@
 ﻿using System;
 using UnityEngine;
 using UnityEditor;
+using Cobilas.Unity.Editor.Utility;
 using Cobilas.Unity.Graphics.IGU.Elements;
 
 namespace Cobilas.Unity.Editor.Graphics.IGU {
@@ -9,25 +10,27 @@ namespace Cobilas.Unity.Editor.Graphics.IGU {
 
         protected event Action<SerializedObject> internalOnGUI;
 
-        public override void OnGUI(Rect position, SerializedProperty property, GUIContent label) {
-            position.height = SingleLineHeight;
-            InitPosition(position);
+        protected override void IOnGUI(Rect position, SerializedObject serialized) {
+            position.height = CPropertyDrawer.SingleLineHeight;
+            Resize(position.size);
             BuildRun();
             try {
-                SerializedObject serialized = new SerializedObject(property.objectReferenceValue);
-                serialized.Update();
-                if (property.isExpanded = Foldout(serialized))
+                if (Foldout(serialized))
                     internalOnGUI?.Invoke(serialized);
-                serialized.ApplyModifiedProperties();
             } catch (Exception e) {
                 Debug.LogException(e);
             }
-            FinishPosition();
         }
 
-        public override float GetPropertyHeight(SerializedProperty property, GUIContent label) {
-            if (!property.isExpanded) return SingleLineHeight;
-            return GetHeight();
+        protected override float IGetPropertyHeight(SerializedObject serialized) {
+            SerializedProperty myRect = serialized.FindProperty("myRect");
+            SerializedProperty myColor = serialized.FindProperty("myColor");
+            SerializedProperty myConfg = serialized.FindProperty("myConfg");
+
+            float myRectHeight = IGUPropertyDrawer.GetPropertyFieldDrawer("#IGURect").GetPropertyHeight(myRect, null);
+            float myColorHeight = IGUPropertyDrawer.GetPropertyFieldDrawer("#IGUColor").GetPropertyHeight(myColor, null);
+            float myConfgHeight = IGUPropertyDrawer.GetPropertyFieldDrawer("#IGUConfig").GetPropertyHeight(myConfg, null);
+            return (SingleRowHeightWithBlankSpace * 7f) + (BlankSpace * 3f) + myRectHeight + myConfgHeight + myColorHeight;
         }
 
         private bool Foldout(SerializedObject serialized) {
@@ -67,11 +70,11 @@ namespace Cobilas.Unity.Editor.Graphics.IGU {
         protected void RunFiliation(SerializedObject serialized) {
             DrawBackgroundProperty(MoveDown(), GetGUIContent("Filiation"), (SingleRowHeightWithBlankSpace * 3f) + BlankSpace);
             EditorGUI.indentLevel++;
-            using (GetDisabledScope(true)) {
+            EditorGUI.BeginDisabledGroup(true);
                 _ = EditorGUI.IntField(MoveDown(), GetGUIContent("ID"), serialized.targetObject.GetInstanceID());
                 _ = EditorGUI.PropertyField(MoveDown(), serialized.FindProperty("parent"), GetGUIContent("Parent"));
                 _ = EditorGUI.PropertyField(MoveDown(), serialized.FindProperty("container"), GetGUIContent("Container"));
-            }
+            EditorGUI.EndDisabledGroup();
             _ = Spacing();
             EditorGUI.indentLevel--;
         }

@@ -6,11 +6,14 @@ namespace Cobilas.Unity.Editor.Graphics.IGU {
     [IGUCustomDrawer(typeof(IGUScrollView))]
     public class IGUScrollViewDraw : IGUObjectDraw {
 
-        public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
-            => base.OnGUI(position, property, label);
+        protected override void IOnGUI(Rect position, SerializedObject serialized)
+            => base.IOnGUI(position, serialized);
 
-        public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
-            => base.GetPropertyHeight(property, label);
+        protected override float IGetPropertyHeight(SerializedObject serialized) {
+            return base.IGetPropertyHeight(serialized) + (SingleRowHeightWithBlankSpace * 2f) +
+                (EditorGUI.GetPropertyHeight(SerializedPropertyType.Rect, GetGUIContent("View rect")) + BlankSpace) +
+                EditorGUI.GetPropertyHeight(serialized.FindProperty("onScrollView"));
+        }
 
         protected override void DrawBackgroundProperty(Rect position, float height)
             => base.DrawBackgroundProperty(position, height);

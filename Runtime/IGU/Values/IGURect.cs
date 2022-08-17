@@ -52,6 +52,7 @@ namespace Cobilas.Unity.Graphics.IGU {
 
         public static IGURect DefaultBox => new IGURect(Vector2.zero, new Vector2(50f, 50f), Vector2.zero, Vector2.one);
         public static IGURect DefaultButton => new IGURect(Vector2.zero, new Vector2(130f, 25f), Vector2.zero, Vector2.one);
+        public static IGURect DefaultSlider => new IGURect(Vector2.zero, new Vector2(130f, 15f), Vector2.zero, Vector2.one);
         public static IGURect DefaultWindow => new IGURect(Vector2.zero, new Vector2(230f, 350f), Vector2.zero, Vector2.one);
         public static IGURect DefaultTextArea => new IGURect(Vector2.zero, new Vector2(250f, 250f), Vector2.zero, Vector2.one);
         public static IGURect DefaultSelectionGrid => new IGURect(Vector2.zero, new Vector2(60f, 25f), Vector2.zero, Vector2.one);

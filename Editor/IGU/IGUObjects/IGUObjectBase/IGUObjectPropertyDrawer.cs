@@ -4,50 +4,38 @@ using Cobilas.Unity.Editor.Utility;
 using Cobilas.Unity.Graphics.IGU.Elements;
 
 namespace Cobilas.Unity.Editor.Graphics.IGU {
-    public class IGUObjectPropertyDrawer : CPropertyDrawer {
-
-        private float myHeight;
+    public class IGUObjectPropertyDrawer {
+        private float height;
         private Rect curretPosition;
-        private bool isInitPosition;
 
-        public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
-            => base.OnGUI(position, property, label);
+        protected float BlankSpace => CPropertyDrawer.BlankSpace;
+        protected float SingleLineHeight => CPropertyDrawer.SingleLineHeight;
+        protected float SingleRowHeightWithBlankSpace => CPropertyDrawer.SingleRowHeightWithBlankSpace;
 
-        public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
-            => base.GetPropertyHeight(property, label);
+        public void OnGUI(Rect position, SerializedObject serialized)
+            => IOnGUI(curretPosition = position, serialized);
 
-        protected void InitPosition(Rect position) {
-            if (isInitPosition) throw new UnityException("InitPosition not finished!!!");
-            isInitPosition = true;
-            curretPosition = position;
-            myHeight = 0;
-        }
+        public float GetPropertyHeight(SerializedObject serialized)
+            => IGetPropertyHeight(serialized);
+
+        protected virtual void IOnGUI(Rect position, SerializedObject serialized) { }
+
+        protected virtual float IGetPropertyHeight(SerializedObject serialized) 
+            => CPropertyDrawer.SingleRowHeightWithBlankSpace;
 
         protected Rect GetRect() => curretPosition;
 
-        protected virtual Rect Spacing() {
-            AddHeight(BlankSpace);
-            return curretPosition = MoveDown(curretPosition, BlankSpace);
-        }
+        protected void Resize(Vector2 size) 
+            => curretPosition.size = size;
 
-        protected virtual Rect MoveDown() {
-            AddHeight(SingleRowHeightWithBlankSpace);
-            return curretPosition = MoveDownWithBlankSpace(curretPosition);
-        }
+        protected virtual Rect Spacing()
+            => curretPosition = MoveDown(curretPosition, CPropertyDrawer.BlankSpace);
 
-        protected virtual Rect MoveDown(float height) {
-            AddHeight(height);
-            return curretPosition = MoveDown(curretPosition, height);
-        }
+        protected virtual Rect MoveDown()
+            => curretPosition = MoveDown(curretPosition, CPropertyDrawer.SingleRowHeightWithBlankSpace);
 
-        protected void AddHeight(float height) => myHeight += height;
-
-        protected void FinishPosition() {
-            if (!isInitPosition) throw new UnityException("InitPosition not started!!!");
-            isInitPosition = false;
-        }
-
-        protected float GetHeight() => myHeight;
+        protected virtual Rect MoveDown(float height)
+            => curretPosition = MoveDown(curretPosition, height);
 
         protected virtual GUIContent GetGUIContent(string text)
             => IGUTextObject.GetGUIContentTemp(text);
@@ -61,6 +49,20 @@ namespace Cobilas.Unity.Editor.Graphics.IGU {
         protected virtual void DrawBackgroundProperty(Rect position, float height) {
             position.height = height;
             GUI.Box(EditorGUI.IndentedRect(position), GetGUIContent(""), EditorStyles.helpBox);
+        }
+
+        protected void AddHeight(float height) 
+            => this.height += height;
+
+        protected float GetHeight()
+            => height;
+
+        protected Rect MoveDown(Rect rect)
+            => MoveDown(rect, SingleLineHeight);
+
+        protected Rect MoveDown(Rect rect, float height) {
+            rect.y += height;
+            return rect;
         }
     }
 }

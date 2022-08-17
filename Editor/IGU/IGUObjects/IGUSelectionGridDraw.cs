@@ -11,11 +11,24 @@ namespace Cobilas.Unity.Editor.Graphics.IGU {
     public class IGUSelectionGridDraw : IGUObjectDraw {
         private Dictionary<int, int> SelectIndex = new Dictionary<int, int>();
 
-        public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
-            => base.OnGUI(position, property, label);
+        protected override void IOnGUI(Rect position, SerializedObject serialized)
+            => base.IOnGUI(position, serialized);
 
-        public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
-            => base.GetPropertyHeight(property, label);
+        protected override float IGetPropertyHeight(SerializedObject serialized) {
+            IGUSelectionGrid box = serialized.targetObject as IGUSelectionGrid;
+            IGUSelectionGridToggle[] boxBTs = box.SelectionGridToggles;
+
+            ReorderableList reorderable = new ReorderableList(
+                new List<IGUSelectionGridToggle>(boxBTs), boxBTs.GetType().GetElementType(),
+                false, true, true, true
+                );
+
+            reorderable.elementHeight = (SingleLineHeight * 3f) + BlankSpace;
+
+            return base.IGetPropertyHeight(serialized) + (SingleRowHeightWithBlankSpace * 3f) +
+                (EditorGUI.GetPropertyHeight(SerializedPropertyType.Vector2, GetGUIContent("Spacing")) + BlankSpace) +
+                EditorGUI.GetPropertyHeight(serialized.FindProperty("onSelectedIndex")) + reorderable.GetHeight();
+        }
 
         protected override void DrawBackgroundProperty(Rect position, float height)
             => base.DrawBackgroundProperty(position, height);

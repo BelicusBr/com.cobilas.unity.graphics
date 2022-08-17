@@ -5,11 +5,11 @@ using Cobilas.Unity.Graphics.IGU.Elements;
 namespace Cobilas.Unity.Editor.Graphics.IGU {
     [IGUCustomDrawer(typeof(IGUButton))]
     public class IGUButtonDraw : IGUTextObjectDraw {
-        public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
-            => base.OnGUI(position, property, label);
+        protected override void IOnGUI(Rect position, SerializedObject serialized)
+            => base.IOnGUI(position, serialized);
 
-        public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
-            => base.GetPropertyHeight(property, label);
+        protected override float IGetPropertyHeight(SerializedObject serialized)
+            => base.IGetPropertyHeight(serialized) + EditorGUI.GetPropertyHeight(serialized.FindProperty("onClick"));
 
         protected override GUIContent GetGUIContent(string text)
             => base.GetGUIContent(text);

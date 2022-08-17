@@ -6,11 +6,16 @@ using Cobilas.Unity.Graphics.IGU.Elements;
 namespace Cobilas.Unity.Editor.Graphics.IGU {
     [IGUCustomDrawer(typeof(IGUPasswordField))]
     public class IGUPasswordFieldDraw : IGUTextFieldObjectDraw {
-        public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
-            => base.OnGUI(position, property, label);
 
-        public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
-            => base.GetPropertyHeight(property, label);
+        protected override void IOnGUI(Rect position, SerializedObject serialized)
+            => base.IOnGUI(position, serialized);
+
+        protected override float IGetPropertyHeight(SerializedObject serialized)
+        {
+            return (base.IGetPropertyHeight(serialized) - SingleLineHeight) + 
+                (SingleRowHeightWithBlankSpace * 3f) +
+                EditorGUI.GetPropertyHeight(serialized.FindProperty("onClick"));
+        }
 
         protected override Rect MoveDown()
             => base.MoveDown();
@@ -57,8 +62,9 @@ namespace Cobilas.Unity.Editor.Graphics.IGU {
 
         protected void RunIsFocused(SerializedObject serialized) {
             SerializedProperty isFocused = serialized.FindProperty("isFocused");
-            using (GetDisabledScope(true))
+            EditorGUI.BeginDisabledGroup(true);
                 EditorGUI.PropertyField(GetRect(), isFocused, GetGUIContent("Is focused"));
+            EditorGUI.EndDisabledGroup();
             _ = MoveDown();
         }
 
@@ -67,6 +73,9 @@ namespace Cobilas.Unity.Editor.Graphics.IGU {
             EditorGUI.PropertyField(GetRect(), isTextArea, GetGUIContent("Mask char"));
             _ = MoveDown();
         }
+
+        protected override float GetHeightIGUContent(SerializedObject serialized)
+            => IGUPropertyDrawer.GetPropertyFieldDrawer($"#TF{nameof(IGUContent)}").GetPropertyHeight(serialized.FindProperty("content"), null);
 
         protected override void RunIGUContent(SerializedObject serialized) {
             SerializedProperty content = serialized.FindProperty("content");

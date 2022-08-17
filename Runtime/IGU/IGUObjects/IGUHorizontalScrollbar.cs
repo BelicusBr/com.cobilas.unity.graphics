@@ -39,7 +39,6 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
         public static IGUHorizontalScrollbar CreateIGUInstance(string name, float value, float scrollbarThumbSize, MaxMinSlider maxMin) {
             IGUHorizontalScrollbar horizontalScrollbar = Internal_CreateIGUInstance<IGUHorizontalScrollbar>(name, value, maxMin);
             horizontalScrollbar.myConfg = IGUConfig.Default;
-            horizontalScrollbar.myRect = IGURect.DefaultTextArea;
             horizontalScrollbar.myColor = IGUColor.DefaultBoxColor;
             horizontalScrollbar.onModifiedScrollbar = new IGUOnSliderValueEvent();
             horizontalScrollbar.onModifiedScrollbarInt = new IGUOnSliderIntValueEvent();

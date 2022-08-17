@@ -6,11 +6,14 @@ namespace Cobilas.Unity.Editor.Graphics.IGU {
     [IGUCustomDrawer(typeof(IGUHorizontalScrollbar))]
     public class IGUHorizontalScrollbarDraw : IGUSliderObjectDraw {
 
-        public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
-            => base.OnGUI(position, property, label);
+        protected override void IOnGUI(Rect position, SerializedObject serialized)
+            => base.IOnGUI(position, serialized);
 
-        public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
-            => base.GetPropertyHeight(property, label);
+        protected override float IGetPropertyHeight(SerializedObject serialized) {
+            return base.IGetPropertyHeight(serialized) + SingleRowHeightWithBlankSpace +
+                EditorGUI.GetPropertyHeight(serialized.FindProperty("onModifiedScrollbar")) +
+                EditorGUI.GetPropertyHeight(serialized.FindProperty("onModifiedScrollbarInt"));
+        }
 
         protected override void DrawBackgroundProperty(Rect position, float height)
             => base.DrawBackgroundProperty(position, height);

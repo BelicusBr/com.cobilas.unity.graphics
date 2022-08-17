@@ -40,7 +40,6 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
             IGUVerticalSlider verticalSlider = Internal_CreateIGUInstance<IGUVerticalSlider>(name, value, maxMin);
             verticalSlider.maxMinSlider = maxMin;
             verticalSlider.myConfg = IGUConfig.Default;
-            verticalSlider.myRect = IGURect.DefaultTextArea;
             verticalSlider.myColor = IGUColor.DefaultBoxColor;
             verticalSlider.onModifiedSlider = new IGUOnSliderValueEvent();
             verticalSlider.onModifiedSliderInt = new IGUOnSliderIntValueEvent();

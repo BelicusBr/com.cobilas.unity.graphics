@@ -11,11 +11,24 @@ namespace Cobilas.Unity.Editor.Graphics.IGU {
     public class IGUComboBoxDraw : IGUObjectDraw {
         private Dictionary<int, int> SelectIndex = new Dictionary<int, int>();
 
-        public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
-            => base.OnGUI(position, property, label);
+        protected override void IOnGUI(Rect position, SerializedObject serialized)
+            => base.IOnGUI(position, serialized);
 
-        public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
-            => base.GetPropertyHeight(property, label);
+        protected override float IGetPropertyHeight(SerializedObject serialized) {
+            IGUComboBox box = serialized.targetObject as IGUComboBox;
+            IGUComboBoxButton[] boxBTs = box.BoxButtons;
+            ReorderableList reorderable = new ReorderableList(
+                new List<IGUComboBoxButton>(boxBTs), boxBTs.GetType().GetElementType(),
+                false, true, true, true
+                );
+
+            reorderable.elementHeight = (SingleLineHeight * 3f) + BlankSpace;
+            return base.IGetPropertyHeight(serialized) + (SingleRowHeightWithBlankSpace * 6f) +
+                EditorGUI.GetPropertyHeight(serialized.FindProperty("onClick")) +
+                EditorGUI.GetPropertyHeight(serialized.FindProperty("onActivatedComboBox")) +
+                EditorGUI.GetPropertyHeight(serialized.FindProperty("onSelectedIndex")) +
+                reorderable.GetHeight();
+        }
 
         protected override void DrawBackgroundProperty(Rect position, float height)
             => base.DrawBackgroundProperty(position, height);
