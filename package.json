@@ -7,7 +7,7 @@
   "changelogUrl": "https://github.com/BelicusBr/com.cobilas.unity.graphics/blob/main/CHANGELOG.md",
   "unity": "2019.1",
   "unityRelease": "0b5",
-  "type": "library",
+  "type": "cb-graphics",
   "author": {
     "name": "Cobilas CTB"
   },
@@ -17,13 +17,5 @@
   },
   "publishConfig": {
     "registry":"https://npm.pkg.github.com/@BelicusBr"
-  },
-  "relatedPackages": {
-    "com.cobilas.unity.graphics": "1.0.5",
-	"com.cobilas.unity.graphics": "1.0.4",
-	"com.cobilas.unity.graphics": "1.0.3",
-	"com.cobilas.unity.graphics": "1.0.2",
-	"com.cobilas.unity.graphics": "1.0.1",
-	"com.cobilas.unity.graphics": "1.0.0"
   }
 }
