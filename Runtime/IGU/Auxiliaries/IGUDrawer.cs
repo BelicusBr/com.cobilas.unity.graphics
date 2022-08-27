@@ -19,7 +19,9 @@ namespace Cobilas.Unity.Graphics.IGU {
 
 #endif
 
+        private static Event iGUEvent;
         private static IGUDrawer drawer;
+        public static Event IGUEvent => iGUEvent;
         public static Vector2Int BaseResolution => new Vector2Int(1024, 768);
         public static Vector2Int CurrentResolution => new Vector2Int(Screen.width, Screen.height);
         public static Vector2 ScaleFactor => ((Vector2)CurrentResolution).Division(BaseResolution);
@@ -30,6 +32,7 @@ namespace Cobilas.Unity.Graphics.IGU {
         protected override void Awake() {
             drawer = this;
             mouses = new IGUMouseInput[3];
+            iGUEvent = new Event();
         }
 
         private void LateUpdate() {
@@ -51,15 +54,15 @@ namespace Cobilas.Unity.Graphics.IGU {
         }
 
         protected override void OnGUI() {
-            Event current = Event.current;
-            switch (current.type) {
+            Event.PopEvent(iGUEvent);
+            switch (iGUEvent.type) {
                 case EventType.MouseDown:
-                    if (current.button < 3)
-                        mouses[current.button] = IGUMouseInput.MouseDown;
+                    if (iGUEvent.button < 3)
+                        mouses[iGUEvent.button] = IGUMouseInput.MouseDown;
                     break;
                 case EventType.MouseUp:
-                    if (current.button < 3)
-                        mouses[current.button] = IGUMouseInput.MouseUp;
+                    if (iGUEvent.button < 3)
+                        mouses[iGUEvent.button] = IGUMouseInput.MouseUp;
                     break;
             }
             toolTip.Close();
@@ -114,6 +117,7 @@ namespace Cobilas.Unity.Graphics.IGU {
 
         void ISerializationCallbackReceiver.OnAfterDeserialize() {
             drawer = this;
+            iGUEvent = new Event();
             for (int I = 0; I < ArrayManipulation.ArrayLength(containers); I++)
                 onIGU += (containers[I] as IIGUContainer).OnIGU;
         }

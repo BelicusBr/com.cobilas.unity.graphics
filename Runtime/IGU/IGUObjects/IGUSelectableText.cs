@@ -24,7 +24,7 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
             Rect rectTemp = new Rect(GetPosition(), myRect.Size);
             selectableTextStyle = GetDefaultValue(selectableTextStyle, GUI.skin.textArea);
 
-            Event current = Event.current;
+            Event current = IGUDrawer.IGUEvent;
             GUISettings oldSettings = GUI.skin.settings;
             SetGUISettings(settings);
 

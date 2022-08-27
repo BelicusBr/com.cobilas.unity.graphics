@@ -30,7 +30,7 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
             int ID = GUIUtility.GetControlID(FocusType.Passive);
 
             Rect rectTemp2 = GUI.Window(ID, rectTemp, internalIndowFunction, mycontent, windowStyle);
-            Event current = Event.current;
+            Event current = IGUDrawer.IGUEvent;
 
             if (rectTemp != rectTemp2) {
                 if (IGUDrawer.Drawer.GetMouseButton(myConfg.MouseType)) {

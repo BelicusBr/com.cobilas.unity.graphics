@@ -63,7 +63,7 @@ namespace Cobilas.Unity.Packages.com.cobilas.unity.graphics.Test.Runtime
         }
 
         private void OnGUI() {
-            //Event current = Event.current;
+            //Event current = IGUDrawer.IGUEvent;
             //switch (current.type) {
             //    case EventType.KeyDown:
             //        Debug.Log("D:" + current.keyCode);

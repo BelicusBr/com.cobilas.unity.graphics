@@ -88,7 +88,7 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
             rectTemp.width = myRect.Width;
             rectTemp.height = scrollViewHeight + myRect.Height;
 
-            Event current = Event.current;
+            Event current = IGUDrawer.IGUEvent;
 
             comboBoxScrollView.MyRect = comboBoxScrollView.MyRect.SetPosition(0, myRect.Height);
             comboBoxScrollView.MyRect = comboBoxScrollView.MyRect.SetSize(myRect.Width, newScrollViewHeight);

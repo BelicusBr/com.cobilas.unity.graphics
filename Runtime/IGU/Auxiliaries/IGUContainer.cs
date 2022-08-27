@@ -121,19 +121,13 @@ namespace Cobilas.Unity.Graphics.IGU {
             return temp;
         }
 
-        public static IGUContainer CreateGenericIGUContainer() {
-            IGUContainer temp = GetIGUContainer("Generic container");
-            if (temp == null)
-                temp = CreateIGUContainer("Generic container");
-            return temp;
-        }
+        public static IGUContainer CreateGenericIGUContainer()
+            => GetOrCreateIGUContainer("Generic container");
 
         public static IGUContainer CreatePermanentGenericIGUContainer() {
-            IGUContainer temp = GetIGUContainer("Permanent generic container");
-            if (temp == null) {
-                temp = CreateIGUContainer("Permanent generic container");
+            IGUContainer temp = GetOrCreateIGUContainer("Permanent generic container");
+            if (temp == null)
                 DontDestroyOnLoad(temp.gameObject);
-            }
             return temp;
         }
 
@@ -143,6 +137,11 @@ namespace Cobilas.Unity.Graphics.IGU {
                 if (containers[I].name == name)
                     return containers[I];
             return (IGUContainer)null;
+        }
+
+        public static IGUContainer GetOrCreateIGUContainer(string name) {
+            IGUContainer res = GetIGUContainer(name);
+            return res == (IGUContainer)null ? CreateIGUContainer(name) : res;
         }
 
         public static IGUContainer[] GetAllIGUContainers() => FindObjectsOfType<IGUContainer>();

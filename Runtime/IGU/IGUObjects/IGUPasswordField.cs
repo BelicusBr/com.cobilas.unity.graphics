@@ -35,7 +35,7 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
             Text = GUI.PasswordField(rectTemp, GetGUIContent("").text, maskChar, maxLength, passwordFieldStyle);
 
             SetGUISettings(oldSettings);
-            Event current = Event.current;
+            Event current = IGUDrawer.IGUEvent;
 
             UnfocusControl(current);
 

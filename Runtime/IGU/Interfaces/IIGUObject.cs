@@ -6,6 +6,8 @@ namespace Cobilas.Unity.Graphics.IGU.Interfaces {
 
         int GetInstanceID();
         void InternalOnIGU();
+        void InternalPreOnIGU();
+        void InternalPostOnIGU();
         void AlteredDepth(List<IIGUObject> changed, int depth);
     }
 }

@@ -18,7 +18,7 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
 
             buttonStyle = GetDefaultValue(buttonStyle, GUI.skin.button);
             Rect rectTemp = new Rect(GetPosition(), myRect.Size);
-            Event current = Event.current;
+            Event current = IGUDrawer.IGUEvent;
 
             bool restemp = GUI.RepeatButton(rectTemp, GetGUIContent(DefaultContentIGURepeatButton), buttonStyle);
 

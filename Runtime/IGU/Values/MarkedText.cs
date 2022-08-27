@@ -45,6 +45,9 @@ namespace Cobilas.Unity.Graphics.IGU {
             else {
                 builder.AppendFormat("<color=#{0}>", ColorUtility.ToHtmlStringRGBA(textColor));
                 switch (fontStyle) {
+                    case FontStyle.Normal:
+                        builder.Append(text);
+                        break;
                     case FontStyle.Bold:
                         builder.AppendFormat("<b>{0}</b>", text);
                         break;

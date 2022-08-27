@@ -41,7 +41,7 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
             else Text = GUI.TextField(rectTemp, GetGUIContent("").text, maxLength, textFieldStyle);
             
             SetGUISettings(oldSettings);
-            Event current = Event.current;
+            Event current = IGUDrawer.IGUEvent;
 
             UnfocusControl(current);
 

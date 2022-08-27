@@ -29,7 +29,7 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
 
             checkBoxStyle = GetDefaultValue(checkBoxStyle, GUI.skin.toggle);
             Rect rectTemp = new Rect(GetPosition(), myRect.Size);
-            Event current = Event.current;
+            Event current = IGUDrawer.IGUEvent;
             bool checkedtemp = GUI.Toggle(rectTemp, _checked, GetGUIContent(DefaultContantIGUCheckBox), checkBoxStyle);
 
             if (checkedtemp) {

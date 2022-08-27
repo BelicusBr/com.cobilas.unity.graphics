@@ -42,7 +42,7 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
         public virtual void OnIGU() { }
 
         public IGUContainer ApplyToContainer(string name) {
-            IGUContainer res = IGUContainer.CreateIGUContainer(name);
+            IGUContainer res = IGUContainer.GetOrCreateIGUContainer(name);
             res.Add(this);
             return res;
         }
@@ -65,7 +65,6 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
         }
 
         void IIGUObject.InternalOnIGU() {
-            Matrix4x4 oldMatrix = GUI.matrix;
             GUI.SetNextControlName(name);
 
             myRect.SetScaleFactor(IGUDrawer.ScaleFactor);
@@ -89,16 +88,28 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
             if (myRect.Rotation < -360f)
                 myRect.SetRotation(0f);
 
+            (this as IIGUObject).InternalPreOnIGU();
+            Matrix4x4 oldMatrix = GUI.matrix;
+
             GUIUtility.RotateAroundPivot(myRect.Rotation, GetPosition());
             GUIUtility.ScaleAroundPivot(myRect.ScaleFactor, GetPosition());
             OnIGU();
             GUI.matrix = oldMatrix;
+            (this as IIGUObject).InternalPostOnIGU();
         }
 
         void IIGUObject.AlteredDepth(List<IIGUObject> changed, int depth) {
             if (myConfg.Depth != depth)
                 changed.Add(this);
         }
+
+        void IIGUObject.InternalPreOnIGU() => PreOnIGU();
+
+        void IIGUObject.InternalPostOnIGU() => PostOnIGU();
+
+        protected virtual void PreOnIGU() { }
+
+        protected virtual void PostOnIGU() { }
 
         protected Vector2 GetPosition()
             => parent == null ? MyRect.ModifiedPosition : myRect.ModifiedPosition + parent.myRect.ModifiedPosition;

@@ -1,4 +1,20 @@
 # Changelog
+## [1.0.6] 27/08/2022
+### (Fix)MarkedText.cs
+No metódo `string:MarkedText.ToString();` existia o problema em que marcar o MarkedText<br/>
+como `FontStyle.Normal`, o texto não aparecia.
+### (Fix)IGURect.cs
+Na propriedade `Vector2:IGURect.ModifiedPosition` se utiliza da propriedade `Vector2:IGURect.ModifiedSize`<br/>
+para realizar o calculo em vez da propriedade `Vector2:IGURect.Size` como anteriormente.
+### (Add)IGUContainer.cs
+O metódo
+```c#
+	public static IGUContainer GetOrCreateIGUContainer(string name);
+```
+cria um novo IGUContainer ou pega um IGUContainer já existente.
+### (Change)IGUContainer.cs
+Agora os metódos `IGUContainer:IGUContainer.CreateGenericIGUContainer();` é `IGUContainer:IGUContainer.CreatePermanentGenericIGUContainer();`<br/>
+utilizão o metódo `IGUContainer:IGUContainer.GetOrCreateIGUContainer(string)`.
 ## [1.0.5] 13/08/2022
 - Change Runtime\IGU\IGUObjects\IGUObjectBase\IGUObject.cs
 ## [1.0.5] 12/08/2022

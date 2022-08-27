@@ -33,7 +33,7 @@ namespace Cobilas.Unity.Graphics.IGU {
         public Vector2 ScaleFactor => new Vector2(scaleFactorWidth, scaleFactorHeight);
 
         public Vector2 ModifiedSize => Size.Multiplication(ScaleFactor);
-        public Vector2 ModifiedPosition => Position.Multiplication(ScaleFactor) - Size.Multiplication(Pivot);
+        public Vector2 ModifiedPosition => Position.Multiplication(ScaleFactor) - ModifiedSize.Multiplication(Pivot);
 
         public float Up => y;
         public float Donw => y + height;
