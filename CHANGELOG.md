@@ -15,6 +15,10 @@ cria um novo IGUContainer ou pega um IGUContainer já existente.
 ### (Change)IGUContainer.cs
 Agora os metódos `IGUContainer:IGUContainer.CreateGenericIGUContainer();` é `IGUContainer:IGUContainer.CreatePermanentGenericIGUContainer();`<br/>
 utilizão o metódo `IGUContainer:IGUContainer.GetOrCreateIGUContainer(string)`.
+### (Fix)IGUDrawer.cs
+No metódo `void:IGUDrawer.OnGUI()` se usava o `Event.current` para coletar o estado dos gatilhos do<br/>
+mouse, mais ocorria o problema que quando o metódo `Event.Use()` isso interferia na coletar o estado dos gatilhos do<br/>
+mouse o que foi resolvido usando o metódo `bool:Event.PopEvent(Event)`.
 ## [1.0.5] 13/08/2022
 - Change Runtime\IGU\IGUObjects\IGUObjectBase\IGUObject.cs
 ## [1.0.5] 12/08/2022
