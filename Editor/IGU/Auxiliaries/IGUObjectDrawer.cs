@@ -15,11 +15,9 @@ namespace Cobilas.Unity.Editor.Graphics.IGU {
                 EditorGUI.PropertyField(position, property);
             else {
                 SerializedObject serialized = GetSerializedObject(property.objectReferenceValue);
-                property.serializedObject.Update();
                 serialized.Update();
                 IGUPropertyDrawer.GetPropertyDrawer(property.objectReferenceValue.GetType()).OnGUI(position, serialized);
                 serialized.ApplyModifiedProperties();
-                property.serializedObject.ApplyModifiedProperties();
             }
             EditorGUI.EndProperty();
         }

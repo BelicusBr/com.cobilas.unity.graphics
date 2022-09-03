@@ -1,4 +1,11 @@
 # Changelog
+## [1.0.7] 02/09/2022
+### (Fix)IGUDrawer.cs
+Agora o evento coletado e marcado como usado.
+### (Fix)IGUObjectDrawer.cs
+As instruções `property.serializedObject.Update();` e `property.serializedObject.ApplyModifiedProperties();`<br/>
+foram removidas por causar o congelamento dos valores já pre-definidos no inspetor depóis de mudado<br/>
+pro modo jogo.
 ## [1.0.6] 27/08/2022
 ### (Fix)MarkedText.cs
 No metódo `string:MarkedText.ToString();` existia o problema em que marcar o MarkedText<br/>

@@ -49,6 +49,7 @@ namespace Cobilas.Unity.Graphics.IGU {
                 yield return new WaitForEndOfFrame();
                 UseMouseDown();
                 ResetMouseInput();
+                iGUEvent.Use();
                 EventEndOfFrame?.Invoke();
             }
         }

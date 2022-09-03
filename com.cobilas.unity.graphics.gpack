@@ -1,9 +1,9 @@
 {
     "name": "com.cobilas.unity.graphics",
-    "version": "1.0.6",
+    "version": "1.0.7",
     "repository": "https://github.com/BelicusBr/com.cobilas.unity.graphics.git",
     "relatedPackages": [
-        "1.0.6"
+        "1.0.7"
     ],
     "gitDependencies": [
         {
