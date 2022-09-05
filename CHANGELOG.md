@@ -1,4 +1,6 @@
 # Changelog
+## [1.0.8] 04/09/2022
+- Fix : Runtime\IGU\Auxiliaries\IGUContainer.cs
 ## [1.0.7] 02/09/2022
 ### (Fix)IGUDrawer.cs
 Agora o evento coletado e marcado como usado.

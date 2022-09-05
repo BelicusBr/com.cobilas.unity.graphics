@@ -55,7 +55,7 @@ namespace Cobilas.Unity.Graphics.IGU {
         public void DestroyContainer() {
             wasDestroyed = true;
             IGUDrawer.Drawer.Remove(this);
-            Destroy();
+            this.DestroyMyGameObject();
         }
 
         private void OnDestroy() {
