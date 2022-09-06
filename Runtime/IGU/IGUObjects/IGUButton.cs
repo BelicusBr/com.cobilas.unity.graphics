@@ -25,8 +25,6 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
             buttonStyle = GetDefaultValue(buttonStyle, GUI.skin.button);
             Rect rectTemp = new Rect(GetPosition(), myRect.Size);
 
-            Event current = IGUDrawer.IGUEvent;
-
             if (GUI.Button(rectTemp, GetGUIContent(DefaultContentIGUButton), buttonStyle)) {
                 if (IGUDrawer.Drawer.GetMouseButtonUp(myConfg.MouseType)) {
                     onClick.Invoke();
@@ -35,7 +33,7 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
             }
 
             if (useTooltip)
-                if (rectTemp.Contains(current.mousePosition))
+                if (rectTemp.Contains(IGUDrawer.Drawer.GetMousePosition()))
                     DrawTooltip();
         }
 

@@ -41,9 +41,7 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
             else Text = GUI.TextField(rectTemp, GetGUIContent("").text, maxLength, textFieldStyle);
             
             SetGUISettings(oldSettings);
-            Event current = IGUDrawer.IGUEvent;
-
-            UnfocusControl(current);
+            Event current = Event.current;
 
             if (rectTemp.Contains(current.mousePosition)) {
                 if (current.clickCount > 0 && GUI.GetNameOfFocusedControl() == name) {

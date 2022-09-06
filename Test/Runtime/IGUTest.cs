@@ -59,6 +59,22 @@ namespace Cobilas.Unity.Packages.com.cobilas.unity.graphics.Test.Runtime
             slider15 = IGUHorizontalScrollbar.CreateIGUInstance("TDS_015");
             slider16 = IGUSelectableText.CreateIGUInstance("TDS_016");
 
+            slider1.ApplyToGenericContainer();
+            slider2.ApplyToGenericContainer();
+            slider3.ApplyToGenericContainer();
+            slider4.ApplyToGenericContainer();
+            slider5.ApplyToGenericContainer();
+            slider6.ApplyToGenericContainer();
+            slider7.ApplyToGenericContainer();
+            slider8.ApplyToGenericContainer();
+            slider9.ApplyToGenericContainer();
+            slider10.ApplyToGenericContainer();
+            slider11.ApplyToGenericContainer();
+            slider12.ApplyToGenericContainer();
+            slider13.ApplyToGenericContainer();
+            slider14.ApplyToGenericContainer();
+            slider15.ApplyToGenericContainer();
+            slider16.ApplyToGenericContainer();
             //IGUContainer.CreateGenericIGUContainer().Add(slider1);
         }
 

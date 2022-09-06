@@ -35,9 +35,7 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
             Text = GUI.PasswordField(rectTemp, GetGUIContent("").text, maskChar, maxLength, passwordFieldStyle);
 
             SetGUISettings(oldSettings);
-            Event current = IGUDrawer.IGUEvent;
-
-            UnfocusControl(current);
+            Event current = Event.current;
 
             if (rectTemp.Contains(current.mousePosition)) {
                 if (current.clickCount > 0 && GUI.GetNameOfFocusedControl() == name) {

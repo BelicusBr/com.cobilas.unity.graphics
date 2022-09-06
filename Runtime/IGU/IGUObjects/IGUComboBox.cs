@@ -88,8 +88,6 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
             rectTemp.width = myRect.Width;
             rectTemp.height = scrollViewHeight + myRect.Height;
 
-            Event current = IGUDrawer.IGUEvent;
-
             comboBoxScrollView.MyRect = comboBoxScrollView.MyRect.SetPosition(0, myRect.Height);
             comboBoxScrollView.MyRect = comboBoxScrollView.MyRect.SetSize(myRect.Width, newScrollViewHeight);
             comboBoxScrollView.MyColor = myColor;
@@ -97,7 +95,7 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
             comboBoxScrollView.ViewRect = rectView;
 
             comboBoxButton.OnIGU();
-            if (!rectTemp.Contains(current.mousePosition))
+            if (!rectTemp.Contains(IGUDrawer.Drawer.GetMousePosition()))
                 if (IGUDrawer.Drawer.GetMouseButtonUp(myConfg.MouseType))
                     activatedComboBox = false;
 

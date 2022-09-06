@@ -30,7 +30,6 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
             int ID = GUIUtility.GetControlID(FocusType.Passive);
 
             Rect rectTemp2 = GUI.Window(ID, rectTemp, internalIndowFunction, mycontent, windowStyle);
-            Event current = IGUDrawer.IGUEvent;
 
             if (rectTemp != rectTemp2) {
                 if (IGUDrawer.Drawer.GetMouseButton(myConfg.MouseType)) {
@@ -41,7 +40,7 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
             }
 
             if (useTooltip)
-                if (dragFlap.Contains(current.mousePosition))
+                if (dragFlap.Contains(IGUDrawer.Drawer.GetMousePosition()))
                     DrawTooltip();
         }
 

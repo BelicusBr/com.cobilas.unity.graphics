@@ -19,9 +19,7 @@ namespace Cobilas.Unity.Graphics.IGU {
 
 #endif
 
-        private static Event iGUEvent;
         private static IGUDrawer drawer;
-        public static Event IGUEvent => iGUEvent;
         public static Vector2Int BaseResolution => new Vector2Int(1024, 768);
         public static Vector2Int CurrentResolution => new Vector2Int(Screen.width, Screen.height);
         public static Vector2 ScaleFactor => ((Vector2)CurrentResolution).Division(BaseResolution);
@@ -32,7 +30,6 @@ namespace Cobilas.Unity.Graphics.IGU {
         protected override void Awake() {
             drawer = this;
             mouses = new IGUMouseInput[3];
-            iGUEvent = new Event();
         }
 
         private void LateUpdate() {
@@ -47,25 +44,31 @@ namespace Cobilas.Unity.Graphics.IGU {
         private IEnumerator EndOfFrame() {
             while (true) {
                 yield return new WaitForEndOfFrame();
-                UseMouseDown();
-                ResetMouseInput();
-                iGUEvent.Use();
                 EventEndOfFrame?.Invoke();
             }
         }
 
         protected override void OnGUI() {
-            Event.PopEvent(iGUEvent);
-            switch (iGUEvent.type) {
-                case EventType.MouseDown:
-                    if (iGUEvent.button < 3)
-                        mouses[iGUEvent.button] = IGUMouseInput.MouseDown;
-                    break;
-                case EventType.MouseUp:
-                    if (iGUEvent.button < 3)
-                        mouses[iGUEvent.button] = IGUMouseInput.MouseUp;
-                    break;
-            }
+
+            mouses[0] = mouses[0].SetValues(
+                Input.GetKeyDown(KeyCode.Mouse0),
+                Input.GetKey(KeyCode.Mouse0),
+                Input.GetKeyUp(KeyCode.Mouse0),
+                Event.current.mousePosition
+                );
+            mouses[1] = mouses[1].SetValues(
+                Input.GetKeyDown(KeyCode.Mouse1),
+                Input.GetKey(KeyCode.Mouse1),
+                Input.GetKeyUp(KeyCode.Mouse1),
+                Vector2.zero
+                );
+            mouses[2] = mouses[2].SetValues(
+                Input.GetKeyDown(KeyCode.Mouse2),
+                Input.GetKey(KeyCode.Mouse2),
+                Input.GetKeyUp(KeyCode.Mouse2),
+                Vector2.zero
+                );
+
             toolTip.Close();
             onIGU?.Invoke();
             toolTip.SetScaleFactor(ScaleFactor);
@@ -95,6 +98,8 @@ namespace Cobilas.Unity.Graphics.IGU {
             return mouses[(int)type].Up;
         }
 
+        public Vector2 GetMousePosition() => mouses[0].MousePosition;
+
         public bool Contains(IGUContainer container) {
             for (int I = 0; I < ArrayManipulation.ArrayLength(containers); I++)
                 if (containers[I] == container)
@@ -102,23 +107,11 @@ namespace Cobilas.Unity.Graphics.IGU {
             return false;
         }
 
-        private void UseMouseDown() {
-            if (mouses[0].Down) mouses[0] = IGUMouseInput.UseMouseDown;
-            if (mouses[1].Down) mouses[1] = IGUMouseInput.UseMouseDown;
-            if (mouses[2].Down) mouses[2] = IGUMouseInput.UseMouseDown;
-        }
-
-        private void ResetMouseInput() {
-            if (mouses[0].Up) mouses[0] = IGUMouseInput.MouseNone;
-            if (mouses[1].Up) mouses[1] = IGUMouseInput.MouseNone;
-            if (mouses[2].Up) mouses[2] = IGUMouseInput.MouseNone;
-        }
-
         void ISerializationCallbackReceiver.OnBeforeSerialize() { }
 
         void ISerializationCallbackReceiver.OnAfterDeserialize() {
             drawer = this;
-            iGUEvent = new Event();
+            onIGU = (Action)null;
             for (int I = 0; I < ArrayManipulation.ArrayLength(containers); I++)
                 onIGU += (containers[I] as IIGUContainer).OnIGU;
         }

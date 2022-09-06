@@ -24,13 +24,12 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
             Rect rectTemp = new Rect(GetPosition(), myRect.Size);
             selectableTextStyle = GetDefaultValue(selectableTextStyle, GUI.skin.textArea);
 
-            Event current = IGUDrawer.IGUEvent;
             GUISettings oldSettings = GUI.skin.settings;
             SetGUISettings(settings);
 
-            Text = ModifyText(GetGUIContent(""), current, rectTemp, selectableTextStyle).text;
+            Event current = Event.current;
 
-            UnfocusControl(current);
+            Text = ModifyText(GetGUIContent(string.Empty), current, rectTemp, selectableTextStyle).text;
 
             SetGUISettings(oldSettings);
 

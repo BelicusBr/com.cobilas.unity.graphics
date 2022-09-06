@@ -18,7 +18,6 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
 
             buttonStyle = GetDefaultValue(buttonStyle, GUI.skin.button);
             Rect rectTemp = new Rect(GetPosition(), myRect.Size);
-            Event current = IGUDrawer.IGUEvent;
 
             bool restemp = GUI.RepeatButton(rectTemp, GetGUIContent(DefaultContentIGURepeatButton), buttonStyle);
 
@@ -30,7 +29,7 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
             }
 
             if (useTooltip)
-                if (rectTemp.Contains(current.mousePosition))
+                if (rectTemp.Contains(IGUDrawer.Drawer.GetMousePosition()))
                     DrawTooltip();
         }
 

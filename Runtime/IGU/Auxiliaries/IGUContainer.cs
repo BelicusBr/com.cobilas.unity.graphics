@@ -106,6 +106,8 @@ namespace Cobilas.Unity.Graphics.IGU {
         void ISerializationCallbackReceiver.OnBeforeSerialize() { }
 
         void ISerializationCallbackReceiver.OnAfterDeserialize() {
+            onIGU = (Action)null;
+            alteredDepth = (Action<List<IIGUObject>>)null;
             for (int I = 0; I < ArrayManipulation.ArrayLength(deepActions); I++) {
                 onIGU += deepActions[I].OnIGU;
                 alteredDepth += deepActions[I].AlteredDepth;

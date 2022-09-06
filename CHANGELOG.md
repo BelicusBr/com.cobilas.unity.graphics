@@ -1,4 +1,13 @@
 # Changelog
+## [1.0.9] 06/09/2022
+### Fix
+A propriedade `IGUEvent` foi removida por casar sertos conflitos com os metódos da classe `GUI`.<br/><br/>
+
+Nas calsses `IGUDrawer` e `IGUConatiner` ocorria o problema com os eventos OnIGU que a cada deserialização<br/>
+os eventos OnIGU não eram limpos o que fazia com que os elementos IGU fossem duplicados.
+
+### Change
+Agora os gatilhos do mouse são detectados pela classe `Imput`.
 ## [1.0.8] 04/09/2022
 - Fix : Runtime\IGU\Auxiliaries\IGUContainer.cs
 ## [1.0.7] 02/09/2022

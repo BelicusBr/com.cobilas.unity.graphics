@@ -29,26 +29,25 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
 
             checkBoxStyle = GetDefaultValue(checkBoxStyle, GUI.skin.toggle);
             Rect rectTemp = new Rect(GetPosition(), myRect.Size);
-            Event current = IGUDrawer.IGUEvent;
             bool checkedtemp = GUI.Toggle(rectTemp, _checked, GetGUIContent(DefaultContantIGUCheckBox), checkBoxStyle);
 
             if (checkedtemp) {
                 if (oneClick)
-                    ModChecked(checkedtemp, false, current);
+                    ModChecked(checkedtemp, false);
             } else {
                 if (!oneClick)
-                    ModChecked(checkedtemp, true, current);
+                    ModChecked(checkedtemp, true);
             }
 
             if (_checked) checkBoxOn.Invoke();
             else checkBoxOff.Invoke();
 
             if (useTooltip)
-                if (rectTemp.Contains(current.mousePosition))
+                if (rectTemp.Contains(IGUDrawer.Drawer.GetMousePosition()))
                     DrawTooltip();
         }
 
-        private void ModChecked(bool modChecked, bool modOneClick, Event current) {
+        private void ModChecked(bool modChecked, bool modOneClick) {
             if (IGUDrawer.Drawer.GetMouseButton(myConfg.MouseType)) {
                 _checked = modChecked;
                 oneClick = modOneClick;
