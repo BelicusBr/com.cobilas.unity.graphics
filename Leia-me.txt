@@ -1,0 +1,2 @@
+não criar tag pro que ainda está em teste.
+Manter na versão 1.0.11

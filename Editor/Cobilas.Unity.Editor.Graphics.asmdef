@@ -4,7 +4,8 @@
         "Cobilas.Unity.Graphics",
         "Cobilas.Unity.Mono",
         "Cobilas.Unity.Utility",
-        "Cobilas.Unity.Editor.Utility"
+        "Cobilas.Unity.Editor.Utility",
+        "Cobilas.Core"
     ],
     "includePlatforms": [
         "Editor"
@@ -12,11 +13,7 @@
     "excludePlatforms": [],
     "allowUnsafeCode": false,
     "overrideReferences": true,
-    "precompiledReferences": [
-        "Cobilas.Collections.dll",
-        "CobilasCore.Extension.dll",
-        "CobilasCore.dll"
-    ],
+    "precompiledReferences": [],
     "autoReferenced": true,
     "defineConstraints": [
         "UNITY_EDITOR"

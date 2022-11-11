@@ -3,15 +3,14 @@
     "references": [
         "Cobilas.Unity.Mono",
         "Cobilas.Unity.Extensions",
-        "Cobilas.Unity.Management.Runtime"
+        "Cobilas.Unity.Management.Runtime",
+        "Cobilas.Core"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
     "overrideReferences": true,
-    "precompiledReferences": [
-        "Cobilas.Collections.dll"
-    ],
+    "precompiledReferences": [],
     "autoReferenced": true,
     "defineConstraints": [],
     "versionDefines": [],

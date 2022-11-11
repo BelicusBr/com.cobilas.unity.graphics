@@ -1,6 +1,6 @@
 {
   "name": "com.cobilas.unity.graphics",
-  "version": "1.0.9",
+  "version": "1.0.11",
   "displayName": "Cobilas Graphics",
   "description": "Pacote que adiciona e manipula elementos",
   "licensesUrl": "https://github.com/BelicusBr/com.cobilas.unity.graphics/blob/main/LICENSE.md",
@@ -16,6 +16,6 @@
     "type": "git"
   },
   "publishConfig": {
-    "registry":"https://npm.pkg.github.com/@BelicusBr"
+    "registry": "https://npm.pkg.github.com/@BelicusBr"
   }
 }
