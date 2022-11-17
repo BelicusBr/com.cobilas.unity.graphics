@@ -1,8 +1,8 @@
 ﻿using UnityEngine;
 using Cobilas.Unity.Mono;
 using Cobilas.Collections;
+using Cobilas.Unity.Management.Runtime;
 using Cobilas.Unity.Management.Container;
-using Cobilas.Unity.Management.RuntimeInitialize;
  
 namespace Cobilas.Unity.Graphics.Resolutions {
     using UEResolution = UnityEngine.Resolution;
@@ -72,7 +72,8 @@ namespace Cobilas.Unity.Graphics.Resolutions {
 
         void ISerializationCallbackReceiver.OnAfterDeserialize() => AfterDeserialize = true;
 
-        [CRIOLM_CallWhen(typeof(ContainerManager), CRIOLMType.AfterSceneLoad)]
+        //[CRIOLM_CallWhen(typeof(ContainerManager), CRIOLMType.AfterSceneLoad)]
+        [CallWhenStart(InitializePriority.Low, "#ContainerManager")]
         private static void Init() {
             cb_resolutions = FindObjectOfType<CobilasResolutions>();
             cb_resolutions.Internal_Refresh();
