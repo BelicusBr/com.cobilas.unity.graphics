@@ -20,9 +20,14 @@ namespace Cobilas.Unity.Graphics.IGU {
 #endif
 
         private static IGUDrawer drawer;
+        private static Vector2Int baseCurrentResolution = new Vector2Int(1024, 768);
+
         public static Vector2Int BaseResolution => new Vector2Int(1024, 768);
+        public static Vector2Int MobileBaseResolution_Portrait => new Vector2Int(480, 800);
+        public static Vector2Int MobileBaseResolution_Landscape => new Vector2Int(800, 480);
         public static Vector2Int CurrentResolution => new Vector2Int(Screen.width, Screen.height);
-        public static Vector2 ScaleFactor => ((Vector2)CurrentResolution).Division(BaseResolution);
+        public static Vector2 ScaleFactor => ((Vector2)CurrentResolution).Division(baseCurrentResolution);
+        public static Vector2Int BaseCurrentResolution { get => baseCurrentResolution; set => baseCurrentResolution = value; }
 
         public static IGUDrawer Drawer => drawer;
         public static event Action EventEndOfFrame = (Action)null;
@@ -49,7 +54,7 @@ namespace Cobilas.Unity.Graphics.IGU {
         }
 
         protected override void OnGUI() {
-#if PLATFORM_STANDALONE
+#if PLATFORM_STANDALONE || UNITY_EDITOR
             mouses[0] = mouses[0].SetValues(
                 Input.GetKeyDown(KeyCode.Mouse0),
                 Input.GetKey(KeyCode.Mouse0),
@@ -69,9 +74,9 @@ namespace Cobilas.Unity.Graphics.IGU {
                 Vector2.zero
                 );
 #else
-            mouses[0] = mouses[0].SetValues(
-                true, true, true, Event.current.mousePosition
-                );
+            mouses[0] = 
+                mouses[1] = 
+                mouses[2] = mouses[0].SetValues(true, true, true, Event.current.mousePosition);
 #endif
 
             toolTip.Close();
@@ -131,6 +136,14 @@ namespace Cobilas.Unity.Graphics.IGU {
             if (!Contains(container)) return;
             onIGU -= (container as IIGUContainer).OnIGU;
             ArrayManipulation.Remove(container, ref containers);
+        }
+
+        public static Vector2Int GetBaseResolutionPlatform(bool isPortrait = true) {
+#if PLATFORM_ANDROID
+            return isPortrait ? MobileBaseResolution_Portrait : MobileBaseResolution_Landscape;
+#else
+            return BaseResolution;
+#endif
         }
 
         private sealed class IGUToolTip {

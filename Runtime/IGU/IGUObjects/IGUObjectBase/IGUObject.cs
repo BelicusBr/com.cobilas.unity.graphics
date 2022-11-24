@@ -41,23 +41,19 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
 
         public virtual void OnIGU() { }
 
-        public IGUContainer ApplyToContainer(string name) {
-            IGUContainer res = IGUContainer.GetOrCreateIGUContainer(name);
-            res.Add(this);
-            return res;
+        public IGUContainer ApplyToContainer(IGUContainer container) {
+            container.Add(this);
+            return container;
         }
 
-        public IGUContainer ApplyToGenericContainer() {
-            IGUContainer res = IGUContainer.CreateGenericIGUContainer();
-            res.Add(this);
-            return res;
-        }
+        public IGUContainer ApplyToContainer(string name)
+            => ApplyToContainer(IGUContainer.GetOrCreateIGUContainer(name));
 
-        public IGUContainer ApplyToPermanentGenericContainer() {
-            IGUContainer res = IGUContainer.CreatePermanentGenericIGUContainer();
-            res.Add(this);
-            return res;
-        }
+        public IGUContainer ApplyToGenericContainer()
+            => ApplyToContainer(IGUContainer.CreateGenericIGUContainer());
+
+        public IGUContainer ApplyToPermanentGenericContainer()
+            => ApplyToContainer(IGUContainer.CreatePermanentGenericIGUContainer());
 
         public void RemoveFromContainer() {
             if (container != null)
