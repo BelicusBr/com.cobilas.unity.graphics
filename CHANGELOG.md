@@ -1,4 +1,7 @@
 # Changelog
+## [1.0.12] 09/01/2023
+### Change
+O corpo do método `public static Vector2Int GetBaseResolutionPlatform()` foi alterado.
 ## [1.0.9] 06/09/2022
 ### Fix
 A propriedade `IGUEvent` foi removida por casar sertos conflitos com os metódos da classe `GUI`.<br/><br/>
