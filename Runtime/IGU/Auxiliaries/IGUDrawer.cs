@@ -23,6 +23,7 @@ namespace Cobilas.Unity.Graphics.IGU {
         private static Vector2Int baseCurrentResolution = new Vector2Int(1024, 768);
 
         public static Vector2Int BaseResolution => new Vector2Int(1024, 768);
+        public static Vector2Int BaseResolutionPlatform => GetBaseResolutionPlatform();
         public static Vector2Int MobileBaseResolution_Portrait => new Vector2Int(480, 800);
         public static Vector2Int MobileBaseResolution_Landscape => new Vector2Int(800, 480);
         public static Vector2Int CurrentResolution => new Vector2Int(Screen.width, Screen.height);
@@ -138,9 +139,18 @@ namespace Cobilas.Unity.Graphics.IGU {
             ArrayManipulation.Remove(container, ref containers);
         }
 
-        public static Vector2Int GetBaseResolutionPlatform(bool isPortrait = true) {
+        public static Vector2Int GetBaseResolutionPlatform() {
 #if PLATFORM_ANDROID
-            return isPortrait ? MobileBaseResolution_Portrait : MobileBaseResolution_Landscape;
+            switch (Screen.orientation) {
+                case ScreenOrientation.Portrait:
+                case ScreenOrientation.PortraitUpsideDown:
+                    return MobileBaseResolution_Portrait;
+                case ScreenOrientation.LandscapeLeft:
+                case ScreenOrientation.LandscapeRight:
+                    return MobileBaseResolution_Landscape;
+                //case ScreenOrientation.AutoRotation:
+                //    break;
+            }
 #else
             return BaseResolution;
 #endif
