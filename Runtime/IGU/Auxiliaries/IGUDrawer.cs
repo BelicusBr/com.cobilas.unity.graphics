@@ -10,13 +10,14 @@ namespace Cobilas.Unity.Graphics.IGU {
     public class IGUDrawer : IGUBehaviour, ISerializationCallbackReceiver {
         private Action onIGU;
         private Coroutine EndOfFrameCoroutine = null;
-        private IGUToolTip toolTip = new IGUToolTip();
+        private readonly IGUToolTip toolTip = new IGUToolTip();
         [SerializeField] private IGUMouseInput[] mouses;
         [SerializeField] private IGUContainer[] containers;
 #if UNITY_EDITOR
+#pragma warning disable IDE0052
         [SerializeField, HideInInspector] private Vector2 editor_ScaleFactor;
         [SerializeField, HideInInspector] private Vector2Int editor_CurrentResolution;
-
+#pragma warning restore IDE0052
 #endif
 
         private static IGUDrawer drawer;
@@ -158,12 +159,12 @@ namespace Cobilas.Unity.Graphics.IGU {
 
         private sealed class IGUToolTip {
             private string tooltip;
-            private GUIContent gUIContent;
             private bool close;
             private Vector2 position;
             private Vector2 scaleFactor;
             private GUIStyle style;
             private IGUColor color;
+            private readonly GUIContent gUIContent;
 
             public IGUToolTip() {
                 color = IGUColor.DefaultBoxColor;
@@ -188,7 +189,7 @@ namespace Cobilas.Unity.Graphics.IGU {
             public void Draw() {
                 if (close) return;
                 gUIContent.text = tooltip;
-                style = style == null ? GUI.skin.box : style;
+                style = style ?? GUI.skin.box;
                 Vector2 size = style.CalcSize(gUIContent);
                 Matrix4x4 oldMatrix = GUI.matrix;
                 GUI.color = color.MyColor;

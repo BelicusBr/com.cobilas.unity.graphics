@@ -68,8 +68,8 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
         }
 
         private void InitEvents() {
-            buttonLeft.OnClick.AddListener(() => { value = value - additionValue; });
-            buttonRight.OnClick.AddListener(() => { value = value + additionValue; });
+            buttonLeft.OnClick.AddListener(() => value -= additionValue);
+            buttonRight.OnClick.AddListener(() => value += additionValue);
         }
 
         void ISerializationCallbackReceiver.OnBeforeSerialize() { }

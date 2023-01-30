@@ -26,7 +26,7 @@ namespace Cobilas.Unity.Editor.Graphics.IGU {
                 EditorGUI.indentLevel++;
                 color = EditorGUI.ColorField(position = MoveDownWithBlankSpace(position), IGUTextObject.GetGUIContentTemp("color"), color);
                 textColor = EditorGUI.ColorField(position = MoveDownWithBlankSpace(position), IGUTextObject.GetGUIContentTemp("text color"), textColor);
-                backgroundColor = EditorGUI.ColorField(position = MoveDownWithBlankSpace(position), IGUTextObject.GetGUIContentTemp("background color"), backgroundColor);
+                backgroundColor = EditorGUI.ColorField(MoveDownWithBlankSpace(position), IGUTextObject.GetGUIContentTemp("background color"), backgroundColor);
                 EditorGUI.indentLevel--;
                 if (EditorGUI.EndChangeCheck()) {
                     prop_color.colorValue = color;

@@ -8,7 +8,6 @@ namespace Cobilas.Unity.Editor.Graphics.IGU {
     [CustomPropertyDrawer(typeof(IGUTextSettings))]
     [IGUCustomFieldDrawer("#IGUTextSettings")]
     public class IGUTextSettingsDraw : CPropertyDrawer {
-        private IGUTextSettings settings = new IGUTextSettings();
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label) {
             //foldout
             position.height = SingleLineHeight;
@@ -33,7 +32,7 @@ namespace Cobilas.Unity.Editor.Graphics.IGU {
                 selectionColor = EditorGUI.ColorField(position = MoveDownWithBlankSpace(position), IGUTextObject.GetGUIContentTemp("selection color"), selectionColor);
                 cursorFlashSpeed = EditorGUI.FloatField(position = MoveDownWithBlankSpace(position), IGUTextObject.GetGUIContentTemp("cursor flash speed"), cursorFlashSpeed);
                 doubleClickSelectsWord = EditorGUI.Toggle(position = MoveDownWithBlankSpace(position), IGUTextObject.GetGUIContentTemp("double click selects word"), doubleClickSelectsWord);
-                tripleClickSelectsLine = EditorGUI.Toggle(position = MoveDownWithBlankSpace(position), IGUTextObject.GetGUIContentTemp("triple click selects line"), tripleClickSelectsLine);
+                tripleClickSelectsLine = EditorGUI.Toggle(MoveDownWithBlankSpace(position), IGUTextObject.GetGUIContentTemp("triple click selects line"), tripleClickSelectsLine);
                 EditorGUI.indentLevel--;
                 if (EditorGUI.EndChangeCheck()) {
                     prop_cursorColor.colorValue = cursorColor;

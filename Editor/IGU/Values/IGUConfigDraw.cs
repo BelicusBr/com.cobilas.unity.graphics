@@ -29,7 +29,7 @@ namespace Cobilas.Unity.Editor.Graphics.IGU {
                 isVisible = EditorGUI.Toggle(position = MoveDownWithBlankSpace(position), IGUTextObject.GetGUIContentTemp("is visible"), isVisible);
                 isEnabled = EditorGUI.Toggle(position = MoveDownWithBlankSpace(position), IGUTextObject.GetGUIContentTemp("is enabled"), isEnabled);
                 depth = EditorGUI.IntField(position = MoveDownWithBlankSpace(position), IGUTextObject.GetGUIContentTemp("depth"), depth);
-                MouseButtonType buttonType = (MouseButtonType)EditorGUI.EnumPopup(position = MoveDownWithBlankSpace(position), IGUTextObject.GetGUIContentTemp("mouse type"), (MouseButtonType)mouseType);
+                MouseButtonType buttonType = (MouseButtonType)EditorGUI.EnumPopup(MoveDownWithBlankSpace(position), IGUTextObject.GetGUIContentTemp("mouse type"), (MouseButtonType)mouseType);
                 EditorGUI.indentLevel--;
                 if (EditorGUI.EndChangeCheck()) {
                     prop_depth.intValue = depth;

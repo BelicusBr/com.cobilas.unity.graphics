@@ -22,7 +22,7 @@ namespace Cobilas.Unity.Editor.Graphics.IGU {
                 EditorGUI.BeginChangeCheck();
                 EditorGUI.indentLevel++;
                 min = EditorGUI.IntField(position = MoveDownWithBlankSpace(position), IGUTextObject.GetGUIContentTemp("min"), min);
-                max = EditorGUI.IntField(position = MoveDownWithBlankSpace(position), IGUTextObject.GetGUIContentTemp("max"), max);
+                max = EditorGUI.IntField(MoveDownWithBlankSpace(position), IGUTextObject.GetGUIContentTemp("max"), max);
                 EditorGUI.indentLevel--;
                 if (EditorGUI.EndChangeCheck()) {
                     prop_min.intValue = min;

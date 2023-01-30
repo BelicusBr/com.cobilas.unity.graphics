@@ -6,7 +6,7 @@ using Cobilas.Unity.Graphics.IGU.Events;
 namespace Cobilas.Unity.Graphics.IGU.Elements {
     public class IGUButton : IGUTextObject, ISerializationCallbackReceiver {
         public const string DefaultContentIGUButton = "IGU Button";
-        private List<string> stackTraceCount = new List<string>();
+        private readonly List<string> stackTraceCount = new List<string>();
         [SerializeField] protected bool[] clicked;
         [SerializeField] protected GUIStyle buttonStyle;
         [SerializeField] protected IGUOnClickEvent onClick;

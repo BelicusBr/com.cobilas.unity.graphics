@@ -1,6 +1,6 @@
 ﻿namespace Cobilas.Unity.Graphics.IGU {
     public sealed class HashCodeCompare {
-        private int[] list;
+        private readonly int[] list;
 
         public HashCodeCompare(int capacity) => list = new int[capacity];
 

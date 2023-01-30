@@ -29,7 +29,7 @@ namespace Cobilas.Unity.Editor.Graphics.IGU {
                 text = EditorGUI.TextField(position = MoveDownWithBlankSpace(position), IGUTextObject.GetGUIContentTemp("text"), text);
                 textColor = EditorGUI.ColorField(position = MoveDownWithBlankSpace(position), IGUTextObject.GetGUIContentTemp("text color"), textColor);
                 unchangeText = EditorGUI.Toggle(position = MoveDownWithBlankSpace(position), IGUTextObject.GetGUIContentTemp("unchange text"), unchangeText);
-                fontStyle = (FontStyle)EditorGUI.EnumPopup(position = MoveDownWithBlankSpace(position), IGUTextObject.GetGUIContentTemp("font style"), fontStyle);
+                fontStyle = (FontStyle)EditorGUI.EnumPopup(MoveDownWithBlankSpace(position), IGUTextObject.GetGUIContentTemp("font style"), fontStyle);
                 EditorGUI.indentLevel--;
                 if (EditorGUI.EndChangeCheck()) {
                     prop_text.stringValue = text;

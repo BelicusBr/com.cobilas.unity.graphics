@@ -3,7 +3,6 @@ using Cobilas.Unity.Graphics.IGU.Events;
 
 namespace Cobilas.Unity.Graphics.IGU.Elements {
     public class IGUHorizontalScrollbar : IGUSliderObject {
-        private float oldValue;
         [SerializeField] protected float scrollbarThumbSize;
         [SerializeField] protected IGUOnSliderValueEvent onModifiedScrollbar;
         [SerializeField] protected IGUOnSliderIntValueEvent onModifiedScrollbarInt;

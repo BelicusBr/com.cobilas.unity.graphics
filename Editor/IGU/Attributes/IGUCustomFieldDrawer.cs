@@ -3,7 +3,7 @@
 namespace Cobilas.Unity.Editor.Graphics.IGU {
     [AttributeUsage(AttributeTargets.Class, Inherited = false, AllowMultiple = false)]
     internal sealed class IGUCustomFieldDrawerAttribute : Attribute {
-        private string targetField;
+        private readonly string targetField;
 
         public string TargetField => targetField;
 

@@ -8,7 +8,6 @@ namespace Cobilas.Unity.Editor.Graphics.IGU {
     [CustomPropertyDrawer(typeof(IGUContent))]
     [IGUCustomFieldDrawer("#IGUContent")]
     public class IGUContentDraw : CPropertyDrawer {
-        private IGUContent content = new IGUContent();
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label) {
             //foldout
             position.height = SingleLineHeight;
@@ -30,7 +29,7 @@ namespace Cobilas.Unity.Editor.Graphics.IGU {
                 text = EditorGUI.TextField(position = MoveDownWithBlankSpace(position), IGUTextObject.GetGUIContentTemp("text"), text);
                 image = ObjectField<Texture>(position = MoveDownWithBlankSpace(position), IGUTextObject.GetGUIContentTemp("image"), image as Texture);
                 if (hide_Tooltip)
-                    tooltip = EditorGUI.TextField(position = MoveDownWithBlankSpace(position), IGUTextObject.GetGUIContentTemp("tooltip"), tooltip);
+                    tooltip = EditorGUI.TextField(MoveDownWithBlankSpace(position), IGUTextObject.GetGUIContentTemp("tooltip"), tooltip);
                 EditorGUI.indentLevel--;
                 if (EditorGUI.EndChangeCheck()) {
                     prop_text.stringValue = text;

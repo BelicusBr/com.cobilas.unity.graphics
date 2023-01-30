@@ -9,7 +9,7 @@ using Cobilas.Unity.Graphics.IGU.Elements;
 namespace Cobilas.Unity.Editor.Graphics.IGU {
     [IGUCustomDrawer(typeof(IGUComboBox))]
     public class IGUComboBoxDraw : IGUObjectDraw {
-        private Dictionary<int, int> SelectIndex = new Dictionary<int, int>();
+        private readonly Dictionary<int, int> SelectIndex = new Dictionary<int, int>();
 
         protected override void IOnGUI(Rect position, SerializedObject serialized)
             => base.IOnGUI(position, serialized);

@@ -8,10 +8,10 @@ using Cobilas.Unity.Graphics.IGU.Elements;
 namespace Cobilas.Unity.Editor.Graphics.IGU {
     public static class IGUPropertyDrawer {
         public delegate void IGUPropertyDrawerCallback(Type type, IGUObjectPropertyDrawer drawer);
-        private static Dictionary<Type, IGUObjectPropertyDrawer> list = new Dictionary<Type, IGUObjectPropertyDrawer>();
-        private static Dictionary<Type, IGUObjectPropertyDrawer> listSubClass = new Dictionary<Type, IGUObjectPropertyDrawer>();
-        private static Dictionary<Type, IGUObjectPropertyDrawer> listUseForChildren = new Dictionary<Type, IGUObjectPropertyDrawer>();
-        private static Dictionary<string, PropertyDrawer> listFieldDrawer = new Dictionary<string, PropertyDrawer>();
+        private readonly static Dictionary<Type, IGUObjectPropertyDrawer> list = new Dictionary<Type, IGUObjectPropertyDrawer>();
+        private readonly static Dictionary<Type, IGUObjectPropertyDrawer> listSubClass = new Dictionary<Type, IGUObjectPropertyDrawer>();
+        private readonly static Dictionary<Type, IGUObjectPropertyDrawer> listUseForChildren = new Dictionary<Type, IGUObjectPropertyDrawer>();
+        private readonly static Dictionary<string, PropertyDrawer> listFieldDrawer = new Dictionary<string, PropertyDrawer>();
 
         [InitializeOnLoadMethod]
         private static void Init() {

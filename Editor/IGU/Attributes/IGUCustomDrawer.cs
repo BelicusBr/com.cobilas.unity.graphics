@@ -3,8 +3,8 @@
 namespace Cobilas.Unity.Editor.Graphics.IGU {
     [AttributeUsage(AttributeTargets.Class, Inherited = false, AllowMultiple = false)]
     internal sealed class IGUCustomDrawerAttribute : Attribute {
-        private Type typeTarget;
-        private bool useForChildren;
+        private readonly Type typeTarget;
+        private readonly bool useForChildren;
 
         public Type TypeTarget => typeTarget;
         public bool UseForChildren => useForChildren;

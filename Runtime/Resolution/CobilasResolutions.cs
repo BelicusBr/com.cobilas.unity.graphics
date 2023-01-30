@@ -74,7 +74,9 @@ namespace Cobilas.Unity.Graphics.Resolutions {
 
         //[CRIOLM_CallWhen(typeof(ContainerManager), CRIOLMType.AfterSceneLoad)]
         [CallWhenStart(InitializePriority.Low, "#ContainerManager")]
+#pragma warning disable IDE0051 // Remover membros privados não utilizados
         private static void Init() {
+#pragma warning restore IDE0051 // Remover membros privados não utilizados
             cb_resolutions = FindObjectOfType<CobilasResolutions>();
             cb_resolutions.Internal_Refresh();
         }
@@ -132,12 +134,12 @@ namespace Cobilas.Unity.Graphics.Resolutions {
             return false;
         }
 
-        private static bool ContainsAspectRatio(AspectRatio aspectRatio) {
-            for (int I = 0; I < ArrayManipulation.ArrayLength(cb_resolutions.aspectRatios); I++)
-                if (cb_resolutions.aspectRatios[I] == aspectRatio)
-                    return true;
-            return false;
-        }
+        //private static bool ContainsAspectRatio(AspectRatio aspectRatio) {
+        //    for (int I = 0; I < ArrayManipulation.ArrayLength(cb_resolutions.aspectRatios); I++)
+        //        if (cb_resolutions.aspectRatios[I] == aspectRatio)
+        //            return true;
+        //    return false;
+        //}
 
         private static bool ContainsResolution(Resolution resolution) {
             for (int I = 0; I < ArrayManipulation.ArrayLength(cb_resolutions.resolutions); I++)

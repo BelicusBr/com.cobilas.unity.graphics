@@ -7,7 +7,7 @@ namespace Cobilas.Unity.Editor.Graphics.IGU {
     [CustomPropertyDrawer(typeof(IGUObject), true)]
     public class IGUObjectDrawer : PropertyDrawer {
 
-        private Dictionary<int, SerializedObject> pairs = new Dictionary<int, SerializedObject>();
+        private readonly Dictionary<int, SerializedObject> pairs = new Dictionary<int, SerializedObject>();
 
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label) {
             EditorGUI.BeginProperty(position, label, property);

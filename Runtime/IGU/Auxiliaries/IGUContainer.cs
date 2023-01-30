@@ -12,7 +12,7 @@ namespace Cobilas.Unity.Graphics.IGU {
         private bool wasDestroyed;
         private Action onIGU;
         private Action<List<IIGUObject>> alteredDepth;
-        private List<IIGUObject> AlteredDepthList = new List<IIGUObject>();
+        private readonly List<IIGUObject> AlteredDepthList = new List<IIGUObject>();
 
         void IIGUContainer.OnIGU() {
             onIGU?.Invoke();

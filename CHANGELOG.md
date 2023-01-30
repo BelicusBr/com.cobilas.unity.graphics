@@ -1,4 +1,9 @@
 # Changelog
+## [1.0.13] - 30/01/2023
+### Changed
+- Romoção de campos não utilizados.
+- Remoção de atribuições desnecessárias.
+- Transformando possiveis campos em `readonly`.
 ## [1.0.12] 09/01/2023
 ### Change
 O corpo do método `public static Vector2Int GetBaseResolutionPlatform()` foi alterado.

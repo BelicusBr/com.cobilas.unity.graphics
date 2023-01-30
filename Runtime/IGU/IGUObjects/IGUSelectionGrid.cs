@@ -6,7 +6,7 @@ using Cobilas.Unity.Graphics.IGU.Events;
 namespace Cobilas.Unity.Graphics.IGU.Elements {
     public class IGUSelectionGrid : IGUObject, ISerializationCallbackReceiver {
 
-        private HashCodeCompare compare = new HashCodeCompare(6);
+        private readonly HashCodeCompare compare = new HashCodeCompare(6);
         [SerializeField] protected int _xCount;
         [SerializeField] protected bool useTooltip;
         [SerializeField] protected Vector2 spacing;
