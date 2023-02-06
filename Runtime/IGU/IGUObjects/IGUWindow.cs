@@ -46,8 +46,8 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
 
         private void InitInternalIndowFunction() {
             internalIndowFunction = (id) => {
-                windowFunction?.Invoke(id);
                 GUI.DragWindow(dragFlap);
+                windowFunction?.Invoke(id);
             };
         }
 
