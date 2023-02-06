@@ -1,8 +1,8 @@
 # Changelog
 ## [1.0.14] - 05/02/2023
 ### Fixed
-No método `void:InitInternalIndowFunction()` a função `GUI.DragWindow` era executado depois da ação `windowFunction` o que podia ocasionar a parada de movimento da janela pelo fato de
-que se algum elemento IGU fosse desativado ou quando fosse chamado a propriedade `GUI.enabled = false`.
+No método `void:InitInternalIndowFunction()` a instrução `GUI.DragWindow` era executado depois da ação `windowFunction` o que podia ocasionar a parada de movimento da janela pelo fato de
+que se algum elemento IGU fosse desativado ou quando fosse chamado a propriedade `GUI.enabled = false` dentro da ação `windowFunction`.
 ## [1.0.13] - 30/01/2023
 ### Changed
 - Romoção de campos não utilizados.
