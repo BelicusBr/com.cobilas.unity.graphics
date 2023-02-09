@@ -23,11 +23,11 @@ namespace Cobilas.Unity.Graphics.IGU {
                     for (int I = 0; I < ArrayManipulation.ArrayLength(deepActions); I++)
                         if (deepActions[I].Remove(AlteredDepthList[A] as IGUObject)) {
                             Add(AlteredDepthList[A] as IGUObject);
-                            if (deepActions[I].Count == 0) {
-                                onIGU -= deepActions[I].OnIGU;
-                                alteredDepth -= deepActions[I].AlteredDepth;
-                                ArrayManipulation.Remove(I, ref deepActions);
-                            }
+                            //if (deepActions[I].Count == 0) {
+                            //    onIGU -= deepActions[I].OnIGU;
+                            //    alteredDepth -= deepActions[I].AlteredDepth;
+                            //    ArrayManipulation.Remove(I, ref deepActions);
+                            //}
                             //A = AlteredDepthList.Count + 1;
                             break;
                         }
@@ -84,16 +84,24 @@ namespace Cobilas.Unity.Graphics.IGU {
                 for (int I = 0; I < ArrayManipulation.ArrayLength(deepActions); I++)
                     if (depth < deepActions[I].Depth) {
                         deep = new DeepAction(depth);
-                        onIGU += deep.OnIGU;
+                        //onIGU += deep.OnIGU;
+                        RefreshDepth();
                         alteredDepth += deep.AlteredDepth;
                         ArrayManipulation.Insert(deep, I, ref deepActions);
                         return deep;
                     }
             deep = new DeepAction(depth);
-            onIGU += deep.OnIGU;
+            //onIGU += deep.OnIGU;
+            RefreshDepth();
             alteredDepth += deep.AlteredDepth;
             ArrayManipulation.Add(deep, ref deepActions);
             return deep;
+        }
+
+        private void RefreshDepth() {
+            onIGU = (Action)null;
+            for (int I = 0; I < ArrayManipulation.ArrayLength(deepActions); I++)
+                onIGU += deepActions[I].OnIGU;
         }
 
         private DeepAction GetDeepAction(int depth) {

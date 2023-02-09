@@ -1,6 +1,6 @@
 {
   "name": "com.cobilas.unity.graphics",
-  "version": "1.0.14",
+  "version": "1.0.15",
   "displayName": "Cobilas Graphics",
   "description": "Pacote que adiciona e manipula elementos",
   "licensesUrl": "https://github.com/BelicusBr/com.cobilas.unity.graphics/blob/main/LICENSE.md",
@@ -8,9 +8,7 @@
   "unity": "2019.1",
   "unityRelease": "0b5",
   "type": "cb-graphics",
-  "author": {
-    "name": "Cobilas CTB"
-  },
+  "author": "Cobilas CTB",
   "repository": {
     "url": "https://github.com/BelicusBr/com.cobilas.unity.graphics.git",
     "type": "git"

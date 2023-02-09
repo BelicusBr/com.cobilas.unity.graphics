@@ -1,4 +1,8 @@
 # Changelog
+## [1.0.15] - 09/02/2023
+### Fixed
+#### Profundidade não aplicada corretamente [#ISU-IGU0001](https://github.com/BelicusBr/com.cobilas.unity.graphics/issues/2)
+Na classe `IGUContainer` onde é feito a aplicação de profundidade, agora ao adicionar uma nova profundidade o evento responsável por chamar `DeepAction.OnIGU()` é atualizado.
 ## [1.0.14] - 05/02/2023
 ### Fixed
 No método `void:InitInternalIndowFunction()` a instrução `GUI.DragWindow` era executado depois da ação `windowFunction` o que podia ocasionar a parada de movimento da janela pelo fato de
