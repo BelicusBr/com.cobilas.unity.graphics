@@ -8,16 +8,19 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
         public GUIStyle BoxStyle { get => boxStyle; set => boxStyle = value; }
 
         public override void OnIGU() {
-            if (!myConfg.IsVisible) return;
+            IGURect rect = GetModIGURect();
+            IGUConfig config = GetModIGUConfig();
+
+            if (!config.IsVisible) return;
             GUI.color = myColor.MyColor;
-            GUI.enabled = myConfg.IsEnabled;
+            GUI.enabled = config.IsEnabled;
             GUI.contentColor = myColor.TextColor;
             GUI.backgroundColor = myColor.BackgroundColor;
 
             boxStyle = GetDefaultValue(boxStyle, GUI.skin.box);
             GUIContent mycontent = GetGUIContent(DefaultIGUBox);
 
-            Rect rectTemp = new Rect(GetPosition(), myRect.Size);
+            Rect rectTemp = new Rect(rect.ModifiedPosition, rect.Size);
 
             GUI.Box(rectTemp, mycontent, boxStyle);
 

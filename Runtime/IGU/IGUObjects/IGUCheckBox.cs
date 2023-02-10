@@ -21,14 +21,17 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
         public GUIStyle CheckBoxStyle { get => checkBoxStyle; set => checkBoxStyle = value; }
 
         public override void OnIGU() {
-            if (!myConfg.IsVisible) return;
+            IGURect rect = GetModIGURect();
+            IGUConfig config = GetModIGUConfig();
+
+            if (!config.IsVisible) return;
             GUI.color = myColor.MyColor;
-            GUI.enabled = myConfg.IsEnabled;
+            GUI.enabled = config.IsEnabled;
             GUI.contentColor = myColor.TextColor;
             GUI.backgroundColor = myColor.BackgroundColor;
 
             checkBoxStyle = GetDefaultValue(checkBoxStyle, GUI.skin.toggle);
-            Rect rectTemp = new Rect(GetPosition(), myRect.Size);
+            Rect rectTemp = new Rect(rect.ModifiedPosition, rect.Size);
             bool checkedtemp = GUI.Toggle(rectTemp, _checked, GetGUIContent(DefaultContantIGUCheckBox), checkBoxStyle);
 
             if (checkedtemp) {

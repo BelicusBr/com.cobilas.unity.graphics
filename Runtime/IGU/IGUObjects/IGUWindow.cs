@@ -17,16 +17,19 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
         public GUIStyle WindowStyle { get => windowStyle; set => windowStyle = value; }
 
         public override void OnIGU() {
-            if (!myConfg.IsVisible) return;
+            IGURect rect = GetModIGURect();
+            IGUConfig config = GetModIGUConfig();
+
+            if (!config.IsVisible) return;
             GUI.color = myColor.MyColor;
-            GUI.enabled = myConfg.IsEnabled;
+            GUI.enabled = config.IsEnabled;
             GUI.contentColor = myColor.TextColor;
             GUI.backgroundColor = myColor.BackgroundColor;
 
             windowStyle = GetDefaultValue(windowStyle, GUI.skin.window);
             GUIContent mycontent = GetGUIContent(DefaultIGUWindow);
 
-            Rect rectTemp = new Rect(GetPosition(), myRect.Size);
+            Rect rectTemp = new Rect(rect.ModifiedPosition, rect.Size);
             int ID = GUIUtility.GetControlID(FocusType.Passive);
 
             Rect rectTemp2 = GUI.Window(ID, rectTemp, internalIndowFunction, mycontent, windowStyle);
@@ -47,7 +50,9 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
         private void InitInternalIndowFunction() {
             internalIndowFunction = (id) => {
                 GUI.DragWindow(dragFlap);
+                BeginDoNotModifyRect(true);
                 windowFunction?.Invoke(id);
+                EndDoNotModifyRect();
             };
         }
 
