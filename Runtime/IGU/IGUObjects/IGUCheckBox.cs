@@ -21,7 +21,6 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
         public GUIStyle CheckBoxStyle { get => checkBoxStyle; set => checkBoxStyle = value; }
 
         public override void OnIGU() {
-            IGURect rect = GetModIGURect();
             IGUConfig config = GetModIGUConfig();
 
             if (!config.IsVisible) return;
@@ -31,7 +30,7 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
             GUI.backgroundColor = myColor.BackgroundColor;
 
             checkBoxStyle = GetDefaultValue(checkBoxStyle, GUI.skin.toggle);
-            Rect rectTemp = new Rect(rect.ModifiedPosition, rect.Size);
+            Rect rectTemp = new Rect(GetPosition(), myRect.Size);
             bool checkedtemp = GUI.Toggle(rectTemp, _checked, GetGUIContent(DefaultContantIGUCheckBox), checkBoxStyle);
 
             if (checkedtemp) {

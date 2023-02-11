@@ -65,13 +65,10 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
         }
 
         public override void OnIGU() {
-            if (!myConfg.IsVisible) return;
+            if (!GetModIGUConfig().IsVisible) return;
 
             comboBoxButton.MyRect = comboBoxButton.MyRect.SetSize(myRect.Size);
-            comboBoxButton.MyRect = comboBoxScrollView.MyRect = comboBoxButton.MyRect.SetPivot(Vector2.zero);
-            comboBoxButton.MyRect = comboBoxScrollView.MyRect = comboBoxButton.MyRect.SetScaleFactor(Vector2.one);
             comboBoxButton.MyColor = myColor;
-            comboBoxButton.MyConfg = myConfg;
 
             float rwWidth = myRect.Width;
             float rwHeight = comboBoxButtonHeight * ArrayManipulation.ArrayLength(boxButtons);
@@ -91,7 +88,6 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
             comboBoxScrollView.MyRect = comboBoxScrollView.MyRect.SetPosition(0, myRect.Height);
             comboBoxScrollView.MyRect = comboBoxScrollView.MyRect.SetSize(myRect.Width, newScrollViewHeight);
             comboBoxScrollView.MyColor = myColor;
-            comboBoxScrollView.MyConfg = myConfg;
             comboBoxScrollView.ViewRect = rectView;
 
             comboBoxButton.OnIGU();
@@ -214,6 +210,7 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
             base.OnDestroy();
             DestroyList(ref boxButtons);
         }
+
         public static IGUComboBox CreateIGUInstance(string name, int index, params IGUContent[] buttons) {
             IGUComboBox comboBox = Internal_CreateIGUInstance<IGUComboBox>(name);
             comboBox.scrollViewHeight = 130f;

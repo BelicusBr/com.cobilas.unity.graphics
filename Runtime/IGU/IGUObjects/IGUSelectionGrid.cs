@@ -25,7 +25,7 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
         protected event Action<Vector2> IGUSelectionGridToggleChangeSpacing;
         protected event Action<IGUColor> IGUSelectionGridToggleChangeIGUColor;
         protected event Action<GUIStyle, GUIStyle> IGUSelectionGridToggleOnIGU;
-        protected event Action<IGUConfig> IGUSelectionGridToggleChangeIGUConfig;
+        //protected event Action<IGUConfig> IGUSelectionGridToggleChangeIGUConfig;
 
         /// <summary>Espaçamento entre os botões.(3x3 padrão)</summary>
         public Vector2 Spacing { get => spacing; set => spacing = value; }
@@ -57,7 +57,7 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
         }
 
         public override void OnIGU() {
-            if (!myConfg.IsVisible) return;
+            if (!GetModIGUConfig().IsVisible) return;
 
             selectionGridToggleStyle = GetDefaultValue(selectionGridToggleStyle, GUI.skin.button);
 
@@ -69,8 +69,8 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
             if (!compare.HashCodeEqual(0, myColor.GetHashCode()))
                 IGUSelectionGridToggleChangeIGUColor?.Invoke(myColor);
 
-            if (!compare.HashCodeEqual(1, myConfg.GetHashCode()))
-                IGUSelectionGridToggleChangeIGUConfig?.Invoke(myConfg);
+            //if (!compare.HashCodeEqual(1, myConfg.GetHashCode()))
+            //    IGUSelectionGridToggleChangeIGUConfig?.Invoke(myConfg);
 
             if (!compare.HashCodeEqual(2, _xCount))
                 ChangeFloor(selectionGridToggles);
@@ -130,7 +130,7 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
             this.IGUSelectionGridToggleChangeSpacing = (Action<Vector2>)null;
             this.IGUSelectionGridToggleChangeIGUColor = (Action<IGUColor>)null;
             this.IGUSelectionGridToggleOnIGU = (Action<GUIStyle, GUIStyle>)null;
-            this.IGUSelectionGridToggleChangeIGUConfig = (Action<IGUConfig>)null;
+            //this.IGUSelectionGridToggleChangeIGUConfig = (Action<IGUConfig>)null;
             for (int I = 0; I < ArrayManipulation.ArrayLength(toggles); I++) {
                 this.UseTooltipEvent += toggles[I].UseTooltip;
                 this.IGUSelectionGridToggleOnIGU += toggles[I].OnIGU;
@@ -138,7 +138,7 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
                 this.IGUSelectionGridToggleSelectedIndex += toggles[I].SelectedIndex;
                 this.IGUSelectionGridToggleChangeSpacing += toggles[I].ChangeSpacing;
                 this.IGUSelectionGridToggleChangeIGUColor += toggles[I].ChangeIGUColor;
-                this.IGUSelectionGridToggleChangeIGUConfig += toggles[I].ChangeIGUConfig;
+                //this.IGUSelectionGridToggleChangeIGUConfig += toggles[I].ChangeIGUConfig;
                 toggles[I].ClickSelectionGridToggle(ChangeSelectedIndex);
             }
             ChangeSelectedIndex(selectedIndex);

@@ -5,7 +5,6 @@ using Cobilas.Unity.Graphics.IGU.Interfaces;
 namespace Cobilas.Unity.Graphics.IGU.Elements {
     //[Serializable]
     public abstract class IGUObject : ScriptableObject, IIGUObject {
-        private static readonly IGURect rdl_IGURect = new IGURect();
         private static readonly Stack<DoNotModifyRect> doNots = new Stack<DoNotModifyRect>();
         [SerializeField] protected IGURect myRect;
         [SerializeField] protected IGUColor myColor;
@@ -89,8 +88,8 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
             (this as IIGUObject).InternalPreOnIGU();
             Matrix4x4 oldMatrix = GUI.matrix;
 
-            GUIUtility.RotateAroundPivot(myRect.Rotation, GetModIGURect().ModifiedPosition);
-            GUIUtility.ScaleAroundPivot(myRect.ScaleFactor, GetModIGURect().ModifiedPosition);
+            GUIUtility.RotateAroundPivot(myRect.Rotation, GetPosition());
+            GUIUtility.ScaleAroundPivot(myRect.ScaleFactor, GetPosition());
             OnIGU();
             GUI.matrix = oldMatrix;
             (this as IIGUObject).InternalPostOnIGU();
@@ -105,11 +104,6 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
 
         void IIGUObject.InternalPostOnIGU() => PostOnIGU();
 
-        protected IGURect GetModIGURect()
-            => rdl_IGURect.SetPosition(myRect.ModifiedPosition + (parent == null || doNots.Peek() ? Vector2.zero : parent.myRect.ModifiedPosition))
-            .SetSize(myRect.Size + (parent == null || doNots.Peek() ? Vector2.zero : parent.myRect.Size))
-            .SetPivot(myRect.Pivot).SetScaleFactor(Vector2.one);
-
         protected IGUConfig GetModIGUConfig()
             => parent == null ? myConfg : parent.myConfg;
 
@@ -117,9 +111,8 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
 
         protected virtual void PostOnIGU() { }
 
-        [System.Obsolete("Use IGURect:GetModIGURect()")]
         protected Vector2 GetPosition()
-            => parent == null ? MyRect.ModifiedPosition : myRect.ModifiedPosition + parent.myRect.ModifiedPosition;
+            => parent == null || doNots.Peek() ? myRect.ModifiedPosition : myRect.ModifiedPosition + parent.myRect.ModifiedPosition;
 
         protected GUIStyle GetDefaultValue(GUIStyle style, GUIStyle _default) {
             if (style != null) return style;

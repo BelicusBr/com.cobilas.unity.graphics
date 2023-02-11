@@ -51,7 +51,7 @@ namespace Cobilas.Unity.Graphics.IGU {
         public void ChangeIGUColor(IGUColor color)
             => checkBox.MyColor = color;
 
-        public void ChangeIGUConfig(IGUConfig config)
-            => checkBox.MyConfg = config;
+        //public void ChangeIGUConfig(IGUConfig config)
+        //    => checkBox.MyConfg = config;
     }
 }

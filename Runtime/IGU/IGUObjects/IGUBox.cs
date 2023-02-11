@@ -8,7 +8,6 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
         public GUIStyle BoxStyle { get => boxStyle; set => boxStyle = value; }
 
         public override void OnIGU() {
-            IGURect rect = GetModIGURect();
             IGUConfig config = GetModIGUConfig();
 
             if (!config.IsVisible) return;
@@ -20,7 +19,7 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
             boxStyle = GetDefaultValue(boxStyle, GUI.skin.box);
             GUIContent mycontent = GetGUIContent(DefaultIGUBox);
 
-            Rect rectTemp = new Rect(rect.ModifiedPosition, rect.Size);
+            Rect rectTemp = new Rect(GetPosition(), myRect.Size);
 
             GUI.Box(rectTemp, mycontent, boxStyle);
 

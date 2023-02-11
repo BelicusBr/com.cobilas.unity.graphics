@@ -17,7 +17,6 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
         public GUIStyle WindowStyle { get => windowStyle; set => windowStyle = value; }
 
         public override void OnIGU() {
-            IGURect rect = GetModIGURect();
             IGUConfig config = GetModIGUConfig();
 
             if (!config.IsVisible) return;
@@ -29,7 +28,7 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
             windowStyle = GetDefaultValue(windowStyle, GUI.skin.window);
             GUIContent mycontent = GetGUIContent(DefaultIGUWindow);
 
-            Rect rectTemp = new Rect(rect.ModifiedPosition, rect.Size);
+            Rect rectTemp = new Rect(GetPosition(), myRect.Size);
             int ID = GUIUtility.GetControlID(FocusType.Passive);
 
             Rect rectTemp2 = GUI.Window(ID, rectTemp, internalIndowFunction, mycontent, windowStyle);
