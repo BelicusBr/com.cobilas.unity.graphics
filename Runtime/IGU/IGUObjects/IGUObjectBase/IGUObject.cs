@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using Cobilas.Unity.Graphics.IGU.Interfaces;
 
 namespace Cobilas.Unity.Graphics.IGU.Elements {
-    //[Serializable]
     public abstract class IGUObject : ScriptableObject, IIGUObject {
+        private static readonly DoNotModifyRect defaultFalse = new DoNotModifyRect(false);
         private static readonly Stack<DoNotModifyRect> doNots = new Stack<DoNotModifyRect>();
         [SerializeField] protected IGURect myRect;
         [SerializeField] protected IGUColor myColor;
@@ -112,7 +112,7 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
         protected virtual void PostOnIGU() { }
 
         protected Vector2 GetPosition()
-            => parent == null || doNots.Peek() ? myRect.ModifiedPosition : myRect.ModifiedPosition + parent.myRect.ModifiedPosition;
+            => parent == null || NotMod() ? myRect.ModifiedPosition : myRect.ModifiedPosition + parent.myRect.ModifiedPosition;
 
         protected GUIStyle GetDefaultValue(GUIStyle style, GUIStyle _default) {
             if (style != null) return style;
@@ -124,6 +124,9 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
 
         public static void EndDoNotModifyRect()
             => _ = doNots.Pop();
+
+        private static DoNotModifyRect NotMod()
+            => doNots.Count == 0 ? defaultFalse : doNots.Peek();
 
         protected static T Internal_CreateIGUInstance<T>(string name) where T : IGUObject {
             T temp = CreateInstance<T>();
