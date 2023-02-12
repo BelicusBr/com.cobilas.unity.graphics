@@ -85,16 +85,16 @@ namespace Cobilas.Unity.Graphics.IGU {
                     if (depth < deepActions[I].Depth) {
                         deep = new DeepAction(depth);
                         //onIGU += deep.OnIGU;
-                        RefreshDepth();
                         alteredDepth += deep.AlteredDepth;
                         ArrayManipulation.Insert(deep, I, ref deepActions);
+                        RefreshDepth();
                         return deep;
                     }
             deep = new DeepAction(depth);
             //onIGU += deep.OnIGU;
-            RefreshDepth();
             alteredDepth += deep.AlteredDepth;
             ArrayManipulation.Add(deep, ref deepActions);
+            RefreshDepth();
             return deep;
         }
 
