@@ -1,10 +1,10 @@
-﻿using System.Collections;
-using UnityEngine;
+﻿using UnityEngine;
+using System.Collections;
 using Cobilas.Collections;
 using Cobilas.Unity.Graphics.IGU;
 using Cobilas.Unity.Graphics.IGU.Layouts;
-using Cobilas.Unity.Graphics.IGU.Elements;
 using Cobilas.Unity.Graphics.Resolutions;
+using Cobilas.Unity.Graphics.IGU.Elements;
 
 namespace Cobilas.Unity.Packages.com.cobilas.unity.graphics.Test.Runtime
 {
@@ -27,7 +27,7 @@ namespace Cobilas.Unity.Packages.com.cobilas.unity.graphics.Test.Runtime
         public bool useCellSize = true;
         public int icount;
         public int breakdir;
-        public IGUGridLayout layout;
+        public IGUHorizontalLayout layout;
         public IGUBox box;
         //public IGUObject slider1;
         //public IGUObject slider2;
@@ -50,7 +50,7 @@ namespace Cobilas.Unity.Packages.com.cobilas.unity.graphics.Test.Runtime
         void Start()
         {
             box = IGUBox.CreateIGUInstance("bx-box", string.Empty);
-            layout = IGUGridLayout.CreateIGUInstance("layout");
+            layout = IGUHorizontalLayout.CreateIGUInstance("layout");
             box.Parent = layout;
             layout.CellSize = IGURect.DefaultButton.Size;
             IGUButton bt1 = IGUButton.CreateIGUInstance("TDS_001", "button 1"),

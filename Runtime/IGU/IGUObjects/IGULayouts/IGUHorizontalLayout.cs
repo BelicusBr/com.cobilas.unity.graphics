@@ -4,13 +4,12 @@ using Cobilas.Collections;
 using Cobilas.Unity.Graphics.IGU.Elements;
 
 namespace Cobilas.Unity.Graphics.IGU.Layouts {
-    public sealed class IGUVerticalLayout : IGULayout, ISerializationCallbackReceiver {
-
+    public sealed class IGUHorizontalLayout : IGULayout, ISerializationCallbackReceiver {
         [SerializeField]
         private CellIGUObject[] objects;
         [SerializeField]
         private bool AfterDeserialize = false;
-        private VerticalLayoutCellCursor cursor;
+        private HorizontalLayoutCellCursor cursor;
         private event Action<CellCursor> sub_OnIGU;
 
         public override int Count => ArrayManipulation.ArrayLength(objects);
@@ -87,9 +86,9 @@ namespace Cobilas.Unity.Graphics.IGU.Layouts {
 
         void ISerializationCallbackReceiver.OnBeforeSerialize() { }
 
-        public static IGUVerticalLayout CreateIGUInstance(string name, float spacing, Vector2 cellSize, bool useCellSize) {
-            IGUVerticalLayout res = Internal_CreateIGUInstance<IGUVerticalLayout>(name);
-            res.cursor = new VerticalLayoutCellCursor();
+        public static IGUHorizontalLayout CreateIGUInstance(string name, float spacing, Vector2 cellSize, bool useCellSize) {
+            IGUHorizontalLayout res = Internal_CreateIGUInstance<IGUHorizontalLayout>(name);
+            res.cursor = new HorizontalLayoutCellCursor();
             res.Spacing = spacing;
             res.CellSize = cellSize;
             res.UseCellSize = useCellSize;
@@ -98,19 +97,19 @@ namespace Cobilas.Unity.Graphics.IGU.Layouts {
             return res;
         }
 
-        public static IGUVerticalLayout CreateIGUInstance(string name, float spacing, Vector2 cellSize)
+        public static IGUHorizontalLayout CreateIGUInstance(string name, float spacing, Vector2 cellSize)
             => CreateIGUInstance(name, spacing, cellSize, false);
 
-        public static IGUVerticalLayout CreateIGUInstance(string name, float spacing)
+        public static IGUHorizontalLayout CreateIGUInstance(string name, float spacing)
             => CreateIGUInstance(name, spacing, Vector2.one * 100f);
 
-        public static IGUVerticalLayout CreateIGUInstance(string name)
+        public static IGUHorizontalLayout CreateIGUInstance(string name)
             => CreateIGUInstance(name, 3f);
 
         [Serializable]
-        private sealed class VerticalLayoutCellCursor : CellCursor {
+        private sealed class HorizontalLayoutCellCursor : CellCursor {
             public float spacing;
-            [SerializeField] private float posY;
+            [SerializeField] private float posW;
             [SerializeField] private bool useCellSize;
             [SerializeField] private Vector2 cellSize;
             [SerializeField] private Vector2 gridRect;
@@ -120,15 +119,14 @@ namespace Cobilas.Unity.Graphics.IGU.Layouts {
             public override bool UseCellSize { get => useCellSize; set => useCellSize = value; }
 
             public override void MarkCount(IGUObject @object) {
-                @object.MyRect = @object.MyRect.SetPosition(0f, posY);
-                posY += spacing + @object.MyRect.Height;
-                gridRect.x = @object.MyRect.Width > gridRect.x ? @object.MyRect.Width : gridRect.x;
-                gridRect.y = posY;
+                @object.MyRect = @object.MyRect.SetPosition(posW, 0f);
+                posW += spacing + @object.MyRect.Width;
+                gridRect.x = posW;
+                gridRect.y = @object.MyRect.Height > gridRect.y ? @object.MyRect.Height : gridRect.y;
             }
 
-            public override void Reset() {
-                posY = 0;
-            }
+            public override void Reset()
+                => posW = 0;
         }
     }
 }
