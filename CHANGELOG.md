@@ -1,4 +1,8 @@
 # Changelog
+## [1.0.16] - 12/02/2023
+### Fixed
+No metódo `IGUConatiner.AddDeepAction(int)` á instrução `RefreshDepth();` era executada antes do objeto `DeepAction`
+o que fazia que o primeiro objeto `DeepAction` não fosse adicionado ao evento OnIGU.
 ## [1.0.15] - 09/02/2023
 ### Fixed
 #### Profundidade não aplicada corretamente [#ISU-IGU0001](https://github.com/BelicusBr/com.cobilas.unity.graphics/issues/2)
