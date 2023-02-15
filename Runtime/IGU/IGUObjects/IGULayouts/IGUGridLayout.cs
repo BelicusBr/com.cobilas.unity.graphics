@@ -28,9 +28,14 @@ namespace Cobilas.Unity.Graphics.IGU.Layouts {
         }
 
         public override void OnIGU() {
+            IGUConfig config = GetModIGUConfig();
+            if (!config.IsVisible) return;
+
             cursor.Reset();
             cursor.elementCount = Count;
+            BeginDoNotModifyRect(false);
             sub_OnIGU?.Invoke(cursor);
+            EndDoNotModifyRect();
             myRect.SetSize(cursor.GridRect);
         }
 
@@ -97,6 +102,7 @@ namespace Cobilas.Unity.Graphics.IGU.Layouts {
             res.CellSize = cellSize;
             res.cursor.UseCellSize = true;
             res.myConfg = IGUConfig.Default;
+            res.myRect = IGURect.DefaultButton;
             res.myColor = IGUColor.DefaultBoxColor;
             res.DirectionalCount = directionalCount;
             res.DirectionalBreak = directionalBreak;

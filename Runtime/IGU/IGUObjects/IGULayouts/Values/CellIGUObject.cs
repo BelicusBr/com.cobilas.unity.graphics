@@ -8,10 +8,13 @@ namespace Cobilas.Unity.Graphics.IGU.Layouts {
         public IGUObject @object;
         [SerializeField]
         private Vector2 mySize;
+        [SerializeField, HideInInspector]
+        private bool click;
 
         public CellIGUObject(IGUObject @object) {
             this.@object = @object;
             this.mySize = @object.MyRect.Size;
+            this.click = true;
         }
 
         public override bool Equals(object obj)
@@ -24,7 +27,18 @@ namespace Cobilas.Unity.Graphics.IGU.Layouts {
             => @object.GetHashCode();
 
         public void OnIGU(CellCursor cursor) {
-            @object.MyRect = @object.MyRect.SetSize(cursor.UseCellSize ? cursor.CellSize : mySize);
+            if (cursor.UseCellSize) {
+                if (click) {
+                    click = false;
+                    mySize = @object.MyRect.Size;
+                }
+                @object.MyRect = @object.MyRect.SetSize(cursor.CellSize);
+            } else {
+                if (!click) {
+                    click = true;
+                    @object.MyRect = @object.MyRect.SetSize(mySize);
+                }
+            }
             cursor.MarkCount(@object);
             @object.OnIGU();
         }

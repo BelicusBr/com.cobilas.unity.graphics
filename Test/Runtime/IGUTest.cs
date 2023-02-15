@@ -23,12 +23,12 @@ namespace Cobilas.Unity.Packages.com.cobilas.unity.graphics.Test.Runtime
          - Add IGUSelectionGrid.cs
          - Add IGUWindow.cs
          */
+        public Vector2 pos1, pos2;
         public bool clek;
         public bool useCellSize = true;
         public int icount;
         public int breakdir;
-        public IGUHorizontalLayout layout;
-        public IGUBox box;
+        public IGUVerticalLayout layout;
         //public IGUObject slider1;
         //public IGUObject slider2;
         //public IGUObject slider3;
@@ -49,26 +49,20 @@ namespace Cobilas.Unity.Packages.com.cobilas.unity.graphics.Test.Runtime
         // Use this for initialization
         void Start()
         {
-            box = IGUBox.CreateIGUInstance("bx-box", string.Empty);
-            layout = IGUHorizontalLayout.CreateIGUInstance("layout");
-            box.Parent = layout;
-            layout.CellSize = IGURect.DefaultButton.Size;
-            IGUButton bt1 = IGUButton.CreateIGUInstance("TDS_001", "button 1"),
-                      bt2 = IGUButton.CreateIGUInstance("TDS_002", "button 2"),
-                      bt3 = IGUButton.CreateIGUInstance("TDS_003", "button 3"),
-                      bt4 = IGUButton.CreateIGUInstance("TDS_004", "button 4"),
-                      bt5 = IGUButton.CreateIGUInstance("TDS_005", "button 5");
 
-            bt3.MyRect = bt3.MyRect.SetSize(145f, 30f);
-
-            layout.Add(bt1);
-            layout.Add(bt2);
-            layout.Add(bt3);
-            layout.Add(bt4);
-            layout.Add(bt5);
-            //_ = IGUButton.CreateIGUInstance("TDS_006", "button 6").ApplyToGenericContainer();
-            _ = box.ApplyToGenericContainer();
+            layout = IGUVerticalLayout.CreateIGUInstance("ly-layout");
+            IGUHorizontalLayout hz_layout;
+            _ = layout.Add(IGUButton.CreateIGUInstance("bt-button 1"));
+            _ = layout.Add(IGUButton.CreateIGUInstance("bt-button 2"));
+            _ = layout.Add(hz_layout = IGUHorizontalLayout.CreateIGUInstance("ly-hz1_layout"));
+            _ = hz_layout.Add(IGUButton.CreateIGUInstance("hz1-bt-button 1"));
+            _ = hz_layout.Add(IGUButton.CreateIGUInstance("hz1-bt-button 2"));
+            _ = layout.Add(hz_layout = IGUHorizontalLayout.CreateIGUInstance("ly-hz2_layout"));
+            _ = hz_layout.Add(IGUButton.CreateIGUInstance("hz2-bt-button 1"));
+            _ = hz_layout.Add(IGUButton.CreateIGUInstance("hz2-bt-button 2"));
+            _ = hz_layout.Add(IGUButton.CreateIGUInstance("hz2-bt-button 3"));
             _ = layout.ApplyToGenericContainer();
+
             //slider1 = IGUButton.CreateIGUInstance("TDS_001");
             //slider2 = IGUCheckBox.CreateIGUInstance("TDS_002");
             //slider3 = IGUComboBox.CreateIGUInstance("TDS_003");
@@ -107,9 +101,10 @@ namespace Cobilas.Unity.Packages.com.cobilas.unity.graphics.Test.Runtime
 
         private void Update()
         {
+            //Debug.Log(pos2 - pos1);
             icount = icount < 1 ? 1 : icount;
             breakdir = breakdir < 1 ? 1 : breakdir;
-            box.MyRect = box.MyRect.SetSize(layout.MyRect.Size);
+            //box.MyRect = box.MyRect.SetSize(layout.MyRect.Size);
         }
 
         private void OnGUI() {

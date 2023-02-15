@@ -1,4 +1,4 @@
-## [1.7.0] - 12/02/2023
+## [1.7.1] - 12/02/2023
 ### Added
 Agora foi adicionado os esquemas de layout.
 ```c#
@@ -6,6 +6,13 @@ Agora foi adicionado os esquemas de layout.
 	public sealed class IGUVerticalLayout
 	public sealed class IGUGridLayout
 ```
+### Fixed
+#### IGUObject
+No método `IGUConfig:GetModIGUConfig()` além de verificar se o parent é nulo também são verificados
+se `parent.GetModIGUConfig().IsEnabled && myConfg.IsEnabled` é `parent.GetModIGUConfig().IsVisible && myConfg.IsVisible`
+são verdadeiros.
+No método `Vector2:GetPosition()` a posição do parent erá obtida da propriedade `parent.myRect.ModifiedPosition`
+o que vai ocasionar um posicionamento incorreto.
 ## [1.0.16] - 12/02/2023
 ### Fixed
 No metódo `IGUConatiner.AddDeepAction(int)` á instrução `RefreshDepth();` era executada antes do objeto `DeepAction`

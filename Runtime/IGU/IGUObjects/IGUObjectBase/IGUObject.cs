@@ -104,15 +104,21 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
 
         void IIGUObject.InternalPostOnIGU() => PostOnIGU();
 
-        protected IGUConfig GetModIGUConfig()
-            => parent == null ? myConfg : parent.myConfg;
+        protected IGUConfig GetModIGUConfig() {
+            if (parent != null) {
+                return myConfg.SetDepth(parent.GetModIGUConfig().Depth)
+                    .SetEnabled(parent.GetModIGUConfig().IsEnabled && myConfg.IsEnabled)
+                    .SetVisible(parent.GetModIGUConfig().IsVisible && myConfg.IsVisible);
+            }
+            return myConfg;
+        }
 
         protected virtual void PreOnIGU() { }
 
         protected virtual void PostOnIGU() { }
 
         protected Vector2 GetPosition()
-            => parent == null || NotMod() ? myRect.ModifiedPosition : myRect.ModifiedPosition + parent.myRect.ModifiedPosition;
+            => parent == null || NotMod() ? myRect.ModifiedPosition : myRect.ModifiedPosition + parent.GetPosition();
 
         protected GUIStyle GetDefaultValue(GUIStyle style, GUIStyle _default) {
             if (style != null) return style;

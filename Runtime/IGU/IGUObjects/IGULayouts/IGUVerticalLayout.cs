@@ -13,6 +13,7 @@ namespace Cobilas.Unity.Graphics.IGU.Layouts {
         private VerticalLayoutCellCursor cursor;
         private event Action<CellCursor> sub_OnIGU;
 
+        public Vector2 GridRect => cursor.GridRect;
         public override int Count => ArrayManipulation.ArrayLength(objects);
         public float Spacing { get => cursor.spacing; set => cursor.spacing = value; }
         public Vector2 CellSize { get => cursor.CellSize; set => cursor.CellSize = value; }
@@ -27,8 +28,13 @@ namespace Cobilas.Unity.Graphics.IGU.Layouts {
         }
 
         public override void OnIGU() {
+            IGUConfig config = GetModIGUConfig();
+            if (!config.IsVisible) return;
+
             cursor.Reset();
+            BeginDoNotModifyRect(false);
             sub_OnIGU?.Invoke(cursor);
+            EndDoNotModifyRect();
             myRect.SetSize(cursor.GridRect);
         }
 
@@ -94,6 +100,7 @@ namespace Cobilas.Unity.Graphics.IGU.Layouts {
             res.CellSize = cellSize;
             res.UseCellSize = useCellSize;
             res.myConfg = IGUConfig.Default;
+            res.myRect = IGURect.DefaultButton;
             res.myColor = IGUColor.DefaultBoxColor;
             return res;
         }
