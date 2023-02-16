@@ -8,11 +8,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
+      - uses: bduff9/use-npmrc@v1.2
         with:
-          node-version: 16
-          registry-url: https://npm.pkg.github.com
-          scope: '@BelicusBr'
+          dot-npmrc: ${{ secrets.DOT_NPMRC }}
       - run: npm install
         env:
           NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
