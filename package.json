@@ -27,6 +27,8 @@
   ],
   "license": "MIT",
   "dependencies": {
-    "com.cobilas.core": "^1.0.3"
+    "com.cobilas.core": "^1.0.3",
+	"com.cobilas.unity.utility": "^1.0.30",
+	"com.cobilas.unity.extensions": "^1.0.19"
   }
 }
