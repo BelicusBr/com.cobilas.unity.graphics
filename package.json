@@ -1,19 +1,34 @@
 {
   "name": "com.cobilas.unity.graphics",
-  "version": "1.0.16",
+  "version": "1.7.1",
   "displayName": "Cobilas Graphics",
   "description": "Pacote que adiciona e manipula elementos",
   "licensesUrl": "https://github.com/BelicusBr/com.cobilas.unity.graphics/blob/main/LICENSE.md",
   "changelogUrl": "https://github.com/BelicusBr/com.cobilas.unity.graphics/blob/main/CHANGELOG.md",
   "unity": "2019.1",
   "unityRelease": "0b5",
-  "type": "cb-graphics",
+  "type": "tool",
   "author": "Cobilas CTB",
   "repository": {
-    "url": "https://github.com/BelicusBr/com.cobilas.unity.graphics.git",
+    "url": "git+https://github.com/BelicusBr/com.cobilas.unity.graphics.git",
     "type": "git"
   },
-  "publishConfig": {
-    "registry": "https://npm.pkg.github.com/@BelicusBr"
+  "bugs": {
+    "url": "https://github.com/BelicusBr/com.cobilas.unity.graphics/issues"
+  },
+  "homepage": "https://github.com/BelicusBr/com.cobilas.unity.graphics#readme",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "unity3d",
+    "graphics"
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "com.cobilas.core": "^1.0.3",
+	"com.cobilas.unity.utility": "^1.0.30",
+	"com.cobilas.unity.extensions": "^1.0.19"
   }
 }

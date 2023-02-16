@@ -29,7 +29,7 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
         public GUIStyle TextFieldStyle { get => textField.TextFieldStyle; set => textField.TextFieldStyle = value; }
 
         public override void OnIGU() {
-            if (!myConfg.IsVisible) return;
+            if (!GetModIGUConfig().IsVisible) return;
             IGURect rect = myRect;
 
             float buttonWidgh = rect.Width * .5f;
@@ -43,7 +43,6 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
             buttonRight.MyRect = buttonRight.MyRect.SetSize(buttonWidgh, 12);
 
             buttonLeft.MyColor = buttonRight.MyColor = textField.MyColor = myColor;
-            buttonLeft.MyConfg = buttonRight.MyConfg = textField.MyConfg = myConfg;
 
             if (maxMinSlider != MaxMinSliderInt.Zero) {
                 value = maxMinSlider.Min < value ? maxMinSlider.Min : value;

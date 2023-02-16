@@ -19,8 +19,9 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
         public float BorderRadius { get => borderRadiuses.Summation() / 4f; set => borderRadiuses = Vector4.one * value; }
 
         public override void OnIGU() {
-            if (!myConfg.IsVisible) return;
-            GUI.enabled = myConfg.IsEnabled;
+            IGUConfig config = GetModIGUConfig();
+            if (!config.IsVisible) return;
+            GUI.enabled = config.IsEnabled;
 
             Rect rectTemp = new Rect(GetPosition(), myRect.Size);
             

@@ -12,9 +12,10 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
         public GUIStyle HorizontalSliderThumb { get => horizontalSliderThumb; set => horizontalSliderThumb = value; }
 
         public override void OnIGU() {
-            if (!myConfg.IsVisible) return;
+            IGUConfig config = GetModIGUConfig();
+            if (!config.IsVisible) return;
             GUI.color = myColor.MyColor;
-            GUI.enabled = myConfg.IsEnabled;
+            GUI.enabled = config.IsEnabled;
             GUI.contentColor = myColor.TextColor;
             GUI.backgroundColor = myColor.BackgroundColor;
 
@@ -27,13 +28,12 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
 
             float valuetemp = GUI.HorizontalSlider(rectTemp, isInt ? ValueToInt : value, temp.Min, temp.Max, sliderObjectStyle, horizontalSliderThumb);
 
-            if (valuetemp != value) {
+            if (valuetemp != value)
                 if (IGUDrawer.Drawer.GetMouseButton(myConfg.MouseType)) {
                     value = valuetemp;
                     onModifiedSlider.Invoke(value);
                     onModifiedSliderInt.Invoke((int)value);
                 }
-            }
         }
 
         public static IGUHorizontalSlider CreateIGUInstance(string name, float value, MaxMinSlider maxMin) {

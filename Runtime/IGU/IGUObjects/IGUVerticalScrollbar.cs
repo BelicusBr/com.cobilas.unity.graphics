@@ -12,9 +12,10 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
         public float ScrollbarThumbSize { get => scrollbarThumbSize; set => scrollbarThumbSize = value; }
 
         public override void OnIGU() {
-            if (!myConfg.IsVisible) return;
+            IGUConfig config = GetModIGUConfig();
+            if (!config.IsVisible) return;
             GUI.color = myColor.MyColor;
-            GUI.enabled = myConfg.IsEnabled;
+            GUI.enabled = config.IsEnabled;
             GUI.contentColor = myColor.TextColor;
             GUI.backgroundColor = myColor.BackgroundColor;
 
@@ -26,13 +27,12 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
 
             float valuetemp = GUI.VerticalScrollbar(rectTemp, isInt ? ValueToInt : value, scrollbarThumbSize, temp.Min, temp.Max, sliderObjectStyle);
 
-            if (valuetemp != value) {
+            if (valuetemp != value)
                 if (IGUDrawer.Drawer.GetMouseButton(myConfg.MouseType)) {
                     value = valuetemp;
                     onModifiedScrollbar.Invoke(value);
                     onModifiedScrollbarInt.Invoke((int)value);
                 }
-            }
         }
 
         public static IGUVerticalScrollbar CreateIGUInstance(string name, float value, float scrollbarThumbSize, MaxMinSlider maxMin) {

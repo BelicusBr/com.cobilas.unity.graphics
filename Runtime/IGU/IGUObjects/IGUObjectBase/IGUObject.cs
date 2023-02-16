@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using Cobilas.Unity.Graphics.IGU.Interfaces;
 
 namespace Cobilas.Unity.Graphics.IGU.Elements {
-    //[Serializable]
     public abstract class IGUObject : ScriptableObject, IIGUObject {
+        private static readonly DoNotModifyRect defaultFalse = new DoNotModifyRect(false);
+        private static readonly Stack<DoNotModifyRect> doNots = new Stack<DoNotModifyRect>();
         [SerializeField] protected IGURect myRect;
         [SerializeField] protected IGUColor myColor;
         [SerializeField] protected IGUObject parent;
@@ -103,17 +104,35 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
 
         void IIGUObject.InternalPostOnIGU() => PostOnIGU();
 
+        protected IGUConfig GetModIGUConfig() {
+            if (parent != null) {
+                return myConfg.SetDepth(parent.GetModIGUConfig().Depth)
+                    .SetEnabled(parent.GetModIGUConfig().IsEnabled && myConfg.IsEnabled)
+                    .SetVisible(parent.GetModIGUConfig().IsVisible && myConfg.IsVisible);
+            }
+            return myConfg;
+        }
+
         protected virtual void PreOnIGU() { }
 
         protected virtual void PostOnIGU() { }
 
         protected Vector2 GetPosition()
-            => parent == null ? MyRect.ModifiedPosition : myRect.ModifiedPosition + parent.myRect.ModifiedPosition;
+            => parent == null || NotMod() ? myRect.ModifiedPosition : myRect.ModifiedPosition + parent.GetPosition();
 
         protected GUIStyle GetDefaultValue(GUIStyle style, GUIStyle _default) {
             if (style != null) return style;
             return _default;
         }
+
+        public static void BeginDoNotModifyRect(bool noMod)
+            => doNots.Push(new DoNotModifyRect(noMod));
+
+        public static void EndDoNotModifyRect()
+            => _ = doNots.Pop();
+
+        private static DoNotModifyRect NotMod()
+            => doNots.Count == 0 ? defaultFalse : doNots.Peek();
 
         protected static T Internal_CreateIGUInstance<T>(string name) where T : IGUObject {
             T temp = CreateInstance<T>();

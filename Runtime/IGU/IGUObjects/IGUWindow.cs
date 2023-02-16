@@ -17,9 +17,11 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
         public GUIStyle WindowStyle { get => windowStyle; set => windowStyle = value; }
 
         public override void OnIGU() {
-            if (!myConfg.IsVisible) return;
+            IGUConfig config = GetModIGUConfig();
+
+            if (!config.IsVisible) return;
             GUI.color = myColor.MyColor;
-            GUI.enabled = myConfg.IsEnabled;
+            GUI.enabled = config.IsEnabled;
             GUI.contentColor = myColor.TextColor;
             GUI.backgroundColor = myColor.BackgroundColor;
 
@@ -47,7 +49,9 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
         private void InitInternalIndowFunction() {
             internalIndowFunction = (id) => {
                 GUI.DragWindow(dragFlap);
+                BeginDoNotModifyRect(true);
                 windowFunction?.Invoke(id);
+                EndDoNotModifyRect();
             };
         }
 
