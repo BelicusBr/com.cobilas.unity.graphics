@@ -11,6 +11,8 @@ jobs:
       - uses: bduff9/use-npmrc@v1.2
         with:
           dot-npmrc: ${{ secrets.DOT_NPMRC }}
+          registry-url: https://npm.pkg.github.com
+          scope: '@BelicusBr'
       - run: npm install
         env:
           NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
