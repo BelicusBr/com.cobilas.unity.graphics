@@ -2,9 +2,9 @@
 ### Added
 Agora foi adicionado os esquemas de layout.
 ```c#
-	public sealed class IGUHorizontalLayout
-	public sealed class IGUVerticalLayout
-	public sealed class IGUGridLayout
+	public sealed class IGUHorizontalLayout{}
+	public sealed class IGUVerticalLayout{}
+	public sealed class IGUGridLayout{}
 ```
 ### Fixed
 #### IGUObject
