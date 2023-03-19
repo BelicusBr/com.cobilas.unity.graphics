@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using Cobilas.Unity.Mono;
 using Cobilas.Collections;
 using Cobilas.Unity.Management.Runtime;
 using Cobilas.Unity.Management.Container;
@@ -6,7 +7,7 @@ using Cobilas.Unity.Management.Container;
 namespace Cobilas.Unity.Graphics.Resolutions {
     using UEResolution = UnityEngine.Resolution;
     [AddToPermanentContainer]
-    public class CobilasResolutions : MonoBehaviour, ISerializationCallbackReceiver {
+    public class CobilasResolutions : CobilasBehaviour, ISerializationCallbackReceiver {
         [SerializeField] private Resolution[] resolutions;
         [SerializeField] private AspectRatio[] aspectRatios;
         [SerializeField] private int[] frequencys;
