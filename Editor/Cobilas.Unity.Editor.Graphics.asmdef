@@ -2,7 +2,6 @@
     "name": "Cobilas.Unity.Editor.Graphics",
     "references": [
         "Cobilas.Unity.Graphics",
-        "Cobilas.Unity.Mono",
         "Cobilas.Unity.Utility",
         "Cobilas.Unity.Editor.Utility",
         "Cobilas.Core"

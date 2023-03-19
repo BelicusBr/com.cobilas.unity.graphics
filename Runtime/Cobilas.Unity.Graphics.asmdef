@@ -1,7 +1,6 @@
 {
     "name": "Cobilas.Unity.Graphics",
     "references": [
-        "Cobilas.Unity.Mono",
         "Cobilas.Unity.Extensions",
         "Cobilas.Unity.Management.Runtime",
         "Cobilas.Core"
