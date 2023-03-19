@@ -1,6 +1,7 @@
 {
     "name": "Cobilas.Unity.Test.Graphics",
     "references": [
+        "Cobilas.Unity.Mono",
         "Cobilas.Unity.Utility",
         "Cobilas.Unity.Graphics",
         "Cobilas.Unity.Extensions",
