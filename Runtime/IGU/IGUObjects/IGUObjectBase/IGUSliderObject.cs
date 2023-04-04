@@ -18,7 +18,7 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
         protected override void Awake() => base.Awake();
         protected override void OnEnable() => base.OnEnable();
         protected override void OnDisable() => base.OnDisable();
-        protected override void OnDestroy() => base.OnDestroy();
+        protected override void OnIGUDestroy() => base.OnIGUDestroy();
 
         protected static T Internal_CreateIGUInstance<T>(string name, float value, bool isInt, MaxMinSlider maxmin) where T : IGUSliderObject {
             T sliderObject = Internal_CreateIGUInstance<T>(name);

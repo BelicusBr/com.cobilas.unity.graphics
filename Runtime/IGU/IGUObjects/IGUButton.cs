@@ -65,6 +65,22 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
         void ISerializationCallbackReceiver.OnAfterDeserialize()
             => IGUDrawer.EventEndOfFrame += Reset;
 
+        protected override void SetDefaultValue(IGUDefaultValue value) {
+            if (value == null) value = IGUBoxDefault.ButtonDefaultValue;
+            else if (value.GetType() == typeof(IGUBoxDefault))
+                throw new IGUException();
+            myConfg = IGUConfig.Default;
+            myRect = IGURect.DefaultButton;
+            myColor = IGUColor.DefaultBoxColor;
+            name = value.GetValue<string>(0L);
+            useTooltip = value.GetValue<bool>(1L);
+            container = value.GetValue<IGUContainer>(2L);
+            buttonStyle = value.GetValue<GUIStyle>(3L);
+            onClick = new IGUOnClickEvent();
+            clicked = new bool[2];
+            (this as ISerializationCallbackReceiver).OnAfterDeserialize();
+        }
+
         public static string PickUpWhereItWasCalled(int skipFrames = 1)
             => new StackTrace(skipFrames).GetFrame(0).GetMethod().Name;
 

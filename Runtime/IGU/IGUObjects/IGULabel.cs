@@ -49,6 +49,21 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
         protected override GUIContent GetGUIContent(string defaultGUIContent)
             => base.GetGUIContent(defaultGUIContent);
 
+        protected override void SetDefaultValue(IGUDefaultValue value) {
+            if (value == null) value = IGULabelDefault.DefaultValue;
+            else if (value.GetType() == typeof(IGULabelDefault))
+                throw new IGUException();
+            myConfg = IGUConfig.Default;
+            myRect = IGURect.DefaultButton;
+            myColor = IGUColor.DefaultLabelColor;
+            name = value.GetValue<string>(0L);
+            useTooltip = value.GetValue<bool>(1L);
+            autoSize = value.GetValue<bool>(2L);
+            richText = value.GetValue<bool>(3L);
+            container = value.GetValue<IGUContainer>(4L);
+            labelStyle = value.GetValue<GUIStyle>(5L);
+        }
+
         public static IGULabel CreateIGUInstance(string name, bool autoSize, bool richText, IGUContent content) {
             IGULabel label = Internal_CreateIGUInstance<IGULabel>(name, content);
             label.myConfg = IGUConfig.Default;

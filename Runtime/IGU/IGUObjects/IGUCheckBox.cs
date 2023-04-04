@@ -64,6 +64,25 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
         protected override void DrawTooltip()
             => base.DrawTooltip();
 
+        protected override void SetDefaultValue(IGUDefaultValue value) {
+            if (value == null) value = IGUCheckBoxDefault.DefaultValue;
+            else if (value.GetType() == typeof(IGUCheckBoxDefault))
+                throw new IGUException();
+            myConfg = IGUConfig.Default;
+            myRect = IGURect.DefaultButton;
+            myColor = IGUColor.DefaultBoxColor;
+            name = value.GetValue<string>(0L);
+            useTooltip = value.GetValue<bool>(1L);
+            container = value.GetValue<IGUContainer>(2L);
+            _checked = value.GetValue<bool>(3L);
+            checkBoxStyle = value.GetValue<GUIStyle>(4L);
+            oneClick = !_checked;
+            onClick = new IGUOnClickEvent();
+            checkBoxOn = new IGUOnClickEvent();
+            checkBoxOff = new IGUOnClickEvent();
+            onChecked = new IGUOnCheckedEvent();
+        }
+
         public static IGUCheckBox CreateIGUInstance(string name, bool _checked, IGUContent content) {
             IGUCheckBox checkBox = Internal_CreateIGUInstance<IGUCheckBox>(name);
             checkBox.content = content;

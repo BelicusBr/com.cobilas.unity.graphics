@@ -206,8 +206,34 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
 #endif
         }
 
-        protected override void OnDestroy() {
-            base.OnDestroy();
+        protected override void SetDefaultValue(IGUDefaultValue value) {
+            if (value == null) value = IGUScrollViewDefault.DefaultValue;
+            else if (value.GetType() == typeof(IGUScrollViewDefault))
+                throw new IGUException();
+            myConfg = IGUConfig.Default;
+            myRect = IGURect.DefaultButton;
+            myColor = IGUColor.DefaultBoxColor;
+            boxButtons = new IGUComboBoxButton[0];
+            activatedComboBox = false;
+            _onActivatedComboBox = true;
+            scrollViewHeight = 130f;
+            comboBoxButtonHeight = 25f;
+            closeOnClickComboBoxViewButton =
+            adjustComboBoxViewAccordingToTheButtonsPresent = true;
+            onClick = new IGUOnClickEvent();
+            onActivatedComboBox = new IGUOnClickEvent();
+            onSelectedIndex = new IGUComboBoxClickEvent();
+            comboBoxButton = CreateIGUInstance<IGUButton>(new IGUBoxDefault($"({name})-ComboBoxButton"));
+            comboBoxScrollView = CreateIGUInstance<IGUScrollView>(new IGUBoxDefault($"({name})-ComboBoxScrollView"));
+            comboBoxButton.Parent = comboBoxScrollView.Parent = this;
+            InitScrollViewAction();
+            name = value.GetValue<string>(0L);
+            SetIGUComboBoxButtonList(value.GetValue<IGUContent[]>(2L));
+            Index = value.GetValue<int>(1L);
+        }
+
+        protected override void OnIGUDestroy() {
+            base.OnIGUDestroy();
             DestroyList(ref boxButtons);
         }
 

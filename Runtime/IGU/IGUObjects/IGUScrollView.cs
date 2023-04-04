@@ -78,6 +78,22 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
         public void ScrollTo(Rect rect)
             => GUI.ScrollTo(rect);
 
+        protected override void SetDefaultValue(IGUDefaultValue value) {
+            if (value == null) value = IGUScrollViewDefault.DefaultValue;
+            else if (value.GetType() == typeof(IGUScrollViewDefault))
+                throw new IGUException();
+            myConfg = IGUConfig.Default;
+            myRect = IGURect.DefaultTextArea;
+            myColor = IGUColor.DefaultBoxColor;
+            onScrollView = new IGUScrollViewEvent();
+            name = value.GetValue<string>(0L);
+            viewRect = value.GetValue<Rect>(1L);
+            alwaysShowVertical = value.GetValue<bool>(2L);
+            alwaysShowHorizontal = value.GetValue<bool>(3L);
+            verticalScrollbarStyle = value.GetValue<GUIStyle>(4L);
+            horizontalScrollbarStyle = value.GetValue<GUIStyle>(5L);
+        }
+
         public static IGUScrollView CreateIGUInstance(string name, Rect viewRect, bool alwaysShowVertical, bool alwaysShowHorizontal) {
             IGUScrollView scrollView = Internal_CreateIGUInstance<IGUScrollView>(name);
             scrollView.viewRect = viewRect;

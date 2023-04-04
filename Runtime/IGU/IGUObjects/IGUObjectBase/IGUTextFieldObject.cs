@@ -11,7 +11,7 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
         protected override void Awake() => base.Awake();
         protected override void OnEnable() => base.OnEnable();
         protected override void OnDisable() => base.OnDisable();
-        protected override void OnDestroy() => base.OnDestroy();
+        protected override void OnIGUDestroy() => base.OnIGUDestroy();
 
         protected override void DrawTooltip()
             => base.DrawTooltip();
