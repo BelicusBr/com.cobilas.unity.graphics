@@ -11,8 +11,11 @@ namespace Cobilas.Unity.Graphics.IGU {
         public int Index => index;
         public IGUContent Content => button.MyContent;
 
-        public IGUComboBoxButton(int index, int parentInstanceID, IGUContent content)
-            => this.button = IGUButton.CreateIGUInstance($"({parentInstanceID})CBXBT[index:{this.index = index}]", content);
+        public IGUComboBoxButton(int index, int parentInstanceID, IGUContent content) {
+            this.button = IGUObject.CreateIGUInstance<IGUButton>($"({parentInstanceID})CBXBT[index:{this.index = index}]");
+            this.button.MyContent = content;
+        }
+            //=> this.button = IGUButton.CreateIGUInstance($"({parentInstanceID})CBXBT[index:{this.index = index}]", content);
 
         public void OnIGU(GUIStyle style, IGUScrollView sv) {
             button.ButtonStyle = style;

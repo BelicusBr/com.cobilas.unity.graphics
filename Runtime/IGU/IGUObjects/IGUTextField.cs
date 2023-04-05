@@ -24,6 +24,17 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
         public bool IsTextArea { get => isTextArea; set => isTextArea = value; }
         public GUIStyle TextFieldStyle { get => textFieldStyle; set => textFieldStyle = value; }
 
+        protected override void Awake() {
+            base.Awake();
+            maxLength = 50000;
+            myConfg = IGUConfig.Default;
+            myRect = IGURect.DefaultButton;
+            onClick = new IGUOnClickEvent();
+            myColor = IGUColor.DefaultBoxColor;
+            onKeyDown = new IGUTextFieldKeyCodeEvent();
+            onCharDown = new IGUTextFieldKeyCharEvent();
+        }
+
         public override void OnIGU() {
             IGUConfig config = GetModIGUConfig();
             if (!config.IsVisible) return;
@@ -73,37 +84,5 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
 
         protected override void SetGUISettings(IGUTextSettings settings)
             => base.SetGUISettings(settings);
-
-        public static IGUTextField CreateIGUInstance(string name, bool isTextArea, int maxLength, IGUContent content) {
-            IGUTextField textField = Internal_CreateIGUInstance<IGUTextField>(name, content);
-            textField.maxLength = maxLength;
-            textField.myConfg = IGUConfig.Default;
-            textField.onClick = new IGUOnClickEvent();
-            textField.settings = new IGUTextSettings();
-            textField.myColor = IGUColor.DefaultBoxColor;
-            textField.onKeyDown = new IGUTextFieldKeyCodeEvent();
-            textField.onCharDown = new IGUTextFieldKeyCharEvent();
-            if (textField.isTextArea = isTextArea) textField.myRect = IGURect.DefaultBox;
-            else textField.myRect = IGURect.DefaultButton;
-            return textField;
-        }
-
-        public static IGUTextField CreateIGUInstance(string name, bool isTextArea, IGUContent content)
-            => CreateIGUInstance(name, isTextArea, 50000, content);
-
-        public static IGUTextField CreateIGUInstance(string name, IGUContent content)
-            => CreateIGUInstance(name, false, content);
-
-        public static IGUTextField CreateIGUInstance(string name, bool isTextArea, int maxLength, string text)
-            => CreateIGUInstance(name, isTextArea, maxLength, new IGUContent(text));
-
-        public static IGUTextField CreateIGUInstance(string name, bool isTextArea, string text)
-            => CreateIGUInstance(name, isTextArea, new IGUContent(text));
-
-        public static IGUTextField CreateIGUInstance(string name, string text)
-            => CreateIGUInstance(name, new IGUContent(text));
-
-        public static IGUTextField CreateIGUInstance(string name)
-            => CreateIGUInstance(name, "");
     }
 }

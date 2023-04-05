@@ -4,6 +4,9 @@ namespace Cobilas.Unity.Graphics.IGU {
     public struct DoNotModifyRect : IDisposable, IEquatable<bool> {
         private bool pilha;
 
+        public static readonly DoNotModifyRect True = new DoNotModifyRect(true);
+        public static readonly DoNotModifyRect False = new DoNotModifyRect(false);
+
         public DoNotModifyRect(bool pilha)
         {
             this.pilha = pilha;

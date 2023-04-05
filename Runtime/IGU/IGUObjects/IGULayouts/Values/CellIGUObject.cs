@@ -48,16 +48,10 @@ namespace Cobilas.Unity.Graphics.IGU.Layouts {
             mySize = Vector2.zero;
         }
 
-        public static bool operator ==(CellIGUObject A, IGUObject B)
-            => (object)A != null && (object)B != null && A.Equals(B);
+        public static bool operator ==(CellIGUObject A, IGUObject B) => A is object && B is object && A.Equals(B);
+        public static bool operator !=(CellIGUObject A, IGUObject B) => !(A == B);
 
-        public static bool operator !=(CellIGUObject A, IGUObject B)
-            => !(A == B);
-
-        public static bool operator ==(IGUObject A, CellIGUObject B)
-            => (object)A != null && (object)B != null && B.Equals(A);
-
-        public static bool operator !=(IGUObject A, CellIGUObject B)
-            => !(A == B);
+        public static bool operator ==(IGUObject A, CellIGUObject B) => A is object && B is object && B.Equals(A);
+        public static bool operator !=(IGUObject A, CellIGUObject B) => !(A == B);
     }
 }

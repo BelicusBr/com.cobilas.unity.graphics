@@ -8,6 +8,11 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
         private bool onClicked;
 
         public override bool Clicked => clicked[0];
+        protected override void Awake() {
+            base.Awake();
+            content = new IGUContent(DefaultContentIGURepeatButton);
+            onRepeatClick = new IGUOnClickEvent();
+        }
 
         public override void OnIGU() {
             IGUConfig config = GetModIGUConfig();
@@ -48,25 +53,5 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
 
         protected override GUIContent GetGUIContent(string defaultGUIContent)
             => base.GetGUIContent(defaultGUIContent);
-
-        protected override void Reset() { }
-
-        public new static IGURepeatButton CreateIGUInstance(string name, IGUContent content) {
-            IGURepeatButton button = Internal_CreateIGUInstance<IGURepeatButton>(name, content);
-            button.clicked = new bool[2];
-            button.myConfg = IGUConfig.Default;
-            button.myRect = IGURect.DefaultButton;
-            button.onClick = new IGUOnClickEvent();
-            button.myColor = IGUColor.DefaultBoxColor;
-            button.onRepeatClick = new IGUOnClickEvent();
-            (button as ISerializationCallbackReceiver).OnAfterDeserialize();
-            return button;
-        }
-
-        public new static IGURepeatButton CreateIGUInstance(string name, string text)
-            => CreateIGUInstance(name, new IGUContent(text));
-
-        public new static IGURepeatButton CreateIGUInstance(string name)
-            => CreateIGUInstance(name, DefaultContentIGURepeatButton);
     }
 }

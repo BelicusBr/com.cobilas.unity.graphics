@@ -53,6 +53,31 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
         public bool AdjustComboBoxView { get => adjustComboBoxViewAccordingToTheButtonsPresent; set => adjustComboBoxViewAccordingToTheButtonsPresent = value; }
         public GUIStyle HorizontalScrollbarStyle { get => comboBoxScrollView.HorizontalScrollbarStyle; set => comboBoxScrollView.HorizontalScrollbarStyle = value; }
 
+        protected override void Awake() {
+            base.Awake();
+            myConfg = IGUConfig.Default;
+            myRect = IGURect.DefaultButton;
+            myColor = IGUColor.DefaultBoxColor;
+            boxButtons = new IGUComboBoxButton[0];
+            activatedComboBox = false;
+            _onActivatedComboBox = true;
+            scrollViewHeight = 130f;
+            comboBoxButtonHeight = 25f;
+            closeOnClickComboBoxViewButton =
+            adjustComboBoxViewAccordingToTheButtonsPresent = true;
+            onClick = new IGUOnClickEvent();
+            onActivatedComboBox = new IGUOnClickEvent();
+            onSelectedIndex = new IGUComboBoxClickEvent();
+            comboBoxButton = CreateIGUInstance<IGUButton>();
+            comboBoxScrollView = CreateIGUInstance<IGUScrollView>();
+            comboBoxButton.name = "--ComboBoxButton";
+            comboBoxScrollView.name = "--ComboBoxScrollView";
+            comboBoxButton.Parent = comboBoxScrollView.Parent = this;
+            InitScrollViewAction();
+            SetIGUComboBoxButtonList("Item1", "Item2", "Item3");
+            Index = 0;
+        }
+
         protected override void OnEnable() {
 #if UNITY_EDITOR
             DestroyList(ref destroyList);
@@ -85,7 +110,7 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
             rectTemp.width = myRect.Width;
             rectTemp.height = scrollViewHeight + myRect.Height;
 
-            comboBoxScrollView.MyRect = comboBoxScrollView.MyRect.SetPosition(0, myRect.Height);
+            comboBoxScrollView.MyRect = comboBoxScrollView.MyRect.SetPosition(0, comboBoxButton.MyRect.Height);
             comboBoxScrollView.MyRect = comboBoxScrollView.MyRect.SetSize(myRect.Width, newScrollViewHeight);
             comboBoxScrollView.MyColor = myColor;
             comboBoxScrollView.ViewRect = rectView;
@@ -105,7 +130,7 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
 
                 scrollViewBackgroundStyle = GetDefaultValue(scrollViewBackgroundStyle, GUI.skin.box);
 
-                GUI.Box(new Rect(comboBoxScrollView.MyRect.ModifiedPosition + myRect.ModifiedPosition, comboBoxScrollView.MyRect.Size),
+                GUI.Box(new Rect(rectTemp.position + Vector2.up * comboBoxButton.MyRect.Height, comboBoxScrollView.MyRect.Size),
                     IGUTextObject.GetGUIContentTemp(""), scrollViewBackgroundStyle);
 
                 comboBoxScrollView.OnIGU();
@@ -190,6 +215,7 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
         private void InitScrollViewAction() {
             comboBoxButton.OnClick.AddListener(() => {
                 activatedComboBox = !activatedComboBox;
+                Debug.Log("Click");
             });
             comboBoxScrollView.ScrollViewAction += (sv) => {
                 IGUComboBoxButtonOnIGU?.Invoke(comboBoxButton.ButtonStyle, sv);
@@ -206,49 +232,10 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
 #endif
         }
 
-        protected override void OnDestroy() {
-            base.OnDestroy();
+        protected override void OnIGUDestroy() {
+            base.OnIGUDestroy();
             DestroyList(ref boxButtons);
         }
-
-        public static IGUComboBox CreateIGUInstance(string name, int index, params IGUContent[] buttons) {
-            IGUComboBox comboBox = Internal_CreateIGUInstance<IGUComboBox>(name);
-            comboBox.scrollViewHeight = 130f;
-            comboBox.activatedComboBox = false;
-            comboBox.comboBoxButtonHeight = 25f;
-            comboBox._onActivatedComboBox = true;
-            comboBox.myConfg = IGUConfig.Default;
-            comboBox.myRect = IGURect.DefaultButton;
-            comboBox.onClick = new IGUOnClickEvent();
-            comboBox.myColor = IGUColor.DefaultBoxColor;
-            comboBox.boxButtons = new IGUComboBoxButton[0];
-            comboBox.closeOnClickComboBoxViewButton = true;
-            comboBox.onActivatedComboBox = new IGUOnClickEvent();
-            comboBox.onSelectedIndex = new IGUComboBoxClickEvent();
-            comboBox.adjustComboBoxViewAccordingToTheButtonsPresent = true;
-            comboBox.comboBoxButton = IGUButton.CreateIGUInstance($"({name})-ComboBoxButton");
-            comboBox.comboBoxScrollView = IGUScrollView.CreateIGUInstance($"({name})-ComboBoxScrollView");
-            comboBox.comboBoxButton.Parent = comboBox.comboBoxScrollView.Parent = comboBox;
-            comboBox.InitScrollViewAction();
-            comboBox.SetIGUComboBoxButtonList(buttons);
-            comboBox.Index = index;
-            return comboBox;
-        }
-
-        public static IGUComboBox CreateIGUInstance(string name, params IGUContent[] buttons)
-            => CreateIGUInstance(name, -1, buttons);
-
-        public static IGUComboBox CreateIGUInstance(string name, int index, params string[] buttons)
-            => CreateIGUInstance(name, index,
-                ArrayManipulation.EmpytArray(buttons) ? (IGUContent[])null :
-                Array.ConvertAll<string, IGUContent>(buttons, (b) => new IGUContent(b))
-                );
-
-        public static IGUComboBox CreateIGUInstance(string name, params string[] buttons)
-            => CreateIGUInstance(name, -1, buttons);
-
-        public static IGUComboBox CreateIGUInstance(string name)
-            => CreateIGUInstance(name, "Item 1", "Item 2", "Item 3");
 
         [Serializable]
         public class IGUComboBoxClickEvent : UnityEngine.Events.UnityEvent<IGUComboBoxButton> { }

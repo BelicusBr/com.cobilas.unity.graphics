@@ -19,7 +19,7 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
         protected override void Awake() => base.Awake();
         protected override void OnEnable() => base.OnEnable();
         protected override void OnDisable() => base.OnDisable();
-        protected override void OnDestroy() => base.OnDestroy();
+        protected override void OnIGUDestroy() => base.OnIGUDestroy();
 
         protected virtual GUIContent GetGUIContent(string defaultGUIContent) {
             if (content == null) content = new IGUContent(defaultGUIContent);
@@ -48,15 +48,5 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
 
         public static GUIContent GetGUIContentTemp(string text)
             => GetGUIContentTemp(text, "", (Texture)null);
-
-        protected static T Internal_CreateIGUInstance<T>(string name, bool useTooltip, IGUContent content) where T : IGUTextObject {
-            T textObject = IGUObject.Internal_CreateIGUInstance<T>(name);
-            textObject.useTooltip = useTooltip;
-            textObject.content = content;
-            return textObject;
-        }
-
-        protected static T Internal_CreateIGUInstance<T>(string name, IGUContent content) where T : IGUTextObject
-            => Internal_CreateIGUInstance<T>(name, false, content);
     }
 }

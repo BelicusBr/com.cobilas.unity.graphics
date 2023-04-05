@@ -16,6 +16,16 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
         public Rect DragFlap { get => dragFlap; set => dragFlap = value; }
         public GUIStyle WindowStyle { get => windowStyle; set => windowStyle = value; }
 
+        protected override void Awake() {
+            myConfg = IGUConfig.Default;
+            myRect = IGURect.DefaultWindow;
+            myColor = IGUColor.DefaultBoxColor;
+            onMovingWindow = new IGUScrollViewEvent();
+            content = new IGUContent(DefaultIGUWindow);
+            dragFlap = new Rect(0f, 0f, IGURect.DefaultWindow.Width, 15f);
+            InitInternalIndowFunction();
+        }
+
         public override void OnIGU() {
             IGUConfig config = GetModIGUConfig();
 
@@ -49,9 +59,9 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
         private void InitInternalIndowFunction() {
             internalIndowFunction = (id) => {
                 GUI.DragWindow(dragFlap);
-                BeginDoNotModifyRect(true);
+                doNots = DoNotModifyRect.True;
                 windowFunction?.Invoke(id);
-                EndDoNotModifyRect();
+                doNots = DoNotModifyRect.False;
             };
         }
 
@@ -65,29 +75,5 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
 
         protected override GUIContent GetGUIContent(string defaultGUIContent)
             => base.GetGUIContent(defaultGUIContent);
-
-        public static IGUWindow CreateIGUInstance(string name, Rect dragFlap, IGUContent content) {
-            IGUWindow window = Internal_CreateIGUInstance<IGUWindow>(name);
-            window.content = content;
-            window.dragFlap = dragFlap;
-            window.myConfg = IGUConfig.Default;
-            window.myRect = IGURect.DefaultWindow;
-            window.myColor = IGUColor.DefaultBoxColor;
-            window.onMovingWindow = new IGUScrollViewEvent();
-            window.InitInternalIndowFunction();
-            return window;
-        }
-
-        public static IGUWindow CreateIGUInstance(string name, IGUContent content)
-            => CreateIGUInstance(name, new Rect(0, 0, IGURect.DefaultWindow.Width, 15f), content);
-
-        public static IGUWindow CreateIGUInstance(string name, Rect dragFlap, string text)
-            => CreateIGUInstance(name, dragFlap, new IGUContent(text));
-
-        public static IGUWindow CreateIGUInstance(string name, string text)
-            => CreateIGUInstance(name, new IGUContent(text));
-
-        public static IGUWindow CreateIGUInstance(string name)
-            => CreateIGUInstance(name, DefaultIGUWindow);
     }
 }

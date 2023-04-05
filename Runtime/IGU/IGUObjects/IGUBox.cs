@@ -7,6 +7,14 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
 
         public GUIStyle BoxStyle { get => boxStyle; set => boxStyle = value; }
 
+        protected override void Awake() {
+            base.Awake();
+            myConfg = IGUConfig.Default;
+            myRect = IGURect.DefaultBox;
+            myColor = IGUColor.DefaultBoxColor;
+            content = new IGUContent(DefaultIGUBox);
+        }
+
         public override void OnIGU() {
             IGUConfig config = GetModIGUConfig();
 
@@ -33,20 +41,5 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
 
         protected override GUIContent GetGUIContent(string defaultGUIContent)
             => base.GetGUIContent(defaultGUIContent);
-
-        public static IGUBox CreateIGUInstance(string name, IGUContent content) {
-            IGUBox box = Internal_CreateIGUInstance<IGUBox>(name);
-            box.content = content;
-            box.myConfg = IGUConfig.Default;
-            box.myRect = IGURect.DefaultBox;
-            box.myColor = IGUColor.DefaultBoxColor;
-            return box;
-        }
-
-        public static IGUBox CreateIGUInstance(string name, string text)
-            => CreateIGUInstance(name, new IGUContent(text));
-
-        public static IGUBox CreateIGUInstance(string name)
-            => CreateIGUInstance(name, DefaultIGUBox);
     }
 }

@@ -14,6 +14,13 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
         public IGUOnClickEvent OnClick => onClick;
         public GUIStyle SelectableTextStyle { get => selectableTextStyle; set => selectableTextStyle = value; }
 
+        protected override void Awake() {
+            base.Awake();
+            myConfg = IGUConfig.Default;
+            myRect = IGURect.DefaultTextArea;
+            myColor = IGUColor.DefaultBoxColor;
+        }
+
         public override void OnIGU() {
             IGUConfig config = GetModIGUConfig();
             if (!config.IsVisible) return;
@@ -174,20 +181,5 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
                     }
             }
         }
-
-        public static IGUSelectableText CreateIGUInstance(string name, IGUContent content) {
-            IGUSelectableText selectableText = Internal_CreateIGUInstance<IGUSelectableText>(name, content);
-            selectableText.myConfg = IGUConfig.Default;
-            selectableText.myRect = IGURect.DefaultTextArea;
-            selectableText.settings = new IGUTextSettings();
-            selectableText.myColor = IGUColor.DefaultBoxColor;
-            return selectableText;
-        }
-
-        public static IGUSelectableText CreateIGUInstance(string name, string text)
-            => CreateIGUInstance(name, new IGUContent(text));
-
-        public static IGUSelectableText CreateIGUInstance(string name)
-            => CreateIGUInstance(name, "");
     }
 }

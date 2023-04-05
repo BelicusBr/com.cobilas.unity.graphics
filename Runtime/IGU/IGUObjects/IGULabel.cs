@@ -13,6 +13,14 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
         public bool RichText { get => richText; set => richText = value; }
         public GUIStyle LabelStyle { get => labelStyle; set => labelStyle = value; }
 
+        protected override void Awake() {
+            myConfg = IGUConfig.Default;
+            myRect = IGURect.DefaultButton;
+            myColor = IGUColor.DefaultLabelColor;
+            autoSize = richText = false;
+            content = new IGUContent(DefaultIGULabel);
+        }
+
         public override void OnIGU() {
             IGUConfig config = GetModIGUConfig();
             if (!config.IsVisible) return;
@@ -48,33 +56,5 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
 
         protected override GUIContent GetGUIContent(string defaultGUIContent)
             => base.GetGUIContent(defaultGUIContent);
-
-        public static IGULabel CreateIGUInstance(string name, bool autoSize, bool richText, IGUContent content) {
-            IGULabel label = Internal_CreateIGUInstance<IGULabel>(name, content);
-            label.myConfg = IGUConfig.Default;
-            label.myRect = IGURect.DefaultButton;
-            label.myColor = IGUColor.DefaultLabelColor;
-            label.autoSize = autoSize;
-            label.richText = richText;
-            return label;
-        }
-
-        public static IGULabel CreateIGUInstance(string name, bool autoSize, IGUContent content)
-            => CreateIGUInstance(name, autoSize, false, content);
-
-        public static IGULabel CreateIGUInstance(string name, IGUContent content)
-            => CreateIGUInstance(name, false, content);
-
-        public static IGULabel CreateIGUInstance(string name, bool autoSize, bool richText, string text)
-            => CreateIGUInstance(name, autoSize, richText, new IGUContent(text));
-
-        public static IGULabel CreateIGUInstance(string name, bool autoSize, string text)
-            => CreateIGUInstance(name, autoSize, new IGUContent(text));
-
-        public static IGULabel CreateIGUInstance(string name, string text)
-            => CreateIGUInstance(name, new IGUContent(text));
-
-        public static IGULabel CreateIGUInstance(string name)
-            => CreateIGUInstance(name, DefaultIGULabel);
     }
 }

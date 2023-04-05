@@ -21,6 +21,18 @@ namespace Cobilas.Unity.Graphics.IGU.Layouts {
 
         public override IGUObject this[int index] => objects[index].@object;
 
+        protected override void Awake() {
+            cursor = new GridLayoutCellCursor();
+            DirectionalCount = 3;
+            cursor.UseCellSize = true;
+            Spacing = Vector2.one * 3f;
+            myConfg = IGUConfig.Default;
+            CellSize = Vector2.one * 100f;
+            myRect = IGURect.DefaultButton;
+            myColor = IGUColor.DefaultBoxColor;
+            DirectionalBreak = DirectionalBreak.VerticalBreak;
+        }
+
         protected override void OnEnable() {
             if (!AfterDeserialize) return;
             AfterDeserialize = false;
@@ -33,9 +45,7 @@ namespace Cobilas.Unity.Graphics.IGU.Layouts {
 
             cursor.Reset();
             cursor.elementCount = Count;
-            BeginDoNotModifyRect(false);
             sub_OnIGU?.Invoke(cursor);
-            EndDoNotModifyRect();
             myRect.SetSize(cursor.GridRect);
         }
 
@@ -93,33 +103,6 @@ namespace Cobilas.Unity.Graphics.IGU.Layouts {
 
         void ISerializationCallbackReceiver.OnAfterDeserialize()
             => AfterDeserialize = true;
-
-        public static IGUGridLayout CreateIGUInstance(
-            string name, Vector2 spacing, Vector2 cellSize, int directionalCount, DirectionalBreak directionalBreak) {
-            IGUGridLayout res = Internal_CreateIGUInstance<IGUGridLayout>(name);
-            res.cursor = new GridLayoutCellCursor();
-            res.Spacing = spacing;
-            res.CellSize = cellSize;
-            res.cursor.UseCellSize = true;
-            res.myConfg = IGUConfig.Default;
-            res.myRect = IGURect.DefaultButton;
-            res.myColor = IGUColor.DefaultBoxColor;
-            res.DirectionalCount = directionalCount;
-            res.DirectionalBreak = directionalBreak;
-            return res;
-        }
-
-        public static IGUGridLayout CreateIGUInstance(string name, Vector2 spacing, Vector2 cellSize, int directionalCount)
-            => CreateIGUInstance(name, spacing, cellSize, directionalCount, DirectionalBreak.VerticalBreak);
-
-        public static IGUGridLayout CreateIGUInstance(string name, Vector2 spacing, Vector2 cellSize)
-            => CreateIGUInstance(name, spacing, cellSize, 3);
-
-        public static IGUGridLayout CreateIGUInstance(string name, Vector2 spacing)
-            => CreateIGUInstance(name, spacing, Vector2.one * 100f);
-
-        public static IGUGridLayout CreateIGUInstance(string name)
-            => CreateIGUInstance(name, Vector2.one * 3f);
 
         [Serializable]
         private sealed class GridLayoutCellCursor : CellCursor {

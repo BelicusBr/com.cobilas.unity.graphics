@@ -21,6 +21,17 @@ namespace Cobilas.Unity.Graphics.IGU.Layouts {
 
         public override IGUObject this[int index] => objects[index].@object;
 
+        protected override void Awake() {
+            base.Awake();
+            cursor = new VerticalLayoutCellCursor();
+            Spacing = 3f;
+            UseCellSize = false;
+            myConfg = IGUConfig.Default;
+            CellSize = Vector2.one * 100f;
+            myRect = IGURect.DefaultButton;
+            myColor = IGUColor.DefaultBoxColor;
+        }
+
         protected override void OnEnable() {
             if (!AfterDeserialize) return;
             AfterDeserialize = false;
@@ -32,9 +43,7 @@ namespace Cobilas.Unity.Graphics.IGU.Layouts {
             if (!config.IsVisible) return;
 
             cursor.Reset();
-            BeginDoNotModifyRect(false);
             sub_OnIGU?.Invoke(cursor);
-            EndDoNotModifyRect();
             myRect.SetSize(cursor.GridRect);
         }
 
@@ -92,27 +101,6 @@ namespace Cobilas.Unity.Graphics.IGU.Layouts {
             => AfterDeserialize = true;
 
         void ISerializationCallbackReceiver.OnBeforeSerialize() { }
-
-        public static IGUVerticalLayout CreateIGUInstance(string name, float spacing, Vector2 cellSize, bool useCellSize) {
-            IGUVerticalLayout res = Internal_CreateIGUInstance<IGUVerticalLayout>(name);
-            res.cursor = new VerticalLayoutCellCursor();
-            res.Spacing = spacing;
-            res.CellSize = cellSize;
-            res.UseCellSize = useCellSize;
-            res.myConfg = IGUConfig.Default;
-            res.myRect = IGURect.DefaultButton;
-            res.myColor = IGUColor.DefaultBoxColor;
-            return res;
-        }
-
-        public static IGUVerticalLayout CreateIGUInstance(string name, float spacing, Vector2 cellSize)
-            => CreateIGUInstance(name, spacing, cellSize, false);
-
-        public static IGUVerticalLayout CreateIGUInstance(string name, float spacing)
-            => CreateIGUInstance(name, spacing, Vector2.one * 100f);
-
-        public static IGUVerticalLayout CreateIGUInstance(string name)
-            => CreateIGUInstance(name, 3f);
 
         [Serializable]
         private sealed class VerticalLayoutCellCursor : CellCursor {

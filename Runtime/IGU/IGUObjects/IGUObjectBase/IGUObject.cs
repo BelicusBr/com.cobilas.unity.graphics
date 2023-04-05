@@ -1,16 +1,16 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using System.Collections.Generic;
 using Cobilas.Unity.Graphics.IGU.Interfaces;
 
 namespace Cobilas.Unity.Graphics.IGU.Elements {
     public abstract class IGUObject : ScriptableObject, IIGUObject {
-        private static readonly DoNotModifyRect defaultFalse = new DoNotModifyRect(false);
-        private static readonly Stack<DoNotModifyRect> doNots = new Stack<DoNotModifyRect>();
         [SerializeField] protected IGURect myRect;
         [SerializeField] protected IGUColor myColor;
         [SerializeField] protected IGUObject parent;
         [SerializeField] protected IGUConfig myConfg;
         [SerializeField] protected IGUContainer container;
+        protected DoNotModifyRect doNots;
         protected int modifiedRect;
 #if UNITY_EDITOR
         [SerializeField] private string subname;
@@ -25,20 +25,11 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
         public IGUContainer Container { get => container; set => container = value; }
 
         protected virtual void Awake() {
-#if UNITY_EDITOR
-            subname = base.name;
-#endif
+            doNots = DoNotModifyRect.False;
         }
-
-        protected virtual void OnDestroy() {
-            if (container != null)
-                if (container.Remove(this))
-                    Debug.Log(string.Format("{0} removed from container", name));
-        }
-
-        protected virtual void OnDisable() { }
-
         protected virtual void OnEnable() { }
+        protected virtual void OnDisable() { }
+        protected virtual void OnIGUDestroy() { }
 
         public virtual void OnIGU() { }
 
@@ -59,6 +50,33 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
         public void RemoveFromContainer() {
             if (container != null)
                 container.Remove(this);
+        }
+
+        protected IGUConfig GetModIGUConfig() {
+            if (parent != null) {
+                return myConfg.SetDepth(parent.GetModIGUConfig().Depth)
+                    .SetEnabled(parent.GetModIGUConfig().IsEnabled && myConfg.IsEnabled)
+                    .SetVisible(parent.GetModIGUConfig().IsVisible && myConfg.IsVisible);
+            }
+            return myConfg;
+        }
+
+        protected virtual void PreOnIGU() { }
+        protected virtual void PostOnIGU() { }
+
+        protected Vector2 GetPosition()
+            => parent == null || NotMod() ? myRect.ModifiedPosition : myRect.ModifiedPosition + parent.GetPosition();
+
+        protected GUIStyle GetDefaultValue(GUIStyle style, GUIStyle _default) {
+            if (style != null) return style;
+            return _default;
+        }
+
+        private void OnDestroy() {
+            if (container != null)
+                if (container.Remove(this))
+                    Debug.Log(string.Format("{0} removed from container", name));
+            OnIGUDestroy();
         }
 
         void IIGUObject.InternalOnIGU() {
@@ -104,40 +122,24 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
 
         void IIGUObject.InternalPostOnIGU() => PostOnIGU();
 
-        protected IGUConfig GetModIGUConfig() {
-            if (parent != null) {
-                return myConfg.SetDepth(parent.GetModIGUConfig().Depth)
-                    .SetEnabled(parent.GetModIGUConfig().IsEnabled && myConfg.IsEnabled)
-                    .SetVisible(parent.GetModIGUConfig().IsVisible && myConfg.IsVisible);
-            }
-            return myConfg;
+        public static T CreateIGUInstance<T>() where T : IGUObject
+            => (T)CreateIGUInstance(typeof(T));
+
+        public static T CreateIGUInstance<T>(string name) where T : IGUObject
+            => (T)CreateIGUInstance(typeof(T), name);
+
+        public static IGUObject CreateIGUInstance(Type type)
+            => CreateIGUInstance(type, nameof(IGUObject));
+
+        public static IGUObject CreateIGUInstance(Type type, string name) {
+            if (!type.IsSubclassOf(typeof(IGUObject)))
+                throw new IGUException();
+            else if (type.IsAbstract) throw new IGUException();
+            IGUObject instance = (IGUObject)CreateInstance(type.Name);
+            instance.name = name;
+            return instance;
         }
 
-        protected virtual void PreOnIGU() { }
-
-        protected virtual void PostOnIGU() { }
-
-        protected Vector2 GetPosition()
-            => parent == null || NotMod() ? myRect.ModifiedPosition : myRect.ModifiedPosition + parent.GetPosition();
-
-        protected GUIStyle GetDefaultValue(GUIStyle style, GUIStyle _default) {
-            if (style != null) return style;
-            return _default;
-        }
-
-        public static void BeginDoNotModifyRect(bool noMod)
-            => doNots.Push(new DoNotModifyRect(noMod));
-
-        public static void EndDoNotModifyRect()
-            => _ = doNots.Pop();
-
-        private static DoNotModifyRect NotMod()
-            => doNots.Count == 0 ? defaultFalse : doNots.Peek();
-
-        protected static T Internal_CreateIGUInstance<T>(string name) where T : IGUObject {
-            T temp = CreateInstance<T>();
-            temp.name = name;
-            return temp;
-        }
+        private bool NotMod() => parent != null && parent.doNots;
     }
 }

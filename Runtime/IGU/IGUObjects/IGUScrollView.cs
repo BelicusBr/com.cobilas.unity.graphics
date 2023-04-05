@@ -30,6 +30,17 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
         public bool AlwaysShowHorizontal { get => alwaysShowHorizontal; set => alwaysShowHorizontal = value; }
         public GUIStyle HorizontalScrollbarStyle { get => horizontalScrollbarStyle; set => horizontalScrollbarStyle = value; }
 
+        protected override void Awake() {
+            base.Awake();
+            myConfg = IGUConfig.Default;
+            myRect = IGURect.DefaultTextArea;
+            myColor = IGUColor.DefaultBoxColor;
+            onScrollView = new IGUScrollViewEvent();
+            viewRect = new Rect(0, 0, 250f, 250f);
+            alwaysShowVertical =
+            alwaysShowHorizontal = false;
+        }
+
         public override void OnIGU() {
             IGUConfig config = GetModIGUConfig();
             if (!config.IsVisible) return;
@@ -44,9 +55,9 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
             Rect rectTemp = new Rect(GetPosition(), myRect.Size);
 
             Vector2 scrollPositiontemp = GUI.BeginScrollView(rectTemp, scrollPosition, viewRect, alwaysShowHorizontal, alwaysShowVertical, horizontalScrollbarStyle, verticalScrollbarStyle);
-            BeginDoNotModifyRect(true);
+            doNots = DoNotModifyRect.True;
             ScrollViewAction?.Invoke(this);
-            EndDoNotModifyRect();
+            doNots = DoNotModifyRect.False;
             GUI.EndScrollView();
 
             if (scrollPositiontemp != scrollPosition)
@@ -77,23 +88,5 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
         /// </summary>
         public void ScrollTo(Rect rect)
             => GUI.ScrollTo(rect);
-
-        public static IGUScrollView CreateIGUInstance(string name, Rect viewRect, bool alwaysShowVertical, bool alwaysShowHorizontal) {
-            IGUScrollView scrollView = Internal_CreateIGUInstance<IGUScrollView>(name);
-            scrollView.viewRect = viewRect;
-            scrollView.myConfg = IGUConfig.Default;
-            scrollView.myRect = IGURect.DefaultTextArea;
-            scrollView.myColor = IGUColor.DefaultBoxColor;
-            scrollView.onScrollView = new IGUScrollViewEvent();
-            scrollView.alwaysShowVertical = alwaysShowVertical;
-            scrollView.alwaysShowHorizontal = alwaysShowHorizontal;
-            return scrollView;
-        }
-
-        public static IGUScrollView CreateIGUInstance(string name, Rect viewRect)
-            => CreateIGUInstance(name, viewRect, false, false);
-
-        public static IGUScrollView CreateIGUInstance(string name)
-            => CreateIGUInstance(name, new Rect(0, 0, 250f, 250f));
     }
 }

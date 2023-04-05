@@ -11,6 +11,14 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
         public IGUOnSliderIntValueEvent OnModifiedSliderInt => onModifiedSliderInt;
         public GUIStyle VerticalSliderThumb { get => verticalSliderThumb; set => verticalSliderThumb = value; }
 
+        protected override void Awake() {
+            base.Awake();
+            myConfg = IGUConfig.Default;
+            myColor = IGUColor.DefaultBoxColor;
+            onModifiedSlider = new IGUOnSliderValueEvent();
+            onModifiedSliderInt = new IGUOnSliderIntValueEvent();
+        }
+
         public override void OnIGU() {
             IGUConfig config = GetModIGUConfig();
             if (!config.IsVisible) return;
@@ -35,21 +43,5 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
                     onModifiedSliderInt.Invoke((int)value);
                 }
         }
-
-        public static IGUVerticalSlider CreateIGUInstance(string name, float value, MaxMinSlider maxMin) {
-            IGUVerticalSlider verticalSlider = Internal_CreateIGUInstance<IGUVerticalSlider>(name, value, maxMin);
-            verticalSlider.maxMinSlider = maxMin;
-            verticalSlider.myConfg = IGUConfig.Default;
-            verticalSlider.myColor = IGUColor.DefaultBoxColor;
-            verticalSlider.onModifiedSlider = new IGUOnSliderValueEvent();
-            verticalSlider.onModifiedSliderInt = new IGUOnSliderIntValueEvent();
-            return verticalSlider;
-        }
-
-        public static IGUVerticalSlider CreateIGUInstance(string name, MaxMinSlider maxMin)
-            => CreateIGUInstance(name, 0f, maxMin);
-
-        public static IGUVerticalSlider CreateIGUInstance(string name)
-            => CreateIGUInstance(name, MaxMinSlider.Default);
     }
 }

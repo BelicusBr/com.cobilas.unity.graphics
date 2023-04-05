@@ -46,6 +46,17 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
                 )
             );
 
+        protected override void Awake() {
+            _xCount = 3;
+            spacing = Vector2.one * 3f;
+            myConfg = IGUConfig.Default;
+            myColor = IGUColor.DefaultBoxColor;
+            myRect = IGURect.DefaultSelectionGrid;
+            onSelectedIndex = new IGUOnSliderIntValueEvent();
+            selectionGridToggles = new IGUSelectionGridToggle[0];
+            SetSelectionGridToggleList("Toggle1", "Toggle2", "Toggle3", "Toggle4", "Toggle5", "Toggle6");
+        }
+
         protected override void OnEnable() {
 #if UNITY_EDITOR
             DestroyToggleList(ref destroyList);
@@ -166,53 +177,9 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
 #endif
         }
 
-        protected override void OnDestroy() {
-            base.OnDestroy();
+        protected override void OnIGUDestroy() {
+            base.OnIGUDestroy();
             DestroyToggleList(ref selectionGridToggles);
         }
-
-        public static IGUSelectionGrid CreateIGUInstance(string name, Vector2 spacing, int xCont, IGUContent[] contents) {
-            IGUSelectionGrid selectionGrid = Internal_CreateIGUInstance<IGUSelectionGrid>(name);
-            selectionGrid._xCount = xCont;
-            selectionGrid.spacing = spacing;
-            selectionGrid.myConfg = IGUConfig.Default;
-            selectionGrid.myColor = IGUColor.DefaultBoxColor;
-            selectionGrid.myRect = IGURect.DefaultSelectionGrid;
-            selectionGrid.onSelectedIndex = new IGUOnSliderIntValueEvent();
-            selectionGrid.selectionGridToggles = new IGUSelectionGridToggle[0];
-            selectionGrid.SetSelectionGridToggleList(contents);
-            return selectionGrid;
-        }
-
-        public static IGUSelectionGrid CreateIGUInstance(string name, float spacing, int xCont, IGUContent[] contents)
-            => CreateIGUInstance(name, new Vector2(spacing, spacing), xCont, contents);
-
-        public static IGUSelectionGrid CreateIGUInstance(string name, int xCont, IGUContent[] contents)
-            => CreateIGUInstance(name, 3f, xCont, contents);
-
-        public static IGUSelectionGrid CreateIGUInstance(string name, IGUContent[] contents)
-            => CreateIGUInstance(name, 3, contents);
-
-        public static IGUSelectionGrid CreateIGUInstance(string name, Vector2 spacing, int xCont, string[] contents)
-            => CreateIGUInstance(name, spacing, xCont,
-                ArrayManipulation.EmpytArray(contents) ? (IGUContent[])null :
-                Array.ConvertAll<string, IGUContent>(contents, (s) => new IGUContent(s))
-                );
-
-        public static IGUSelectionGrid CreateIGUInstance(string name, float spacing, int xCont, string[] contents)
-            => CreateIGUInstance(name, new Vector2(spacing, spacing), xCont, contents);
-
-        public static IGUSelectionGrid CreateIGUInstance(string name, int xCont, string[] contents)
-            => CreateIGUInstance(name, 3f, xCont, contents);
-
-        public static IGUSelectionGrid CreateIGUInstance(string name, string[] contents)
-            => CreateIGUInstance(name, 3, contents);
-
-        public static IGUSelectionGrid CreateIGUInstance(string name)
-            => CreateIGUInstance(name, 
-                new string[] { 
-                    "Toggle1", "Toggle2", "Toggle3",
-                    "Toggle4", "Toggle5", "Toggle6"
-                });
     }
 }

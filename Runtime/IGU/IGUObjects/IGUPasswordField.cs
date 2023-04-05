@@ -19,6 +19,16 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
         public int MaxLength { get => maxLength; set => maxLength = value; }
         public GUIStyle PasswordFieldStyle { get => passwordFieldStyle; set => passwordFieldStyle = value; }
 
+        protected override void Awake() {
+            base.Awake();
+            maskChar = '*';
+            maxLength = 50000;
+            onClick = new IGUOnClickEvent();
+            myConfg = IGUConfig.Default;
+            myRect = IGURect.DefaultButton;
+            myColor = IGUColor.DefaultBoxColor;
+        }
+
         public override void OnIGU() {
             IGUConfig config = GetModIGUConfig();
             if (!config.IsVisible) return;
@@ -62,34 +72,5 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
 
         protected override void SetGUISettings(IGUTextSettings settings)
             => base.SetGUISettings(settings);
-
-        public static IGUPasswordField CreateIGUInstance(string name, char maskChar, int maxLength, IGUContent content) {
-            IGUPasswordField textField = Internal_CreateIGUInstance<IGUPasswordField>(name, content);
-            textField.maskChar = maskChar;
-            textField.maxLength = maxLength;
-            textField.onClick = new IGUOnClickEvent();
-            textField.myConfg = IGUConfig.Default;
-            textField.myRect = IGURect.DefaultButton;
-            textField.myColor = IGUColor.DefaultBoxColor;
-            return textField;
-        }
-
-        public static IGUPasswordField CreateIGUInstance(string name, char maskChar, IGUContent content)
-            => CreateIGUInstance(name, maskChar, 50000, content);
-
-        public static IGUPasswordField CreateIGUInstance(string name, IGUContent content)
-            => CreateIGUInstance(name, '*', content);
-
-        public static IGUPasswordField CreateIGUInstance(string name, char maskChar, int maxLength, string text)
-            => CreateIGUInstance(name, maskChar, maxLength, new IGUContent(text));
-
-        public static IGUPasswordField CreateIGUInstance(string name, char maskChar, string text)
-            => CreateIGUInstance(name, maskChar, new IGUContent(text));
-
-        public static IGUPasswordField CreateIGUInstance(string name, string text)
-            => CreateIGUInstance(name, new IGUContent(text));
-
-        public static IGUPasswordField CreateIGUInstance(string name)
-            => CreateIGUInstance(name, "");
     }
 }
