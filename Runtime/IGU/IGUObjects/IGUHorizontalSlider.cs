@@ -11,6 +11,14 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
         public IGUOnSliderIntValueEvent OnModifiedSliderInt => onModifiedSliderInt;
         public GUIStyle HorizontalSliderThumb { get => horizontalSliderThumb; set => horizontalSliderThumb = value; }
 
+        protected override void Awake() {
+            base.Awake();
+            myConfg = IGUConfig.Default;
+            myColor = IGUColor.DefaultBoxColor;
+            onModifiedSlider = new IGUOnSliderValueEvent();
+            onModifiedSliderInt = new IGUOnSliderIntValueEvent();
+        }
+
         public override void OnIGU() {
             IGUConfig config = GetModIGUConfig();
             if (!config.IsVisible) return;
@@ -35,20 +43,5 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
                     onModifiedSliderInt.Invoke((int)value);
                 }
         }
-
-        public static IGUHorizontalSlider CreateIGUInstance(string name, float value, MaxMinSlider maxMin) {
-            IGUHorizontalSlider horizontalSlider = Internal_CreateIGUInstance<IGUHorizontalSlider>(name, value, maxMin);
-            horizontalSlider.myConfg = IGUConfig.Default;
-            horizontalSlider.myColor = IGUColor.DefaultBoxColor;
-            horizontalSlider.onModifiedSlider = new IGUOnSliderValueEvent();
-            horizontalSlider.onModifiedSliderInt = new IGUOnSliderIntValueEvent();
-            return horizontalSlider;
-        }
-
-        public static IGUHorizontalSlider CreateIGUInstance(string name, MaxMinSlider maxMin)
-            => CreateIGUInstance(name, 0f, maxMin);
-
-        public static IGUHorizontalSlider CreateIGUInstance(string name)
-            => CreateIGUInstance(name, MaxMinSlider.Default);
     }
 }

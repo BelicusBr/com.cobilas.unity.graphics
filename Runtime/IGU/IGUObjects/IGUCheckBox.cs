@@ -20,6 +20,19 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
         public bool Checked { get => _checked; set => _checked = value; }
         public GUIStyle CheckBoxStyle { get => checkBoxStyle; set => checkBoxStyle = value; }
 
+        protected override void Awake() {
+            base.Awake();
+            myConfg = IGUConfig.Default;
+            myRect = IGURect.DefaultButton;
+            myColor = IGUColor.DefaultBoxColor;
+            content = new IGUContent(DefaultContantIGUCheckBox);
+            oneClick = !(_checked = false);
+            onClick = new IGUOnClickEvent();
+            checkBoxOn = new IGUOnClickEvent();
+            checkBoxOff = new IGUOnClickEvent();
+            onChecked = new IGUOnCheckedEvent();
+        }
+
         public override void OnIGU() {
             IGUConfig config = GetModIGUConfig();
 
@@ -63,51 +76,5 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
 
         protected override void DrawTooltip()
             => base.DrawTooltip();
-
-        protected override void SetDefaultValue(IGUDefaultValue value) {
-            if (value == null) value = IGUCheckBoxDefault.DefaultValue;
-            else if (value.GetType() == typeof(IGUCheckBoxDefault))
-                throw new IGUException();
-            myConfg = IGUConfig.Default;
-            myRect = IGURect.DefaultButton;
-            myColor = IGUColor.DefaultBoxColor;
-            name = value.GetValue<string>(0L);
-            useTooltip = value.GetValue<bool>(1L);
-            container = value.GetValue<IGUContainer>(2L);
-            _checked = value.GetValue<bool>(3L);
-            checkBoxStyle = value.GetValue<GUIStyle>(4L);
-            oneClick = !_checked;
-            onClick = new IGUOnClickEvent();
-            checkBoxOn = new IGUOnClickEvent();
-            checkBoxOff = new IGUOnClickEvent();
-            onChecked = new IGUOnCheckedEvent();
-        }
-
-        public static IGUCheckBox CreateIGUInstance(string name, bool _checked, IGUContent content) {
-            IGUCheckBox checkBox = Internal_CreateIGUInstance<IGUCheckBox>(name);
-            checkBox.content = content;
-            checkBox._checked = _checked;
-            checkBox.oneClick = !_checked;
-            checkBox.onClick = new IGUOnClickEvent();
-            checkBox.checkBoxOn = new IGUOnClickEvent();
-            checkBox.myConfg = IGUConfig.Default;
-            checkBox.checkBoxOff = new IGUOnClickEvent();
-            checkBox.myRect = IGURect.DefaultButton;
-            checkBox.onChecked = new IGUOnCheckedEvent();
-            checkBox.myColor = IGUColor.DefaultBoxColor;
-            return checkBox;
-        }
-
-        public static IGUCheckBox CreateIGUInstance(string name, IGUContent content)
-            => CreateIGUInstance(name, false, content);
-
-        public static IGUCheckBox CreateIGUInstance(string name, bool _checked, string text)
-            => CreateIGUInstance(name, _checked, new IGUContent(text));
-
-        public static IGUCheckBox CreateIGUInstance(string name, string text)
-            => CreateIGUInstance(name, false, text);
-
-        public static IGUCheckBox CreateIGUInstance(string name)
-            => CreateIGUInstance(name, DefaultContantIGUCheckBox);
     }
 }

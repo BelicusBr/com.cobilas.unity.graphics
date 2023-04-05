@@ -48,15 +48,5 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
 
         public static GUIContent GetGUIContentTemp(string text)
             => GetGUIContentTemp(text, "", (Texture)null);
-
-        protected static T Internal_CreateIGUInstance<T>(string name, bool useTooltip, IGUContent content) where T : IGUTextObject {
-            T textObject = IGUObject.Internal_CreateIGUInstance<T>(name);
-            textObject.useTooltip = useTooltip;
-            textObject.content = content;
-            return textObject;
-        }
-
-        protected static T Internal_CreateIGUInstance<T>(string name, IGUContent content) where T : IGUTextObject
-            => Internal_CreateIGUInstance<T>(name, false, content);
     }
 }

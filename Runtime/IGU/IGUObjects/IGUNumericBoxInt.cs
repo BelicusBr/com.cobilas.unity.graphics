@@ -28,6 +28,25 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
         public GUIStyle ButtonRightStyle { get => buttonRight.ButtonStyle; set => buttonRight.ButtonStyle = value; }
         public GUIStyle TextFieldStyle { get => textField.TextFieldStyle; set => textField.TextFieldStyle = value; }
 
+        protected override void Awake() {
+            value = 0;
+            additionValue = 1;
+            myConfg = IGUConfig.Default;
+            myColor = IGUColor.DefaultBoxColor;
+            maxMinSlider = new MaxMinSliderInt(-130, 130);
+            myRect = IGURect.DefaultButton.SetSize(50f, 32f);
+            buttonLeft = CreateIGUInstance<IGUButton>();
+            textField = CreateIGUInstance<IGUTextField>();
+            buttonRight = CreateIGUInstance<IGUButton>();
+            buttonLeft.name = "--ButtonLeft";
+            textField.name = "--TextField";
+            buttonRight.name = "--ButtonRight";
+            buttonLeft.Text = "<";
+            textField.Text = "0";
+            buttonRight.Text = ">";
+            InitEvents();
+        }
+
         public override void OnIGU() {
             if (!GetModIGUConfig().IsVisible) return;
             IGURect rect = myRect;
@@ -83,26 +102,5 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
             }
 #endif
         }
-
-        public static IGUNumericBoxInt CreateIGUInstance(string name, int value, MaxMinSliderInt maxmin) {
-            IGUNumericBoxInt numericBox = Internal_CreateIGUInstance<IGUNumericBoxInt>(name);
-            numericBox.value = value;
-            numericBox.additionValue = 1;
-            numericBox.maxMinSlider = maxmin;
-            numericBox.myConfg = IGUConfig.Default;
-            numericBox.myColor = IGUColor.DefaultBoxColor;
-            numericBox.myRect = IGURect.DefaultButton.SetSize(50f, 32f);
-            numericBox.buttonLeft = IGUButton.CreateIGUInstance($"({name})-ButtonLeft", "<");
-            numericBox.textField = IGUTextField.CreateIGUInstance($"({name})-TextField", "0");
-            numericBox.buttonRight = IGUButton.CreateIGUInstance($"({name})-ButtonRight", ">");
-            numericBox.InitEvents();
-            return numericBox;
-        }
-
-        public static IGUNumericBoxInt CreateIGUInstance(string name, int value)
-            => CreateIGUInstance(name, value, new MaxMinSliderInt(-130, 130));
-
-        public static IGUNumericBoxInt CreateIGUInstance(string name)
-            => CreateIGUInstance(name, 0);
     }
 }

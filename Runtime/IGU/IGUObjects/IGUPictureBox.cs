@@ -18,6 +18,18 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
         public float BorderWidth { get => borderWidths.Summation() / 4f; set => borderWidths = Vector4.one * value; }
         public float BorderRadius { get => borderRadiuses.Summation() / 4f; set => borderRadiuses = Vector4.one * value; }
 
+        protected override void Awake() {
+            myConfg = IGUConfig.Default;
+            myRect = IGURect.DefaultBox;
+            myColor = IGUColor.DefaultBoxColor;
+            texture = Texture2D.whiteTexture;
+            scaleMode = ScaleMode.StretchToFill;
+            alphaBlend = true;
+            imageAspect = 0f;
+            borderWidths = Vector4.zero;
+            borderRadiuses = Vector4.zero;
+        }
+
         public override void OnIGU() {
             IGUConfig config = GetModIGUConfig();
             if (!config.IsVisible) return;
@@ -27,56 +39,5 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
             
             GUI.DrawTexture(rectTemp, texture, scaleMode, alphaBlend, imageAspect, myColor.MyColor, borderWidths, borderRadiuses);
         }
-
-        public static IGUPictureBox CreateIGUInstance(
-            string name, Texture texture, 
-            ScaleMode scaleMode, bool alphaBlend,
-            float imageAspect, Vector4 borderWidths, 
-            Vector4 borderRadiuses) {
-            IGUPictureBox pictureBox = Internal_CreateIGUInstance<IGUPictureBox>(name);
-            pictureBox.myConfg = IGUConfig.Default;
-            pictureBox.myRect = IGURect.DefaultBox;
-            pictureBox.myColor = IGUColor.DefaultBoxColor;
-            pictureBox.texture = texture;
-            pictureBox.scaleMode = scaleMode;
-            pictureBox.alphaBlend = alphaBlend;
-            pictureBox.imageAspect = imageAspect;
-            pictureBox.borderWidths = borderWidths;
-            pictureBox.borderRadiuses = borderRadiuses;
-            return pictureBox;
-        }
-
-        public static IGUPictureBox CreateIGUInstance(
-            string name, Texture texture,
-            ScaleMode scaleMode, bool alphaBlend,
-            float imageAspect, float BorderWidth, float BorderRadius)
-            => CreateIGUInstance(name, texture, scaleMode, alphaBlend, imageAspect,
-                Vector4.one * BorderWidth, Vector4.one * BorderRadius);
-
-        public static IGUPictureBox CreateIGUInstance(
-            string name, Texture texture,
-            ScaleMode scaleMode, bool alphaBlend,
-            float imageAspect, float borderWidth)
-            => CreateIGUInstance(name, texture, scaleMode, alphaBlend, imageAspect, borderWidth, 0f);
-
-        public static IGUPictureBox CreateIGUInstance(
-            string name, Texture texture,
-            ScaleMode scaleMode, bool alphaBlend,
-            float imageAspect)
-            => CreateIGUInstance(name, texture, scaleMode, alphaBlend, imageAspect, 0f);
-
-        public static IGUPictureBox CreateIGUInstance(
-            string name, Texture texture,
-            ScaleMode scaleMode, bool alphaBlend)
-            => CreateIGUInstance(name, texture, scaleMode, alphaBlend, 0f);
-
-        public static IGUPictureBox CreateIGUInstance(string name, Texture texture, ScaleMode scaleMode)
-            => CreateIGUInstance(name, texture, scaleMode, true);
-
-        public static IGUPictureBox CreateIGUInstance(string name, Texture texture)
-            => CreateIGUInstance(name, texture, ScaleMode.StretchToFill);
-
-        public static IGUPictureBox CreateIGUInstance(string name)
-            => CreateIGUInstance(name, Texture2D.whiteTexture);
     }
 }

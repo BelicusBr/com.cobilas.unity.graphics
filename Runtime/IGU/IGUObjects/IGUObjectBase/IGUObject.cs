@@ -5,13 +5,12 @@ using Cobilas.Unity.Graphics.IGU.Interfaces;
 
 namespace Cobilas.Unity.Graphics.IGU.Elements {
     public abstract class IGUObject : ScriptableObject, IIGUObject {
-        private static readonly DoNotModifyRect defaultFalse = new DoNotModifyRect(false);
-        private static readonly Stack<DoNotModifyRect> doNots = new Stack<DoNotModifyRect>();
         [SerializeField] protected IGURect myRect;
         [SerializeField] protected IGUColor myColor;
         [SerializeField] protected IGUObject parent;
         [SerializeField] protected IGUConfig myConfg;
         [SerializeField] protected IGUContainer container;
+        protected DoNotModifyRect doNots;
         protected int modifiedRect;
 #if UNITY_EDITOR
         [SerializeField] private string subname;
@@ -25,7 +24,9 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
         public IGUConfig MyConfg { get => myConfg; set => myConfg = value; }
         public IGUContainer Container { get => container; set => container = value; }
 
-        protected virtual void Awake() { }
+        protected virtual void Awake() {
+            doNots = DoNotModifyRect.False;
+        }
         protected virtual void OnEnable() { }
         protected virtual void OnDisable() { }
         protected virtual void OnIGUDestroy() { }
@@ -61,10 +62,7 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
         }
 
         protected virtual void PreOnIGU() { }
-
         protected virtual void PostOnIGU() { }
-
-        protected abstract void SetDefaultValue(IGUDefaultValue value);
 
         protected Vector2 GetPosition()
             => parent == null || NotMod() ? myRect.ModifiedPosition : myRect.ModifiedPosition + parent.GetPosition();
@@ -124,37 +122,24 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
 
         void IIGUObject.InternalPostOnIGU() => PostOnIGU();
 
-        public static void BeginDoNotModifyRect(bool noMod)
-            => doNots.Push(new DoNotModifyRect(noMod));
-
-        public static void EndDoNotModifyRect()
-            => _ = doNots.Pop();
-
         public static T CreateIGUInstance<T>() where T : IGUObject
             => (T)CreateIGUInstance(typeof(T));
 
-        public static T CreateIGUInstance<T>(IGUDefaultValue value) where T : IGUObject
-            => (T)CreateIGUInstance(typeof(T), value);
+        public static T CreateIGUInstance<T>(string name) where T : IGUObject
+            => (T)CreateIGUInstance(typeof(T), name);
 
         public static IGUObject CreateIGUInstance(Type type)
-            => CreateIGUInstance(type, (IGUDefaultValue)null);
+            => CreateIGUInstance(type, nameof(IGUObject));
 
-        public static IGUObject CreateIGUInstance(Type type, IGUDefaultValue value) {
+        public static IGUObject CreateIGUInstance(Type type, string name) {
             if (!type.IsSubclassOf(typeof(IGUObject)))
                 throw new IGUException();
             else if (type.IsAbstract) throw new IGUException();
             IGUObject instance = (IGUObject)CreateInstance(type.Name);
-            instance.SetDefaultValue(value);
+            instance.name = name;
             return instance;
         }
 
-        protected static T Internal_CreateIGUInstance<T>(string name) where T : IGUObject {
-            T temp = CreateInstance<T>();
-            temp.name = name;
-            return temp;
-        }
-
-        private static DoNotModifyRect NotMod()
-            => doNots.Count == 0 ? defaultFalse : doNots.Peek();
+        private bool NotMod() => parent != null && parent.doNots;
     }
 }

@@ -11,6 +11,15 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
         public IGUOnSliderIntValueEvent OnModifiedScrollbarInt => onModifiedScrollbarInt;
         public float ScrollbarThumbSize { get => scrollbarThumbSize; set => scrollbarThumbSize = value; }
 
+        protected override void Awake() {
+            base.Awake();
+            myConfg = IGUConfig.Default;
+            myColor = IGUColor.DefaultBoxColor;
+            onModifiedScrollbar = new IGUOnSliderValueEvent();
+            onModifiedScrollbarInt = new IGUOnSliderIntValueEvent();
+            scrollbarThumbSize = 0f;
+        }
+
         public override void OnIGU() {
             IGUConfig config = GetModIGUConfig();
             if (!config.IsVisible) return;
@@ -35,24 +44,5 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
                 }
             }
         }
-
-        public static IGUHorizontalScrollbar CreateIGUInstance(string name, float value, float scrollbarThumbSize, MaxMinSlider maxMin) {
-            IGUHorizontalScrollbar horizontalScrollbar = Internal_CreateIGUInstance<IGUHorizontalScrollbar>(name, value, maxMin);
-            horizontalScrollbar.myConfg = IGUConfig.Default;
-            horizontalScrollbar.myColor = IGUColor.DefaultBoxColor;
-            horizontalScrollbar.onModifiedScrollbar = new IGUOnSliderValueEvent();
-            horizontalScrollbar.onModifiedScrollbarInt = new IGUOnSliderIntValueEvent();
-            horizontalScrollbar.scrollbarThumbSize = scrollbarThumbSize;
-            return horizontalScrollbar;
-        }
-
-        public static IGUHorizontalScrollbar CreateIGUInstance(string name, float scrollbarThumbSize, MaxMinSlider maxMin)
-            => CreateIGUInstance(name, 0f, scrollbarThumbSize, maxMin);
-
-        public static IGUHorizontalScrollbar CreateIGUInstance(string name, float scrollbarThumbSize)
-            => CreateIGUInstance(name, scrollbarThumbSize, MaxMinSlider.Default);
-
-        public static IGUHorizontalScrollbar CreateIGUInstance(string name)
-            => CreateIGUInstance(name, 0);
     }
 }

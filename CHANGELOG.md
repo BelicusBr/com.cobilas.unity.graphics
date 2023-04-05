@@ -1,3 +1,15 @@
+## [2.0.2] - 05/04/2023
+### Fixed(IGU)
+No `IGUComboBox` avia um problema que acontecia quando o objeto era filiado a outro que fazia a posição da `IGUComboBox` não ser alterada.
+### Removed(IGU)
+As fuções `BeginDoNotMofifyRect` e `EndDoNotMofifyRect` por afetar os objetos filhos e sub-filhos, e foram substituidos pelo compo doNots.
+Os métodos `CreateIGUInstance` foram removidos de todas as classes `IGUObject` e substituidas por
+```c#
+	IGUObject.CreateIGUInstace(Type);
+	IGUObject.CreateIGUInstace(Type, string);
+	IGUObject.CreateIGUInstace<T>(string);
+	IGUObject.CreateIGUInstace<T>();
+```
 ## [1.7.1] - 12/02/2023
 ### Added
 Agora foi adicionado os esquemas de layout.

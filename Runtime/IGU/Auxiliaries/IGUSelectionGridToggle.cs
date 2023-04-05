@@ -14,7 +14,8 @@ namespace Cobilas.Unity.Graphics.IGU {
         public IGUContent Content => checkBox.MyContent;
 
         public IGUSelectionGridToggle(string name, int index, IGUObject parent, IGUContent content) {
-            checkBox = IGUCheckBox.CreateIGUInstance(name, content);
+            checkBox = IGUObject.CreateIGUInstance<IGUCheckBox>(name);
+            checkBox.MyContent = content;
             this.index = index;
             checkBox.Parent = parent;
         }

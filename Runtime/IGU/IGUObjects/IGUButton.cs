@@ -14,7 +14,18 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
         public IGUOnClickEvent OnClick => onClick;
         public virtual bool Clicked => GetClicked();
         public GUIStyle ButtonStyle { get => buttonStyle; set => buttonStyle = value; }
-        
+
+        protected override void Awake() {
+            base.Awake();
+            myConfg = IGUConfig.Default;
+            myRect = IGURect.DefaultButton;
+            myColor = IGUColor.DefaultBoxColor;
+            content = new IGUContent(DefaultContentIGUButton);
+            onClick = new IGUOnClickEvent();
+            clicked = new bool[2];
+            (this as ISerializationCallbackReceiver).OnAfterDeserialize();
+        }
+
         public override void OnIGU() {
             IGUConfig config = GetModIGUConfig();
 
@@ -65,40 +76,7 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
         void ISerializationCallbackReceiver.OnAfterDeserialize()
             => IGUDrawer.EventEndOfFrame += Reset;
 
-        protected override void SetDefaultValue(IGUDefaultValue value) {
-            if (value == null) value = IGUBoxDefault.ButtonDefaultValue;
-            else if (value.GetType() == typeof(IGUBoxDefault))
-                throw new IGUException();
-            myConfg = IGUConfig.Default;
-            myRect = IGURect.DefaultButton;
-            myColor = IGUColor.DefaultBoxColor;
-            name = value.GetValue<string>(0L);
-            useTooltip = value.GetValue<bool>(1L);
-            container = value.GetValue<IGUContainer>(2L);
-            buttonStyle = value.GetValue<GUIStyle>(3L);
-            onClick = new IGUOnClickEvent();
-            clicked = new bool[2];
-            (this as ISerializationCallbackReceiver).OnAfterDeserialize();
-        }
-
         public static string PickUpWhereItWasCalled(int skipFrames = 1)
             => new StackTrace(skipFrames).GetFrame(0).GetMethod().Name;
-
-        public static IGUButton CreateIGUInstance(string name, IGUContent content) {
-            IGUButton button = Internal_CreateIGUInstance<IGUButton>(name, content);
-            button.onClick = new IGUOnClickEvent();
-            button.myConfg = IGUConfig.Default;
-            button.myRect = IGURect.DefaultButton;
-            button.myColor = IGUColor.DefaultBoxColor;
-            button.clicked = new bool[2];
-            (button as ISerializationCallbackReceiver).OnAfterDeserialize();
-            return button;
-        }
-
-        public static IGUButton CreateIGUInstance(string name, string text)
-            => CreateIGUInstance(name, new IGUContent(text));
-
-        public static IGUButton CreateIGUInstance(string name)
-            => CreateIGUInstance(name, DefaultContentIGUButton);
     }
 }

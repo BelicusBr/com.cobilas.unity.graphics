@@ -7,8 +7,12 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
         /// <summary>Configurações do cursor de inserção de texto.</summary>
         public IGUTextSettings Settings { get => settings; set => settings = value; }
 
+        protected override void Awake() {
+            base.Awake();
+            settings = new IGUTextSettings();
+        }
+
         public override void OnIGU() => base.OnIGU();
-        protected override void Awake() => base.Awake();
         protected override void OnEnable() => base.OnEnable();
         protected override void OnDisable() => base.OnDisable();
         protected override void OnIGUDestroy() => base.OnIGUDestroy();
@@ -38,14 +42,5 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
             settings1.doubleClickSelectsWord = doubleClickSelectsWord;
             settings1.tripleClickSelectsLine = tripleClickSelectsLine;
         }
-
-        protected new static T Internal_CreateIGUInstance<T>(string name, bool useTooltip, IGUContent content) where T : IGUTextFieldObject {
-            T textObject = IGUTextObject.Internal_CreateIGUInstance<T>(name, useTooltip, content);
-            textObject.settings = new IGUTextSettings();
-            return textObject;
-        }
-
-        protected new static T Internal_CreateIGUInstance<T>(string name, IGUContent content) where T : IGUTextFieldObject
-            => Internal_CreateIGUInstance<T>(name, false, content);
     }
 }

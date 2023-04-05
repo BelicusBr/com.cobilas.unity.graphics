@@ -11,6 +11,15 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
         public IGUOnSliderIntValueEvent OnModifiedScrollbarInt => onModifiedScrollbarInt;
         public float ScrollbarThumbSize { get => scrollbarThumbSize; set => scrollbarThumbSize = value; }
 
+        protected override void Awake() {
+            base.Awake();
+            myConfg = IGUConfig.Default;
+            myColor = IGUColor.DefaultBoxColor;
+            onModifiedScrollbar = new IGUOnSliderValueEvent();
+            onModifiedScrollbarInt = new IGUOnSliderIntValueEvent();
+            scrollbarThumbSize = 0f;
+        }
+
         public override void OnIGU() {
             IGUConfig config = GetModIGUConfig();
             if (!config.IsVisible) return;
@@ -34,25 +43,5 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
                     onModifiedScrollbarInt.Invoke((int)value);
                 }
         }
-
-        public static IGUVerticalScrollbar CreateIGUInstance(string name, float value, float scrollbarThumbSize, MaxMinSlider maxMin) {
-            IGUVerticalScrollbar verticalScrollbar = Internal_CreateIGUInstance<IGUVerticalScrollbar>(name, value, maxMin);
-            verticalScrollbar.maxMinSlider = maxMin;
-            verticalScrollbar.myConfg = IGUConfig.Default;
-            verticalScrollbar.myColor = IGUColor.DefaultBoxColor;
-            verticalScrollbar.onModifiedScrollbar = new IGUOnSliderValueEvent();
-            verticalScrollbar.onModifiedScrollbarInt = new IGUOnSliderIntValueEvent();
-            verticalScrollbar.scrollbarThumbSize = scrollbarThumbSize;
-            return verticalScrollbar;
-        }
-
-        public static IGUVerticalScrollbar CreateIGUInstance(string name, float scrollbarThumbSize, MaxMinSlider maxMin)
-            => CreateIGUInstance(name, 0f, scrollbarThumbSize, maxMin);
-
-        public static IGUVerticalScrollbar CreateIGUInstance(string name, float scrollbarThumbSize)
-            => CreateIGUInstance(name, scrollbarThumbSize, MaxMinSlider.Default);
-
-        public static IGUVerticalScrollbar CreateIGUInstance(string name)
-            => CreateIGUInstance(name, 0);
     }
 }
