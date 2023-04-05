@@ -77,6 +77,7 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
                 if (container.Remove(this))
                     Debug.Log(string.Format("{0} removed from container", name));
             OnIGUDestroy();
+            IGUDrawer.RemoveReserialization(this);
         }
 
         void IIGUObject.InternalOnIGU() {
@@ -137,6 +138,8 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
             else if (type.IsAbstract) throw new IGUException();
             IGUObject instance = (IGUObject)CreateInstance(type.Name);
             instance.name = name;
+            if (instance is IIGUSerializationCallbackReceiver)
+                IGUDrawer.AddReserialization(instance);
             return instance;
         }
 
