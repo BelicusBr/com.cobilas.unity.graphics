@@ -167,8 +167,10 @@ namespace Cobilas.Unity.Graphics.IGU {
         internal static void AddReserialization(IGUObject item)
             => ArrayManipulation.Add(item, ref drawer.reserialization);
 
-        internal static void RemoveReserialization(IGUObject item)
-            => ArrayManipulation.Remove(item, ref drawer.reserialization);
+        internal static void RemoveReserialization(IGUObject item) {
+            if (ArrayManipulation.Exists(item, drawer.reserialization))
+                ArrayManipulation.Remove(item, ref drawer.reserialization);
+        }
 
         private sealed class IGUToolTip {
             private string tooltip;

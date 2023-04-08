@@ -2,9 +2,9 @@
 
 namespace Cobilas.Unity.Graphics.IGU.Elements {
     public abstract class IGUTextObject : IGUObject {
+        protected GUIStyle tooltipStyle;
         [SerializeField] protected bool useTooltip;
         [SerializeField] protected IGUContent content;
-        /*[SerializeField]*/ protected GUIStyle tooltipStyle;
 
         private static readonly GUIContent GUIContentTemp = new GUIContent();
 

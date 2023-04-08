@@ -134,8 +134,9 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
 
         public static IGUObject CreateIGUInstance(Type type, string name) {
             if (!type.IsSubclassOf(typeof(IGUObject)))
-                throw new IGUException();
-            else if (type.IsAbstract) throw new IGUException();
+                throw new IGUException($"Class {type.Name} does not inherit from class IGUObject.");
+            else if (type.IsAbstract) 
+                throw new IGUException("The target class cannot be abstract.");
             IGUObject instance = (IGUObject)CreateInstance(type.Name);
             instance.name = name;
             if (instance is IIGUSerializationCallbackReceiver)

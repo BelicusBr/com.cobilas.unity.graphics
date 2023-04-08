@@ -2,9 +2,10 @@
 using UnityEngine;
 using Cobilas.Collections;
 using Cobilas.Unity.Graphics.IGU.Events;
+using Cobilas.Unity.Graphics.IGU.Interfaces;
 
 namespace Cobilas.Unity.Graphics.IGU.Elements {
-    public class IGUSelectionGrid : IGUObject, ISerializationCallbackReceiver {
+    public class IGUSelectionGrid : IGUObject, IIGUSerializationCallbackReceiver {
 
         private readonly HashCodeCompare compare = new HashCodeCompare(6);
         [SerializeField] protected int _xCount;
@@ -16,7 +17,6 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
         [SerializeField] protected IGUOnSliderIntValueEvent onSelectedIndex;
         [SerializeField] protected IGUSelectionGridToggle[] selectionGridToggles;
 #if UNITY_EDITOR
-        private bool afterDeserialize = false;
         [SerializeField] protected IGUContent[] copyList;
         [SerializeField, HideInInspector] protected IGUSelectionGridToggle[] destroyList;
 #endif
@@ -55,16 +55,6 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
             onSelectedIndex = new IGUOnSliderIntValueEvent();
             selectionGridToggles = new IGUSelectionGridToggle[0];
             SetSelectionGridToggleList("Toggle1", "Toggle2", "Toggle3", "Toggle4", "Toggle5", "Toggle6");
-        }
-
-        protected override void OnEnable() {
-#if UNITY_EDITOR
-            DestroyToggleList(ref destroyList);
-            if (afterDeserialize) {
-                PopulateEvents(selectionGridToggles = CreateSelectionGridToggleList(copyList));
-                afterDeserialize = false;
-            }
-#endif
         }
 
         public override void OnIGU() {
@@ -168,18 +158,17 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
             }
         }
 
-        void ISerializationCallbackReceiver.OnBeforeSerialize() { }
-
-        void ISerializationCallbackReceiver.OnAfterDeserialize() {
-#if UNITY_EDITOR
-            destroyList = selectionGridToggles;
-            afterDeserialize = true;
-#endif
-        }
-
         protected override void OnIGUDestroy() {
             base.OnIGUDestroy();
             DestroyToggleList(ref selectionGridToggles);
+        }
+
+        void IIGUSerializationCallbackReceiver.Reserialization() {
+#if UNITY_EDITOR
+            destroyList = selectionGridToggles;
+            DestroyToggleList(ref destroyList);
+            PopulateEvents(selectionGridToggles = CreateSelectionGridToggleList(copyList));
+#endif
         }
     }
 }

@@ -2,11 +2,12 @@
 using UnityEngine;
 using Cobilas.Collections;
 using Cobilas.Unity.Graphics.IGU.Events;
+using Cobilas.Unity.Graphics.IGU.Interfaces;
 
 namespace Cobilas.Unity.Graphics.IGU.Elements {
-    public class IGUComboBox : IGUObject, ISerializationCallbackReceiver {
+    public class IGUComboBox : IGUObject, IIGUSerializationCallbackReceiver {
 
-        private HashCodeCompare compare = new HashCodeCompare(4);
+        private HashCodeCompare compare;
         private bool _onActivatedComboBox;
 
         [SerializeField] protected int index;
@@ -23,7 +24,6 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
         [SerializeField] protected IGUComboBoxClickEvent onSelectedIndex;
         [SerializeField] protected bool adjustComboBoxViewAccordingToTheButtonsPresent;
 #if UNITY_EDITOR
-        private bool afterDeserialize = false;
         [SerializeField] protected IGUContent[] copyList;
         [SerializeField] protected IGUComboBoxButton[] destroyList;
 #endif
@@ -55,6 +55,7 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
 
         protected override void Awake() {
             base.Awake();
+            compare = new HashCodeCompare(4);
             myConfg = IGUConfig.Default;
             myRect = IGURect.DefaultButton;
             myColor = IGUColor.DefaultBoxColor;
@@ -76,17 +77,6 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
             InitScrollViewAction();
             SetIGUComboBoxButtonList("Item1", "Item2", "Item3");
             Index = 0;
-        }
-
-        protected override void OnEnable() {
-#if UNITY_EDITOR
-            DestroyList(ref destroyList);
-            if (afterDeserialize) {
-                InitScrollViewAction();
-                PopulateEvents(boxButtons = CreateIGUComboBoxButtonList(copyList));
-                afterDeserialize = false;
-            }
-#endif
         }
 
         public override void OnIGU() {
@@ -222,19 +212,19 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
             };
         }
 
-        void ISerializationCallbackReceiver.OnBeforeSerialize() { }
-
-        void ISerializationCallbackReceiver.OnAfterDeserialize() {
-            compare = new HashCodeCompare(4);
-#if UNITY_EDITOR
-            destroyList = boxButtons;
-            afterDeserialize = true;
-#endif
-        }
-
         protected override void OnIGUDestroy() {
             base.OnIGUDestroy();
             DestroyList(ref boxButtons);
+        }
+
+        void IIGUSerializationCallbackReceiver.Reserialization() {
+#if UNITY_EDITOR
+            compare = new HashCodeCompare(4);
+            destroyList = boxButtons;
+            DestroyList(ref destroyList);
+            InitScrollViewAction();
+            PopulateEvents(boxButtons = CreateIGUComboBoxButtonList(copyList));
+#endif
         }
 
         [Serializable]

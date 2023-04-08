@@ -2,13 +2,12 @@
 using UnityEngine;
 using Cobilas.Collections;
 using Cobilas.Unity.Graphics.IGU.Elements;
+using Cobilas.Unity.Graphics.IGU.Interfaces;
 
 namespace Cobilas.Unity.Graphics.IGU.Layouts {
-    public sealed class IGUHorizontalLayout : IGULayout, ISerializationCallbackReceiver {
+    public sealed class IGUHorizontalLayout : IGULayout, IIGUSerializationCallbackReceiver {
         [SerializeField]
         private CellIGUObject[] objects;
-        [SerializeField]
-        private bool AfterDeserialize = false;
         private HorizontalLayoutCellCursor cursor;
         private event Action<CellCursor> sub_OnIGU;
 
@@ -29,12 +28,6 @@ namespace Cobilas.Unity.Graphics.IGU.Layouts {
             CellSize = Vector2.one * 100f;
             myRect = IGURect.DefaultButton;
             myColor = IGUColor.DefaultBoxColor;
-        }
-
-        protected override void OnEnable() {
-            if (!AfterDeserialize) return;
-            AfterDeserialize = false;
-            RefreshOnIGUEvent();
         }
 
         public override void OnIGU() {
@@ -96,10 +89,11 @@ namespace Cobilas.Unity.Graphics.IGU.Layouts {
                 sub_OnIGU += objects[I].OnIGU;
         }
 
-        void ISerializationCallbackReceiver.OnAfterDeserialize()
-            => AfterDeserialize = true;
-
-        void ISerializationCallbackReceiver.OnBeforeSerialize() { }
+        void IIGUSerializationCallbackReceiver.Reserialization() {
+#if UNITY_EDITOR
+            RefreshOnIGUEvent();
+#endif
+        }
 
         [Serializable]
         private sealed class HorizontalLayoutCellCursor : CellCursor {

@@ -2,9 +2,10 @@
 using System.Diagnostics;
 using System.Collections.Generic;
 using Cobilas.Unity.Graphics.IGU.Events;
+using Cobilas.Unity.Graphics.IGU.Interfaces;
 
 namespace Cobilas.Unity.Graphics.IGU.Elements {
-    public class IGUButton : IGUTextObject, ISerializationCallbackReceiver {
+    public class IGUButton : IGUTextObject, IIGUSerializationCallbackReceiver {
         public const string DefaultContentIGUButton = "IGU Button";
         private readonly List<string> stackTraceCount = new List<string>();
         [SerializeField] protected bool[] clicked;
@@ -23,7 +24,7 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
             content = new IGUContent(DefaultContentIGUButton);
             onClick = new IGUOnClickEvent();
             clicked = new bool[2];
-            (this as ISerializationCallbackReceiver).OnAfterDeserialize();
+            (this as IIGUSerializationCallbackReceiver).Reserialization();
         }
 
         public override void OnIGU() {
@@ -71,12 +72,10 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
             return false;
         }
 
-        void ISerializationCallbackReceiver.OnBeforeSerialize() { }
-
-        void ISerializationCallbackReceiver.OnAfterDeserialize()
-            => IGUDrawer.EventEndOfFrame += Reset;
-
         public static string PickUpWhereItWasCalled(int skipFrames = 1)
             => new StackTrace(skipFrames).GetFrame(0).GetMethod().Name;
+
+        void IIGUSerializationCallbackReceiver.Reserialization()
+            => IGUDrawer.EventEndOfFrame += Reset;
     }
 }
