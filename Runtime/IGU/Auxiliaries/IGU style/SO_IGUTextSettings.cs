@@ -8,11 +8,5 @@ namespace Cobilas.Unity.Graphics.IGU {
 
         public string SettingsName => settingsName;
         public IGUTextSettings Settings => settings;
-
-        private void Awake()
-        {
-            settingsName = string.Empty;
-            settings = new IGUTextSettings();
-        }
     }
 }

@@ -30,6 +30,7 @@ private bool tripleClickSelectsLine;
         }
 
         public override void OnInspectorGUI() {
+            serializedObject.Update();
             EditorGUILayout.BeginVertical(EditorStyles.helpBox);
             EditorGUILayout.LabelField(EditorGUIUtility.TrTempContent("Name"), EditorStyles.boldLabel);
             ++EditorGUI.indentLevel;
@@ -50,6 +51,8 @@ private bool tripleClickSelectsLine;
             EditorGUILayout.PropertyField(prop_selectionColor, EditorGUIUtility.TrTempContent("Selection Color"));
             --EditorGUI.indentLevel;
             EditorGUILayout.EndVertical();
+            if (serializedObject.ApplyModifiedProperties())
+                EditorUtility.SetDirty(target);
         }
     }
 }

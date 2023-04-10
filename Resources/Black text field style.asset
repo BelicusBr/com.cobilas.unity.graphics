@@ -13,70 +13,73 @@ MonoBehaviour:
   m_Name: Black text field style
   m_EditorClassIdentifier: 
   style:
-    m_Name: 
-    m_Normal:
-      m_Background: {fileID: 0}
-      m_ScaledBackgrounds: []
-      m_TextColor: {r: 0, g: 0, b: 0, a: 1}
-    m_Hover:
-      m_Background: {fileID: 0}
-      m_ScaledBackgrounds: []
-      m_TextColor: {r: 0, g: 0, b: 0, a: 1}
-    m_Active:
-      m_Background: {fileID: 0}
-      m_ScaledBackgrounds: []
-      m_TextColor: {r: 0, g: 0, b: 0, a: 1}
-    m_Focused:
-      m_Background: {fileID: 0}
-      m_ScaledBackgrounds: []
-      m_TextColor: {r: 0, g: 0, b: 0, a: 1}
-    m_OnNormal:
-      m_Background: {fileID: 0}
-      m_ScaledBackgrounds: []
-      m_TextColor: {r: 0, g: 0, b: 0, a: 1}
-    m_OnHover:
-      m_Background: {fileID: 0}
-      m_ScaledBackgrounds: []
-      m_TextColor: {r: 0, g: 0, b: 0, a: 1}
-    m_OnActive:
-      m_Background: {fileID: 0}
-      m_ScaledBackgrounds: []
-      m_TextColor: {r: 0, g: 0, b: 0, a: 1}
-    m_OnFocused:
-      m_Background: {fileID: 0}
-      m_ScaledBackgrounds: []
-      m_TextColor: {r: 0, g: 0, b: 0, a: 1}
-    m_Border:
-      m_Left: 0
-      m_Right: 0
-      m_Top: 0
-      m_Bottom: 0
-    m_Margin:
-      m_Left: 0
-      m_Right: 0
-      m_Top: 0
-      m_Bottom: 0
-    m_Padding:
-      m_Left: 0
-      m_Right: 0
-      m_Top: 0
-      m_Bottom: 0
-    m_Overflow:
-      m_Left: 0
-      m_Right: 0
-      m_Top: 0
-      m_Bottom: 0
-    m_Font: {fileID: 0}
-    m_FontSize: 0
-    m_FontStyle: 0
-    m_Alignment: 0
-    m_WordWrap: 0
-    m_RichText: 1
-    m_TextClipping: 0
-    m_ImagePosition: 0
-    m_ContentOffset: {x: 0, y: 0}
-    m_FixedWidth: 0
-    m_FixedHeight: 0
-    m_StretchWidth: 1
-    m_StretchHeight: 0
-  foldout: 000000000000000000000000
+    name: Black text field
+    fixedWidth: 0
+    fixedHeight: 0
+    stretchWidth: 1
+    stretchHeight: 0
+    font: {fileID: 0}
+    fontSize: 0
+    fontStyle: 0
+    wordWrap: 0
+    richText: 0
+    alignment: 0
+    imagePosition: 3
+    clipping: 0
+    contentOffset: {x: 0, y: 0}
+    normal:
+      background: {fileID: 2800000, guid: c4c338f52c72f5247b0a576f6f210ec5, type: 3}
+      textColor: {r: 0.79999995, g: 0.79999995, b: 0.79999995, a: 1}
+      foldout: 0
+      scaledBackgrounds: []
+    hover:
+      background: {fileID: 2800000, guid: c3007052a6cf19244896e3470eaf7071, type: 3}
+      textColor: {r: 0.9, g: 0.9, b: 0.9, a: 1}
+      foldout: 0
+      scaledBackgrounds: []
+    active:
+      background: {fileID: 0}
+      textColor: {r: 0, g: 0, b: 0, a: 0}
+      foldout: 0
+      scaledBackgrounds: []
+    focused:
+      background: {fileID: 2800000, guid: c3007052a6cf19244896e3470eaf7071, type: 3}
+      textColor: {r: 1, g: 1, b: 1, a: 1}
+      foldout: 0
+      scaledBackgrounds: []
+    onNormal:
+      background: {fileID: 2800000, guid: 9e56fdd9106002a4b8913c4f04b1b577, type: 3}
+      textColor: {r: 1, g: 1, b: 1, a: 1}
+      foldout: 0
+      scaledBackgrounds: []
+    onHover:
+      background: {fileID: 0}
+      textColor: {r: 0, g: 0, b: 0, a: 0}
+      foldout: 0
+      scaledBackgrounds: []
+    onActive:
+      background: {fileID: 0}
+      textColor: {r: 0, g: 0, b: 0, a: 0}
+      foldout: 0
+      scaledBackgrounds: []
+    onFocused:
+      background: {fileID: 0}
+      textColor: {r: 0, g: 0, b: 0, a: 0}
+      foldout: 0
+      scaledBackgrounds: []
+    border:
+      foldout: 0
+      rectOffSet_xy: {x: 4, y: 4}
+      rectOffSet_zw: {x: 4, y: 4}
+    margin:
+      foldout: 0
+      rectOffSet_xy: {x: 4, y: 4}
+      rectOffSet_zw: {x: 4, y: 4}
+    padding:
+      foldout: 0
+      rectOffSet_xy: {x: 3, y: 3}
+      rectOffSet_zw: {x: 3, y: 3}
+    overflow:
+      foldout: 0
+      rectOffSet_xy: {x: 0, y: 0}
+      rectOffSet_zw: {x: 0, y: 0}

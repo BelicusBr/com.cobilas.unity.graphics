@@ -16,7 +16,7 @@ namespace Cobilas.Unity.Editor.Graphics.IGU {
         private SerializedProperty prop_fontStyle;
         private SerializedProperty prop_wordWrap;
         private SerializedProperty prop_richText;
-        private SerializedProperty prop_clipOffset;
+        //private SerializedProperty prop_clipOffset;
         private SerializedProperty prop_alignment;
         private SerializedProperty prop_imagePosition;
         private SerializedProperty prop_clipping;
@@ -46,7 +46,7 @@ namespace Cobilas.Unity.Editor.Graphics.IGU {
             prop_fontStyle = prop_style.FindPropertyRelative("fontStyle");
             prop_wordWrap = prop_style.FindPropertyRelative("wordWrap");
             prop_richText = prop_style.FindPropertyRelative("richText");
-            prop_clipOffset = prop_style.FindPropertyRelative("clipOffset");
+            //prop_clipOffset = prop_style.FindPropertyRelative("clipOffset");
             prop_alignment = prop_style.FindPropertyRelative("alignment");
             prop_imagePosition = prop_style.FindPropertyRelative("imagePosition");
             prop_clipping = prop_style.FindPropertyRelative("clipping");
@@ -120,7 +120,7 @@ namespace Cobilas.Unity.Editor.Graphics.IGU {
 
             EditorGUILayout.BeginVertical(EditorStyles.helpBox);
             ++EditorGUI.indentLevel;
-            if (prop_foldout.boolValue = EditorGUILayout.Foldout(prop_foldout.boolValue, name)) {
+            if (prop_foldout.boolValue = EditorGUILayout.Foldout(prop_foldout.boolValue, name, true)) {
                 Vector2Int rectOffSet_xy = prop_rectOffSet_xy.vector2IntValue;
                 Vector2Int rectOffSet_zw = prop_rectOffSet_zw.vector2IntValue;
                 ++EditorGUI.indentLevel;
@@ -151,7 +151,7 @@ namespace Cobilas.Unity.Editor.Graphics.IGU {
             _ = EditorGUILayout.PropertyField(prop_background, EditorGUIUtility.TrTextContent("Background"), GUILayout.Height(EditorGUIUtility.singleLineHeight));
             _ = EditorGUILayout.PropertyField(prop_textColor, EditorGUIUtility.TrTextContent("Text color"));
             int size = prop_scaledBackgrounds.arraySize;
-            if (prop_foldout.boolValue = EditorGUILayout.Foldout(prop_foldout.boolValue, "Scaled Backgrounds")) {
+            if (prop_foldout.boolValue = EditorGUILayout.Foldout(prop_foldout.boolValue, "Scaled Backgrounds", true)) {
                 ++EditorGUI.indentLevel;
                 EditorGUI.BeginChangeCheck();
                 size = EditorGUILayout.IntField(EditorGUIUtility.TrTempContent("Size"), size);

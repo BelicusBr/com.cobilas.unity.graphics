@@ -23,8 +23,7 @@ MonoBehaviour:
     fontStyle: 0
     wordWrap: 0
     richText: 1
-    clipOffset: {x: 0, y: 0}
-    alignment: 1
+    alignment: 4
     imagePosition: 0
     clipping: 1
     contentOffset: {x: 0, y: 0}

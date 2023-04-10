@@ -7,10 +7,6 @@ namespace Cobilas.Unity.Graphics.IGU {
 
         public GUIStyle Style => (GUIStyle)style;
 
-        private void Awake() {
-            style = new IGUStyle();
-        }
-
         [System.Serializable]
         public sealed class IGUStyle {
             [SerializeField] private string             name;
@@ -23,7 +19,7 @@ namespace Cobilas.Unity.Graphics.IGU {
             [SerializeField] private FontStyle          fontStyle;
             [SerializeField] private bool               wordWrap;
             [SerializeField] private bool               richText;
-            [SerializeField] private Vector2            clipOffset;
+            //[SerializeField] private Vector2            clipOffset;
             [SerializeField] private TextAnchor         alignment;
             [SerializeField] private ImagePosition      imagePosition;
             [SerializeField] private TextClipping       clipping;
@@ -68,7 +64,7 @@ namespace Cobilas.Unity.Graphics.IGU {
                     fontStyle       = A.fontStyle,
                     wordWrap        = A.wordWrap,
                     richText        = A.richText,
-                    clipOffset      = A.clipOffset,
+                    //clipOffset      = A.clipOffset,
                     alignment       = A.alignment,
                     imagePosition   = A.imagePosition,
                     clipping        = A.clipping,
