@@ -30,25 +30,18 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
         }
 
         public override void OnIGU() {
-            IGUConfig config = GetModIGUConfig();
-            if (!config.IsVisible) return;
-            GUI.color = myColor.MyColor;
-            GUI.enabled = config.IsEnabled;
-            GUI.contentColor = myColor.TextColor;
-            GUI.backgroundColor = myColor.BackgroundColor;
 
-            Rect rectTemp = new Rect(GetPosition(), myRect.Size);
             passwordFieldStyle = GetDefaultValue(passwordFieldStyle, GUI.skin.textField);
 
             GUISettings oldSettings = GUI.skin.settings;
             SetGUISettings(settings);
 
-            Text = GUI.PasswordField(rectTemp, GetGUIContent("").text, maskChar, maxLength, passwordFieldStyle);
+            Text = GUI.PasswordField(GetRect(), GetGUIContent("").text, maskChar, maxLength, passwordFieldStyle);
 
             SetGUISettings(oldSettings);
             Event current = Event.current;
 
-            if (rectTemp.Contains(current.mousePosition)) {
+            if (GetRect(true).Contains(current.mousePosition)) {
                 if (current.clickCount > 0 && GUI.GetNameOfFocusedControl() == name) {
                     isFocused = true;
                     onClick.Invoke();

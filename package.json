@@ -1,6 +1,10 @@
 {
   "name": "com.cobilas.unity.graphics",
+<<<<<<< HEAD
   "version": "2.3.0-rc1",
+=======
+  "version": "2.2.1",
+>>>>>>> main-dev2
   "displayName": "Cobilas Graphics",
   "description": "Pacote que adiciona e manipula elementos",
   "licensesUrl": "https://github.com/BelicusBr/com.cobilas.unity.graphics/blob/main/LICENSE.md",

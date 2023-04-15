@@ -36,26 +36,19 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
         }
 
         public override void OnIGU() {
-            IGUConfig config = GetModIGUConfig();
-            if (!config.IsVisible) return;
-            GUI.color = myColor.MyColor;
-            GUI.enabled = config.IsEnabled;
-            GUI.contentColor = myColor.TextColor;
-            GUI.backgroundColor = myColor.BackgroundColor;
 
-            Rect rectTemp = new Rect(GetPosition(), myRect.Size);
             textFieldStyle = GetDefaultValue(textFieldStyle, GUI.skin.textField);
 
             GUISettings oldSettings = GUI.skin.settings;
             SetGUISettings(settings);
 
-            if (isTextArea) Text = GUI.TextArea(rectTemp, GetGUIContent("").text, maxLength, textFieldStyle);
-            else Text = GUI.TextField(rectTemp, GetGUIContent("").text, maxLength, textFieldStyle);
+            if (isTextArea) Text = GUI.TextArea(GetRect(), GetGUIContent("").text, maxLength, textFieldStyle);
+            else Text = GUI.TextField(GetRect(), GetGUIContent("").text, maxLength, textFieldStyle);
             
             SetGUISettings(oldSettings);
             Event current = Event.current;
 
-            if (rectTemp.Contains(current.mousePosition)) {
+            if (GetRect(true).Contains(current.mousePosition)) {
                 if (current.clickCount > 0 && GUI.GetNameOfFocusedControl() == name) {
                     isFocused = true;
                     onClick.Invoke();

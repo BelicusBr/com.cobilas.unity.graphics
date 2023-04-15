@@ -21,20 +21,13 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
         }
 
         public override void OnIGU() {
-            IGUConfig config = GetModIGUConfig();
-            if (!config.IsVisible) return;
-            GUI.color = myColor.MyColor;
-            GUI.enabled = config.IsEnabled;
-            GUI.contentColor = myColor.TextColor;
-            GUI.backgroundColor = myColor.BackgroundColor;
 
             sliderObjectStyle = GetDefaultValue(sliderObjectStyle, GUI.skin.verticalScrollbar);
-            Rect rectTemp = new Rect(GetPosition(), myRect.Size);
 
             MaxMinSlider temp = isInt ? maxMinSlider.ToMaxMinSliderInt() : maxMinSlider;
             value = Mathf.Clamp(value, temp.Min, temp.Max);
 
-            float valuetemp = GUI.VerticalScrollbar(rectTemp, isInt ? ValueToInt : value, scrollbarThumbSize, temp.Min, temp.Max, sliderObjectStyle);
+            float valuetemp = GUI.VerticalScrollbar(GetRect(), isInt ? ValueToInt : value, scrollbarThumbSize, temp.Min, temp.Max, sliderObjectStyle);
 
             if (valuetemp != value)
                 if (IGUDrawer.Drawer.GetMouseButton(myConfg.MouseType)) {

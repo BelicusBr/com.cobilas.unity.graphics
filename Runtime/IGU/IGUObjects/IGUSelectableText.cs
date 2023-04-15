@@ -22,14 +22,7 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
         }
 
         public override void OnIGU() {
-            IGUConfig config = GetModIGUConfig();
-            if (!config.IsVisible) return;
-            GUI.color = myColor.MyColor;
-            GUI.enabled = config.IsEnabled;
-            GUI.contentColor = myColor.TextColor;
-            GUI.backgroundColor = myColor.BackgroundColor;
 
-            Rect rectTemp = new Rect(GetPosition(), myRect.Size);
             selectableTextStyle = GetDefaultValue(selectableTextStyle, GUI.skin.textArea);
 
             GUISettings oldSettings = GUI.skin.settings;
@@ -37,12 +30,12 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
 
             Event current = Event.current;
 
-            Text = ModifyText(GetGUIContent(string.Empty), current, rectTemp, selectableTextStyle).text;
+            Text = ModifyText(GetGUIContent(string.Empty), current, GetRect(), selectableTextStyle).text;
 
             SetGUISettings(oldSettings);
 
             if (useTooltip)
-                if (rectTemp.Contains(current.mousePosition))
+                if (GetRect(true).Contains(current.mousePosition))
                     DrawTooltip();
         }
 

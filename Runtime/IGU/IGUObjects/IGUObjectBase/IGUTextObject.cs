@@ -15,8 +15,13 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
         public string ToolTip { get => content.Tooltip; set => content.Tooltip = value; }
         public GUIStyle TooltipStyle { get => tooltipStyle; set => tooltipStyle = value; }
 
+        protected override void Awake() {
+            base.Awake();
+            useTooltip = false;
+            content = new IGUContent();
+        }
+
         public override void OnIGU() => base.OnIGU();
-        protected override void Awake() => base.Awake();
         protected override void OnEnable() => base.OnEnable();
         protected override void OnDisable() => base.OnDisable();
         protected override void OnIGUDestroy() => base.OnIGUDestroy();
@@ -32,6 +37,9 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
             IGUDrawer.Drawer.SetTootipPosition(Event.current.mousePosition);
             IGUDrawer.Drawer.OpenTooltip();
         }
+
+        public static GUIContent GetGUIContentTemp(IGUContent content)
+            => GetGUIContentTemp(content.Text, content.Tooltip, content.Image);
 
         public static GUIContent GetGUIContentTemp(string text, string tooltip, Texture image) {
             GUIContentTemp.text = text;

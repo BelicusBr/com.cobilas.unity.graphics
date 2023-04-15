@@ -1,4 +1,23 @@
+## [2.2.1] - 15/04/2023
+### Changed
+Agora as funções IGUConfig e IGUColor são executadas no método `void:IIGUObject.InternalOnIGU()` da classe `IGUObject`.
+### Fixed
+Nas classes `IGUNumericBox` e `IGUNumericBoxInt` os sub-elementos não eram parenteados o que não alterava a posição dos sub-elementos.
+### Deprecated
+O método protegido `Vector2:IGUObject.GetPosition()` não tem suporte.
+### Added
+A propriedade `IGUObject.GlobalRect { get; set; }` representa posição local do elemento `IGUObject` somado com o elemento `IGUObject` pai.
+Os métodos protegidos
+```c#
+	protected Rect GetRect(bool iginoreNotMod);
+	protected Rect GetRect();
+```
+foram adicionados para obter a posição e tamanho.
+## [2.1.1] - 14/04/2023
+### Changed
+Agora as propriedades `IGUTextObject.UseTooltip`, `IGUTextObject.MyContent` e `IGUObject.MyConfg` resebem um valor padrão.
 ## [2.1.0-rc1] - 08/04/2023
+### Added
 A interface `IIGUSerializationCallbackReceiver` foi adicionada para serializar `IGUObject` no Editor.
 ## [2.0.2] - 05/04/2023
 ### Fixed(IGU)

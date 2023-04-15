@@ -34,9 +34,6 @@ namespace Cobilas.Unity.Graphics.IGU.Layouts {
         }
 
         public override void OnIGU() {
-            IGUConfig config = GetModIGUConfig();
-            if (!config.IsVisible) return;
-
             cursor.Reset();
             cursor.elementCount = Count;
             sub_OnIGU?.Invoke(cursor);
