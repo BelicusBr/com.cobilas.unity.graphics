@@ -11,7 +11,7 @@ namespace Cobilas.Unity.Graphics.IGU {
     public class IGUDrawer : IGUBehaviour, ISerializationCallbackReceiver {
         private Action onIGU;
         private Coroutine EndOfFrameCoroutine = null;
-        private readonly IGUToolTip toolTip = new IGUToolTip();
+        private IGUToolTip toolTip = new IGUToolTip();
         [SerializeField] private IGUMouseInput[] mouses;
         [SerializeField] private IGUContainer[] containers;
         [SerializeField] private IGUObject[] reserialization;
@@ -87,7 +87,6 @@ namespace Cobilas.Unity.Graphics.IGU {
                 mouses[1] = 
                 mouses[2] = mouses[0].SetValues(true, true, true, Event.current.mousePosition);
 #endif
-
             toolTip.Close();
             onIGU?.Invoke();
             toolTip.SetScaleFactor(ScaleFactor);
@@ -130,6 +129,7 @@ namespace Cobilas.Unity.Graphics.IGU {
 
         void ISerializationCallbackReceiver.OnAfterDeserialize() {
             drawer = this;
+            toolTip = new IGUToolTip();
             onIGU = (Action)null;
             for (int I = 0; I < ArrayManipulation.ArrayLength(containers); I++)
                 onIGU += (containers[I] as IIGUContainer).OnIGU;
@@ -183,6 +183,7 @@ namespace Cobilas.Unity.Graphics.IGU {
 
             public IGUToolTip() {
                 color = IGUColor.DefaultBoxColor;
+                style = null;
                 tooltip = string.Empty;
                 gUIContent = new GUIContent();
                 close = true;

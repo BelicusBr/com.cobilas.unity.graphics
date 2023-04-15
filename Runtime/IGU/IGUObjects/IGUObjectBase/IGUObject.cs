@@ -11,7 +11,6 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
         [SerializeField] protected IGUConfig myConfg;
         [SerializeField] protected IGUContainer container;
         protected DoNotModifyRect doNots;
-        protected int modifiedRect;
 #if UNITY_EDITOR
         [SerializeField] private string subname;
         public bool foldout;
@@ -26,6 +25,7 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
 
         protected virtual void Awake() {
             doNots = DoNotModifyRect.False;
+            myConfg = IGUConfig.Default;
         }
         protected virtual void OnEnable() { }
         protected virtual void OnDisable() { }
