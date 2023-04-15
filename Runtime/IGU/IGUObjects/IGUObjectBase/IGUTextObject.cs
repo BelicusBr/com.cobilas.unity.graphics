@@ -38,6 +38,9 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
             IGUDrawer.Drawer.OpenTooltip();
         }
 
+        public static GUIContent GetGUIContentTemp(IGUContent content)
+            => GetGUIContentTemp(content.Text, content.Tooltip, content.Image);
+
         public static GUIContent GetGUIContentTemp(string text, string tooltip, Texture image) {
             GUIContentTemp.text = text;
             GUIContentTemp.tooltip = tooltip;

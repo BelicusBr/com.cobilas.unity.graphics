@@ -50,6 +50,7 @@ namespace Cobilas.Unity.Graphics.IGU {
             ((y * scaleFactorHeight) + height * .5f) - height * pivotY
             );
 
+        public static IGURect Zero => new IGURect(Vector2.zero, Vector2.zero, Vector2.zero, Vector2.zero);
         public static IGURect DefaultBox => new IGURect(Vector2.zero, new Vector2(50f, 50f), Vector2.zero, Vector2.one);
         public static IGURect DefaultButton => new IGURect(Vector2.zero, new Vector2(130f, 25f), Vector2.zero, Vector2.one);
         public static IGURect DefaultSlider => new IGURect(Vector2.zero, new Vector2(130f, 15f), Vector2.zero, Vector2.one);

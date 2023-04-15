@@ -16,23 +16,14 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
         }
 
         public override void OnIGU() {
-            IGUConfig config = GetModIGUConfig();
-
-            if (!config.IsVisible) return;
-            GUI.color = myColor.MyColor;
-            GUI.enabled = config.IsEnabled;
-            GUI.contentColor = myColor.TextColor;
-            GUI.backgroundColor = myColor.BackgroundColor;
 
             boxStyle = GetDefaultValue(boxStyle, GUI.skin.box);
             GUIContent mycontent = GetGUIContent(DefaultIGUBox);
 
-            Rect rectTemp = new Rect(GetPosition(), myRect.Size);
-
-            GUI.Box(rectTemp, mycontent, boxStyle);
+            GUI.Box(GetRect(), mycontent, boxStyle);
 
             if (useTooltip)
-                if (rectTemp.Contains(Event.current.mousePosition))
+                if (GetRect(true).Contains(Event.current.mousePosition))
                     DrawTooltip();
         }
 

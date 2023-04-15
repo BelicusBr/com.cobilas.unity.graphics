@@ -28,25 +28,17 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
         }
 
         public override void OnIGU() {
-            IGUConfig config = GetModIGUConfig();
-
-            if (!config.IsVisible) return;
-            GUI.color = myColor.MyColor;
-            GUI.enabled = config.IsEnabled;
-            GUI.contentColor = myColor.TextColor;
-            GUI.backgroundColor = myColor.BackgroundColor;
 
             buttonStyle = GetDefaultValue(buttonStyle, GUI.skin.button);
-            Rect rectTemp = new Rect(GetPosition(), myRect.Size);
 
-            if (GUI.Button(rectTemp, GetGUIContent(DefaultContentIGUButton), buttonStyle))
+            if (GUI.Button(GetRect(), GetGUIContent(DefaultContentIGUButton), buttonStyle))
                 if (IGUDrawer.Drawer.GetMouseButtonUp(myConfg.MouseType)) {
                     onClick.Invoke();
                     clicked[1] = true;
                 }
 
             if (useTooltip)
-                if (rectTemp.Contains(IGUDrawer.Drawer.GetMousePosition()))
+                if (GetRect(true).Contains(IGUDrawer.Drawer.GetMousePosition()))
                     DrawTooltip();
         }
 

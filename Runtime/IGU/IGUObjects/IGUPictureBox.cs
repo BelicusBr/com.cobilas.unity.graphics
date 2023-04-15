@@ -31,13 +31,8 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
         }
 
         public override void OnIGU() {
-            IGUConfig config = GetModIGUConfig();
-            if (!config.IsVisible) return;
-            GUI.enabled = config.IsEnabled;
-
-            Rect rectTemp = new Rect(GetPosition(), myRect.Size);
             
-            GUI.DrawTexture(rectTemp, texture, scaleMode, alphaBlend, imageAspect, myColor.MyColor, borderWidths, borderRadiuses);
+            GUI.DrawTexture(GetRect(), texture, scaleMode, alphaBlend, imageAspect, myColor.MyColor, borderWidths, borderRadiuses);
         }
     }
 }
