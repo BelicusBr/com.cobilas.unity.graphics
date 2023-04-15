@@ -1,3 +1,9 @@
+## [2.1.1] - 14/04/2023
+### Changed
+Agora as propriedades `IGUTextObject.UseTooltip`, `IGUTextObject.MyContent` e `IGUObject.MyConfg` resebem um valor padrão.
+## [2.1.0-rc1] - 08/04/2023
+### Added
+A interface `IIGUSerializationCallbackReceiver` foi adicionada para serializar `IGUObject` no Editor.
 ## [2.0.2] - 05/04/2023
 ### Fixed(IGU)
 No `IGUComboBox` avia um problema que acontecia quando o objeto era filiado a outro que fazia a posição da `IGUComboBox` não ser alterada.

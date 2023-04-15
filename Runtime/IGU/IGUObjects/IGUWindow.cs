@@ -1,8 +1,9 @@
 ﻿using UnityEngine;
 using Cobilas.Unity.Graphics.IGU.Events;
+using Cobilas.Unity.Graphics.IGU.Interfaces;
 
 namespace Cobilas.Unity.Graphics.IGU.Elements {
-    public class IGUWindow : IGUTextObject, ISerializationCallbackReceiver {
+    public class IGUWindow : IGUTextObject, IIGUSerializationCallbackReceiver {
         public event GUI.WindowFunction windowFunction;
         public const string DefaultIGUWindow = "IGU Window";
 
@@ -23,7 +24,7 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
             onMovingWindow = new IGUScrollViewEvent();
             content = new IGUContent(DefaultIGUWindow);
             dragFlap = new Rect(0f, 0f, IGURect.DefaultWindow.Width, 15f);
-            InitInternalIndowFunction();
+            (this as IIGUSerializationCallbackReceiver).Reserialization();
         }
 
         public override void OnIGU() {
@@ -56,7 +57,13 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
                     DrawTooltip();
         }
 
-        private void InitInternalIndowFunction() {
+        protected override void DrawTooltip()
+            => base.DrawTooltip();
+
+        protected override GUIContent GetGUIContent(string defaultGUIContent)
+            => base.GetGUIContent(defaultGUIContent);
+
+        void IIGUSerializationCallbackReceiver.Reserialization() {
             internalIndowFunction = (id) => {
                 GUI.DragWindow(dragFlap);
                 doNots = DoNotModifyRect.True;
@@ -64,16 +71,5 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
                 doNots = DoNotModifyRect.False;
             };
         }
-
-        void ISerializationCallbackReceiver.OnBeforeSerialize() { }
-
-        void ISerializationCallbackReceiver.OnAfterDeserialize()
-            => InitInternalIndowFunction();
-
-        protected override void DrawTooltip()
-            => base.DrawTooltip();
-
-        protected override GUIContent GetGUIContent(string defaultGUIContent)
-            => base.GetGUIContent(defaultGUIContent);
     }
 }

@@ -11,7 +11,6 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
         [SerializeField] protected IGUConfig myConfg;
         [SerializeField] protected IGUContainer container;
         protected DoNotModifyRect doNots;
-        protected int modifiedRect;
 #if UNITY_EDITOR
         [SerializeField] private string subname;
         public bool foldout;
@@ -26,6 +25,7 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
 
         protected virtual void Awake() {
             doNots = DoNotModifyRect.False;
+            myConfg = IGUConfig.Default;
         }
         protected virtual void OnEnable() { }
         protected virtual void OnDisable() { }
@@ -77,6 +77,7 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
                 if (container.Remove(this))
                     Debug.Log(string.Format("{0} removed from container", name));
             OnIGUDestroy();
+            IGUDrawer.RemoveReserialization(this);
         }
 
         void IIGUObject.InternalOnIGU() {
@@ -133,10 +134,13 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
 
         public static IGUObject CreateIGUInstance(Type type, string name) {
             if (!type.IsSubclassOf(typeof(IGUObject)))
-                throw new IGUException();
-            else if (type.IsAbstract) throw new IGUException();
+                throw new IGUException($"Class {type.Name} does not inherit from class IGUObject.");
+            else if (type.IsAbstract) 
+                throw new IGUException("The target class cannot be abstract.");
             IGUObject instance = (IGUObject)CreateInstance(type.Name);
             instance.name = name;
+            if (instance is IIGUSerializationCallbackReceiver)
+                IGUDrawer.AddReserialization(instance);
             return instance;
         }
 

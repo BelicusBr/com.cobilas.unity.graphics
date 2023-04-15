@@ -3,6 +3,7 @@ using UnityEngine;
 using System.Collections;
 using Cobilas.Collections;
 using Cobilas.Unity.Management.Container;
+using Cobilas.Unity.Graphics.IGU.Elements;
 using Cobilas.Unity.Graphics.IGU.Interfaces;
 
 namespace Cobilas.Unity.Graphics.IGU {
@@ -10,9 +11,10 @@ namespace Cobilas.Unity.Graphics.IGU {
     public class IGUDrawer : IGUBehaviour, ISerializationCallbackReceiver {
         private Action onIGU;
         private Coroutine EndOfFrameCoroutine = null;
-        private readonly IGUToolTip toolTip = new IGUToolTip();
+        private IGUToolTip toolTip = new IGUToolTip();
         [SerializeField] private IGUMouseInput[] mouses;
         [SerializeField] private IGUContainer[] containers;
+        [SerializeField] private IGUObject[] reserialization;
 #if UNITY_EDITOR
 #pragma warning disable IDE0052
         [SerializeField, HideInInspector] private Vector2 editor_ScaleFactor;
@@ -37,6 +39,11 @@ namespace Cobilas.Unity.Graphics.IGU {
         protected override void Awake() {
             drawer = this;
             mouses = new IGUMouseInput[3];
+        }
+
+        private void OnEnable() {
+            for (long I = 0; I < ArrayManipulation.ArrayLongLength(reserialization); I++)
+                (reserialization[I] as IIGUSerializationCallbackReceiver).Reserialization();
         }
 
         private void LateUpdate() {
@@ -80,7 +87,6 @@ namespace Cobilas.Unity.Graphics.IGU {
                 mouses[1] = 
                 mouses[2] = mouses[0].SetValues(true, true, true, Event.current.mousePosition);
 #endif
-
             toolTip.Close();
             onIGU?.Invoke();
             toolTip.SetScaleFactor(ScaleFactor);
@@ -123,6 +129,7 @@ namespace Cobilas.Unity.Graphics.IGU {
 
         void ISerializationCallbackReceiver.OnAfterDeserialize() {
             drawer = this;
+            toolTip = new IGUToolTip();
             onIGU = (Action)null;
             for (int I = 0; I < ArrayManipulation.ArrayLength(containers); I++)
                 onIGU += (containers[I] as IIGUContainer).OnIGU;
@@ -157,6 +164,14 @@ namespace Cobilas.Unity.Graphics.IGU {
 #endif
         }
 
+        internal static void AddReserialization(IGUObject item)
+            => ArrayManipulation.Add(item, ref drawer.reserialization);
+
+        internal static void RemoveReserialization(IGUObject item) {
+            if (ArrayManipulation.Exists(item, drawer.reserialization))
+                ArrayManipulation.Remove(item, ref drawer.reserialization);
+        }
+
         private sealed class IGUToolTip {
             private string tooltip;
             private bool close;
@@ -168,6 +183,7 @@ namespace Cobilas.Unity.Graphics.IGU {
 
             public IGUToolTip() {
                 color = IGUColor.DefaultBoxColor;
+                style = null;
                 tooltip = string.Empty;
                 gUIContent = new GUIContent();
                 close = true;

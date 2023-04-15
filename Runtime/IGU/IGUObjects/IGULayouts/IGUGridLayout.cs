@@ -2,15 +2,15 @@
 using UnityEngine;
 using Cobilas.Collections;
 using Cobilas.Unity.Graphics.IGU.Elements;
+using Cobilas.Unity.Graphics.IGU.Interfaces;
 
 namespace Cobilas.Unity.Graphics.IGU.Layouts {
-    public sealed class IGUGridLayout : IGULayout, ISerializationCallbackReceiver {
+    public sealed class IGUGridLayout : IGULayout, IIGUSerializationCallbackReceiver {
 
         [SerializeField] 
         private CellIGUObject[] objects;
         [SerializeField] 
         private GridLayoutCellCursor cursor;
-        private bool AfterDeserialize = false;
         private event Action<CellCursor> sub_OnIGU;
 
         public override int Count => ArrayManipulation.ArrayLength(objects);
@@ -31,12 +31,6 @@ namespace Cobilas.Unity.Graphics.IGU.Layouts {
             myRect = IGURect.DefaultButton;
             myColor = IGUColor.DefaultBoxColor;
             DirectionalBreak = DirectionalBreak.VerticalBreak;
-        }
-
-        protected override void OnEnable() {
-            if (!AfterDeserialize) return;
-            AfterDeserialize = false;
-            RefreshOnIGUEvent();
         }
 
         public override void OnIGU() {
@@ -99,10 +93,11 @@ namespace Cobilas.Unity.Graphics.IGU.Layouts {
                 sub_OnIGU += objects[I].OnIGU;
         }
 
-        void ISerializationCallbackReceiver.OnBeforeSerialize() { }
-
-        void ISerializationCallbackReceiver.OnAfterDeserialize()
-            => AfterDeserialize = true;
+        void IIGUSerializationCallbackReceiver.Reserialization() {
+#if UNITY_EDITOR
+            RefreshOnIGUEvent();
+#endif
+        }
 
         [Serializable]
         private sealed class GridLayoutCellCursor : CellCursor {

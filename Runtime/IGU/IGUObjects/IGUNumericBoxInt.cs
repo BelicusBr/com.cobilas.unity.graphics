@@ -1,11 +1,10 @@
 ﻿using System;
 using UnityEngine;
 using Cobilas.Unity.Graphics.IGU.Events;
+using Cobilas.Unity.Graphics.IGU.Interfaces;
 
 namespace Cobilas.Unity.Graphics.IGU.Elements {
-    public class IGUNumericBoxInt : IGUObject, ISerializationCallbackReceiver {
-
-        private bool afterDeserialize = false;
+    public class IGUNumericBoxInt : IGUObject, IIGUSerializationCallbackReceiver {
 
         [SerializeField] protected int value;
         [SerializeField] protected int additionValue;
@@ -90,16 +89,9 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
             buttonRight.OnClick.AddListener(() => value += additionValue);
         }
 
-        void ISerializationCallbackReceiver.OnBeforeSerialize() { }
-
-        void ISerializationCallbackReceiver.OnAfterDeserialize() => afterDeserialize = true;
-
-        protected override void OnEnable() {
+        void IIGUSerializationCallbackReceiver.Reserialization() {
 #if UNITY_EDITOR
-            if (afterDeserialize) {
-                afterDeserialize = false;
-                InitEvents();
-            }
+            InitEvents();
 #endif
         }
     }
