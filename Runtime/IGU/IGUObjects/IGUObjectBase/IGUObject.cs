@@ -156,7 +156,6 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
                 GUI.enabled = oldEnabled;
                 GUI.contentColor = oldContentColor;
                 GUI.backgroundColor = oldBackgroundColor;
-
             }
         }
 

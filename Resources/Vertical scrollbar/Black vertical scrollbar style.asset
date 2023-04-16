@@ -10,12 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1f18be2b9192f1546a26ef4aae55220c, type: 3}
-  m_Name: Black horizontal scrollbar border thumb style
+  m_Name: Black vertical scrollbar style
   m_EditorClassIdentifier: 
   style:
-    name: Black horizontal scrollbar border thumb
-    fixedWidth: 0
-    fixedHeight: 13
+    name: Black vertical scrollbar
+    fixedWidth: 15
+    fixedHeight: 0
     stretchWidth: 1
     stretchHeight: 0
     font: {fileID: 0}
@@ -25,10 +25,10 @@ MonoBehaviour:
     richText: 1
     alignment: 0
     imagePosition: 0
-    clipping: 0
+    clipping: 1
     contentOffset: {x: 0, y: 0}
     normal:
-      background: {fileID: 2800000, guid: 575d494e215b4ec4488e84d79b6ef772, type: 3}
+      background: {fileID: 2800000, guid: 13e75b6ec8eb10c4b8170bd54d559699, type: 3}
       textColor: {r: 0, g: 0, b: 0, a: 1}
       foldout: 0
       scaledBackgrounds: []
@@ -69,17 +69,17 @@ MonoBehaviour:
       scaledBackgrounds: []
     border:
       foldout: 0
-      rectOffSet_xy: {x: 6, y: 6}
-      rectOffSet_zw: {x: 6, y: 6}
+      rectOffSet_xy: {x: 0, y: 0}
+      rectOffSet_zw: {x: 9, y: 9}
     margin:
       foldout: 0
-      rectOffSet_xy: {x: 0, y: 0}
-      rectOffSet_zw: {x: 0, y: 0}
+      rectOffSet_xy: {x: 1, y: 4}
+      rectOffSet_zw: {x: 4, y: 4}
     padding:
       foldout: 0
-      rectOffSet_xy: {x: 6, y: 6}
-      rectOffSet_zw: {x: 0, y: 0}
+      rectOffSet_xy: {x: 0, y: 0}
+      rectOffSet_zw: {x: 1, y: 1}
     overflow:
       foldout: 0
       rectOffSet_xy: {x: 0, y: 0}
-      rectOffSet_zw: {x: -1, y: 1}
+      rectOffSet_zw: {x: 0, y: 0}
