@@ -32,7 +32,12 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
         protected virtual void OnDisable() { }
         protected virtual void OnIGUDestroy() { }
 
-        public virtual void OnIGU() { }
+        public void OnIGU() {
+            GUI.SetNextControlName(name);
+            (this as IIGUObject).InternalPreOnIGU();
+            LowCallOnIGU();
+            (this as IIGUObject).InternalPostOnIGU();
+        }
 
         public IGUContainer ApplyToContainer(IGUContainer container) {
             container.Add(this);
@@ -78,9 +83,7 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
 
         protected Rect GetRect() => GetRect(false);
 
-        [Obsolete("Use Rect:GetRect()")]
-        protected Vector2 GetPosition()
-            => parent == null || NotMod() ? myRect.ModifiedPosition : myRect.ModifiedPosition + parent.GetPosition();
+        protected virtual void LowCallOnIGU() { }
 
         private IGURect SetGlobalPosition(IGURect rect) {
             IGURect grect = parent == null || NotMod() ? IGURect.Zero : parent.GetGlobalPosition(false);
@@ -93,11 +96,6 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
             return res.SetPosition(myRect.Position + grect.Position);
         }
 
-        protected GUIStyle GetDefaultValue(GUIStyle style, GUIStyle _default) {
-            if (style != null) return style;
-            return _default;
-        }
-
         private void OnDestroy() {
             if (container != null)
                 if (container.Remove(this))
@@ -107,23 +105,13 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
         }
 
         void IIGUObject.InternalOnIGU() {
-            GUI.SetNextControlName(name);
 
             myRect.SetScaleFactor(IGUDrawer.ScaleFactor);
 
-            if (myRect.ScaleFactorWidth <= 0f)
-                myRect.SetScaleFactor(new Vector2(.1f, myRect.ScaleFactorHeight));
-            if (myRect.ScaleFactorHeight <= 0f)
-                myRect.SetScaleFactor(new Vector2(myRect.ScaleFactorWidth, .1f));
-            
-            if (myRect.PivotX < 0f)
-                myRect.SetPivot(new Vector2(0f, myRect.PivotY));
-            if (myRect.PivotX > 1f)
-                myRect.SetPivot(new Vector2(1f, myRect.PivotY));
-            if (myRect.PivotY < 0f)
-                myRect.SetScaleFactor(new Vector2(myRect.PivotX, 0f));
-            if (myRect.PivotY > 1f)
-                myRect.SetScaleFactor(new Vector2(myRect.PivotX, 1f));
+            Vector2 pivot = myRect.Pivot;
+            pivot.x = Mathf.Clamp(pivot.x, 0f, 1f);
+            pivot.y = Mathf.Clamp(pivot.y, 0f, 1f);
+            myRect.SetPivot(pivot);
 
             if (myRect.Rotation > 360f)
                 myRect.SetRotation(0f);
@@ -137,19 +125,15 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
                 bool oldEnabled = GUI.enabled;
                 Color oldContentColor = GUI.contentColor;
                 Color oldBackgroundColor = GUI.backgroundColor;
-
                 GUI.color = myColor.MyColor;
                 GUI.enabled = config.IsEnabled;
                 GUI.contentColor = myColor.TextColor;
                 GUI.backgroundColor = myColor.BackgroundColor;
 
                 Matrix4x4 oldMatrix = GUI.matrix;
-
                 GUIUtility.RotateAroundPivot(myRect.Rotation, GetRect().position);
                 GUIUtility.ScaleAroundPivot(myRect.ScaleFactor, GetRect().position);
-                (this as IIGUObject).InternalPreOnIGU();
                 OnIGU();
-                (this as IIGUObject).InternalPostOnIGU();
                 GUI.matrix = oldMatrix;
 
                 GUI.color = oldColor;
@@ -167,6 +151,8 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
         void IIGUObject.InternalPreOnIGU() => PreOnIGU();
 
         void IIGUObject.InternalPostOnIGU() => PostOnIGU();
+
+        private bool NotMod() => parent != null && parent.doNots;
 
         public static T CreateIGUInstance<T>() where T : IGUObject
             => (T)CreateIGUInstance(typeof(T));
@@ -188,7 +174,5 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
                 IGUDrawer.AddReserialization(instance);
             return instance;
         }
-
-        private bool NotMod() => parent != null && parent.doNots;
     }
 }

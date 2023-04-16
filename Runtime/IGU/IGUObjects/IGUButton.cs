@@ -9,29 +9,28 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
         public const string DefaultContentIGUButton = "IGU Button";
         private readonly List<string> stackTraceCount = new List<string>();
         [SerializeField] protected bool[] clicked;
-        [SerializeField] protected GUIStyle buttonStyle;
+        [SerializeField] protected IGUStyle buttonStyle;
         [SerializeField] protected IGUOnClickEvent onClick;
 
         public IGUOnClickEvent OnClick => onClick;
         public virtual bool Clicked => GetClicked();
-        public GUIStyle ButtonStyle { get => buttonStyle; set => buttonStyle = value; }
+        public IGUStyle ButtonStyle { get => buttonStyle; set => buttonStyle = value; }
 
         protected override void Awake() {
             base.Awake();
             myConfg = IGUConfig.Default;
             myRect = IGURect.DefaultButton;
             myColor = IGUColor.DefaultBoxColor;
+            buttonStyle = IGUSkins.GetIGUStyle("Black button border");
             content = new IGUContent(DefaultContentIGUButton);
             onClick = new IGUOnClickEvent();
             clicked = new bool[2];
             (this as IIGUSerializationCallbackReceiver).Reserialization();
         }
 
-        public override void OnIGU() {
+        protected override void LowCallOnIGU() {
 
-            buttonStyle = GetDefaultValue(buttonStyle, GUI.skin.button);
-
-            if (GUI.Button(GetRect(), GetGUIContent(DefaultContentIGUButton), buttonStyle))
+            if (GUI.Button(GetRect(), GetGUIContent(DefaultContentIGUButton), IGUStyle.GetGUIStyleTemp(buttonStyle)))
                 if (IGUDrawer.Drawer.GetMouseButtonUp(myConfg.MouseType)) {
                     onClick.Invoke();
                     clicked[1] = true;

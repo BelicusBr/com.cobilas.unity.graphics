@@ -34,6 +34,18 @@ namespace Cobilas.Unity.Graphics.IGU {
             => new MaxMinSliderInt((int)min, (int)max);
 #endif
 
+        public MaxMinSlider Set(Vector2Int minmax)
+            => Set(minmax.x, minmax.y);
+
+        public MaxMinSlider Set(Vector2 minmax)
+            => Set(minmax.x, minmax.y);
+
+        public MaxMinSlider Set(float min, float max) {
+            this.min = min;
+            this.max = max;
+            return this;
+        }
+
         public override int GetHashCode()
             => base.GetHashCode() >> min.GetHashCode() ^ max.GetHashCode();
 
@@ -52,5 +64,6 @@ namespace Cobilas.Unity.Graphics.IGU {
         public static bool operator !=(MaxMinSlider A, MaxMinSliderInt B) => !(A == B);
         public static bool operator ==(MaxMinSliderInt A, MaxMinSlider B) => B.Equals(A);
         public static bool operator !=(MaxMinSliderInt A, MaxMinSlider B) => !(B == A);
+        public static explicit operator MaxMinSliderInt(MaxMinSlider A) => A.ToMaxMinSliderInt();
     }
 }

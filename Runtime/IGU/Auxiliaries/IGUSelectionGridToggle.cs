@@ -23,7 +23,7 @@ namespace Cobilas.Unity.Graphics.IGU {
         public void OnDestroy()
             => UnityEngine.Object.Destroy(checkBox);
 
-        public void OnIGU(GUIStyle style, GUIStyle tooltipStyle) {
+        public void OnIGU(IGUStyle style, IGUStyle tooltipStyle) {
             checkBox.MyRect = checkBox.MyRect.SetPosition(checkBox.Parent.MyRect.Size.Multiplication(floor) + spacing.Multiplication(floor));
             checkBox.MyRect = checkBox.MyRect.SetSize(checkBox.Parent.MyRect.Size);
             checkBox.CheckBoxStyle = style;

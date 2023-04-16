@@ -8,14 +8,14 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
         public const string DefaultIGUWindow = "IGU Window";
 
         [SerializeField] protected Rect dragFlap;
-        [SerializeField] protected GUIStyle windowStyle;
+        [SerializeField] protected IGUStyle windowStyle;
         protected GUI.WindowFunction internalIndowFunction;
         [SerializeField] protected IGUScrollViewEvent onMovingWindow;
 
         public IGUScrollViewEvent OnMovingWindow => onMovingWindow;
         /// <summary>O <see cref="Rect"/> da aba de arrasto da janela.</summary>
         public Rect DragFlap { get => dragFlap; set => dragFlap = value; }
-        public GUIStyle WindowStyle { get => windowStyle; set => windowStyle = value; }
+        public IGUStyle WindowStyle { get => windowStyle; set => windowStyle = value; }
 
         protected override void Awake() {
             myConfg = IGUConfig.Default;
@@ -23,19 +23,19 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
             myColor = IGUColor.DefaultBoxColor;
             onMovingWindow = new IGUScrollViewEvent();
             content = new IGUContent(DefaultIGUWindow);
+            windowStyle = IGUSkins.GetIGUStyle("Black window border");
             dragFlap = new Rect(0f, 0f, IGURect.DefaultWindow.Width, 15f);
             (this as IIGUSerializationCallbackReceiver).Reserialization();
         }
 
-        public override void OnIGU() {
+        protected override void LowCallOnIGU() {
 
-            windowStyle = GetDefaultValue(windowStyle, GUI.skin.window);
             GUIContent mycontent = GetGUIContent(DefaultIGUWindow);
 
             Rect rectTemp = GetRect();
-            int ID = GUIUtility.GetControlID(FocusType.Passive);
 
-            Rect rectTemp2 = GUI.Window(ID, rectTemp, internalIndowFunction, mycontent, windowStyle);
+            Rect rectTemp2 = GUI.Window(GUIUtility.GetControlID(FocusType.Passive, rectTemp), rectTemp,
+                internalIndowFunction, mycontent, IGUStyle.GetGUIStyleTemp(windowStyle));
 
             if (rectTemp != rectTemp2) {
                 if (IGUDrawer.Drawer.GetMouseButton(myConfg.MouseType)) {

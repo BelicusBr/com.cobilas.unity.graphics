@@ -30,7 +30,7 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
             borderRadiuses = Vector4.zero;
         }
 
-        public override void OnIGU() {
+        protected override void LowCallOnIGU() {
             
             GUI.DrawTexture(GetRect(), texture, scaleMode, alphaBlend, imageAspect, myColor.MyColor, borderWidths, borderRadiuses);
         }

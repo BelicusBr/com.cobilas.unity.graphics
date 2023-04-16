@@ -3,24 +3,22 @@
 namespace Cobilas.Unity.Graphics.IGU.Elements {
     public class IGUBox : IGUTextObject {
         public const string DefaultIGUBox = "IGU Box";
-        [SerializeField] private GUIStyle boxStyle;
+        [SerializeField] private IGUStyle boxStyle;
 
-        public GUIStyle BoxStyle { get => boxStyle; set => boxStyle = value; }
+        public IGUStyle BoxStyle { get => boxStyle; set => boxStyle = value; }
 
         protected override void Awake() {
             base.Awake();
             myConfg = IGUConfig.Default;
             myRect = IGURect.DefaultBox;
             myColor = IGUColor.DefaultBoxColor;
+            boxStyle = IGUSkins.GetIGUStyle("Black box border");
             content = new IGUContent(DefaultIGUBox);
         }
 
-        public override void OnIGU() {
+        protected override void LowCallOnIGU() {
 
-            boxStyle = GetDefaultValue(boxStyle, GUI.skin.box);
-            GUIContent mycontent = GetGUIContent(DefaultIGUBox);
-
-            GUI.Box(GetRect(), mycontent, boxStyle);
+            GUI.Box(GetRect(), GetGUIContent(DefaultIGUBox), IGUStyle.GetGUIStyleTemp(boxStyle));
 
             if (useTooltip)
                 if (GetRect(true).Contains(Event.current.mousePosition))

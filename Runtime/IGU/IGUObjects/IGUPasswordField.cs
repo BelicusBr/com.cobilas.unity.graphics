@@ -8,7 +8,7 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
         [SerializeField] protected char maskChar;
         [SerializeField, HideInInspector] protected bool isFocused;
         [SerializeField] protected IGUOnClickEvent onClick;
-        [SerializeField] protected GUIStyle passwordFieldStyle;
+        [SerializeField] protected IGUStyle passwordFieldStyle;
 
         /// <summary>Indica sé o <see cref="IGUPasswordField"/> está focado.</summary>
         public bool IsFocused => isFocused;
@@ -17,7 +17,7 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
         public char MaskChar { get => maskChar; set => maskChar = value; }
         /// <summary>Número maximo de caracteres permitidos.(50000 padrão)</summary>
         public int MaxLength { get => maxLength; set => maxLength = value; }
-        public GUIStyle PasswordFieldStyle { get => passwordFieldStyle; set => passwordFieldStyle = value; }
+        public IGUStyle PasswordFieldStyle { get => passwordFieldStyle; set => passwordFieldStyle = value; }
 
         protected override void Awake() {
             base.Awake();
@@ -27,16 +27,15 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
             myConfg = IGUConfig.Default;
             myRect = IGURect.DefaultButton;
             myColor = IGUColor.DefaultBoxColor;
+            passwordFieldStyle = IGUSkins.GetIGUStyle("Black text field border");
         }
 
-        public override void OnIGU() {
-
-            passwordFieldStyle = GetDefaultValue(passwordFieldStyle, GUI.skin.textField);
+        protected override void LowCallOnIGU() {
 
             GUISettings oldSettings = GUI.skin.settings;
             SetGUISettings(settings);
 
-            Text = GUI.PasswordField(GetRect(), GetGUIContent("").text, maskChar, maxLength, passwordFieldStyle);
+            Text = GUI.PasswordField(GetRect(), GetGUIContent("").text, maskChar, maxLength, IGUStyle.GetGUIStyleTemp(passwordFieldStyle));
 
             SetGUISettings(oldSettings);
             Event current = Event.current;

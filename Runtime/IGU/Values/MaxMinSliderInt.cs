@@ -34,6 +34,15 @@ namespace Cobilas.Unity.Graphics.IGU {
         public bool Equals(MaxMinSliderInt other)
             => other.max == max && other.min == min;
 
+        public MaxMinSliderInt Set(Vector2Int minmax)
+            => Set(minmax.x, minmax.y);
+
+        public MaxMinSliderInt Set(int min, int max) {
+            this.min = min;
+            this.max = max;
+            return this;
+        }
+
         public static bool operator ==(MaxMinSliderInt A, MaxMinSliderInt B) => A.Equals(B);
         public static bool operator !=(MaxMinSliderInt A, MaxMinSliderInt B) => !(A == B);
 

@@ -12,8 +12,8 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
         [SerializeField] protected bool useTooltip;
         [SerializeField] protected Vector2 spacing;
         [SerializeField] protected int selectedIndex;
-        [SerializeField] protected GUIStyle tooltipToggleStype;
-        [SerializeField] protected GUIStyle selectionGridToggleStyle;
+        [SerializeField] protected IGUStyle tooltipToggleStype;
+        [SerializeField] protected IGUStyle selectionGridToggleStyle;
         [SerializeField] protected IGUOnSliderIntValueEvent onSelectedIndex;
         [SerializeField] protected IGUSelectionGridToggle[] selectionGridToggles;
 #if UNITY_EDITOR
@@ -24,7 +24,7 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
         protected event Action<int> IGUSelectionGridToggleSelectedIndex;
         protected event Action<Vector2> IGUSelectionGridToggleChangeSpacing;
         protected event Action<IGUColor> IGUSelectionGridToggleChangeIGUColor;
-        protected event Action<GUIStyle, GUIStyle> IGUSelectionGridToggleOnIGU;
+        protected event Action<IGUStyle, IGUStyle> IGUSelectionGridToggleOnIGU;
         //protected event Action<IGUConfig> IGUSelectionGridToggleChangeIGUConfig;
 
         /// <summary>Espaçamento entre os botões.(3x3 padrão)</summary>
@@ -36,8 +36,8 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
         public int xCount { get => _xCount; set => _xCount = value < 1 ? 1 : value; }
         /// <summary>Indice do botão selecionado.</summary>
         public int SelectedIndex { get => selectedIndex; set => selectedIndex = value; }
-        public GUIStyle TooltipToggleStype { get => tooltipToggleStype; set => tooltipToggleStype = value; }
-        public GUIStyle SelectionGridToggleStyle { get => selectionGridToggleStyle; set => selectionGridToggleStyle = value; }
+        public IGUStyle TooltipToggleStype { get => tooltipToggleStype; set => tooltipToggleStype = value; }
+        public IGUStyle SelectionGridToggleStyle { get => selectionGridToggleStyle; set => selectionGridToggleStyle = value; }
         public Rect RectView => new Rect(
             myRect.ModifiedPosition,
             new Vector2(
@@ -57,10 +57,8 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
             SetSelectionGridToggleList("Toggle1", "Toggle2", "Toggle3", "Toggle4", "Toggle5", "Toggle6");
         }
 
-        public override void OnIGU() {
+        protected override void LowCallOnIGU() {
             if (!GetModIGUConfig().IsVisible) return;
-
-            selectionGridToggleStyle = GetDefaultValue(selectionGridToggleStyle, GUI.skin.button);
 
             if (!compare.HashCodeEqual(5, selectedIndex))
                 IGUSelectionGridToggleSelectedIndex?.Invoke(selectedIndex);
@@ -130,7 +128,7 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
             this.IGUSelectionGridToggleSelectedIndex = (Action<int>)null;
             this.IGUSelectionGridToggleChangeSpacing = (Action<Vector2>)null;
             this.IGUSelectionGridToggleChangeIGUColor = (Action<IGUColor>)null;
-            this.IGUSelectionGridToggleOnIGU = (Action<GUIStyle, GUIStyle>)null;
+            this.IGUSelectionGridToggleOnIGU = (Action<IGUStyle, IGUStyle>)null;
             //this.IGUSelectionGridToggleChangeIGUConfig = (Action<IGUConfig>)null;
             for (int I = 0; I < ArrayManipulation.ArrayLength(toggles); I++) {
                 this.UseTooltipEvent += toggles[I].UseTooltip;

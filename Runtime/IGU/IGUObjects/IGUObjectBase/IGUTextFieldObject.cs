@@ -12,7 +12,7 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
             settings = new IGUTextSettings();
         }
 
-        public override void OnIGU() => base.OnIGU();
+        protected override void LowCallOnIGU() => base.OnIGU();
         protected override void OnEnable() => base.OnEnable();
         protected override void OnDisable() => base.OnDisable();
         protected override void OnIGUDestroy() => base.OnIGUDestroy();

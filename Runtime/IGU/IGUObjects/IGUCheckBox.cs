@@ -7,7 +7,7 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
 
         private bool oneClick;
         [SerializeField] protected bool _checked;
-        [SerializeField] protected GUIStyle checkBoxStyle;
+        [SerializeField] protected IGUStyle checkBoxStyle;
         [SerializeField] protected IGUOnClickEvent onClick;
         [SerializeField] protected IGUOnClickEvent checkBoxOn;
         [SerializeField] protected IGUOnClickEvent checkBoxOff;
@@ -18,7 +18,7 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
         public IGUOnClickEvent CheckBoxOn => checkBoxOn;
         public IGUOnClickEvent CheckBoxOff => checkBoxOff;
         public bool Checked { get => _checked; set => _checked = value; }
-        public GUIStyle CheckBoxStyle { get => checkBoxStyle; set => checkBoxStyle = value; }
+        public IGUStyle CheckBoxStyle { get => checkBoxStyle; set => checkBoxStyle = value; }
 
         protected override void Awake() {
             base.Awake();
@@ -26,6 +26,7 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
             myRect = IGURect.DefaultButton;
             myColor = IGUColor.DefaultBoxColor;
             content = new IGUContent(DefaultContantIGUCheckBox);
+            checkBoxStyle = IGUSkins.GetIGUStyle("Black toggle border");
             oneClick = !(_checked = false);
             onClick = new IGUOnClickEvent();
             checkBoxOn = new IGUOnClickEvent();
@@ -33,10 +34,10 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
             onChecked = new IGUOnCheckedEvent();
         }
 
-        public override void OnIGU() {
+        protected override void LowCallOnIGU() {
 
-            checkBoxStyle = GetDefaultValue(checkBoxStyle, GUI.skin.toggle);
-            bool checkedtemp = GUI.Toggle(GetRect(), _checked, GetGUIContent(DefaultContantIGUCheckBox), checkBoxStyle);
+            bool checkedtemp = GUI.Toggle(GetRect(), _checked, GetGUIContent(DefaultContantIGUCheckBox),
+                IGUStyle.GetGUIStyleTemp(checkBoxStyle));
 
             if (checkedtemp) {
                 if (oneClick)
