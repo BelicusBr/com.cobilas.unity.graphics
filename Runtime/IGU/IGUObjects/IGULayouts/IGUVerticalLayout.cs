@@ -32,9 +32,6 @@ namespace Cobilas.Unity.Graphics.IGU.Layouts {
         }
 
         public override void OnIGU() {
-            IGUConfig config = GetModIGUConfig();
-            if (!config.IsVisible) return;
-
             cursor.Reset();
             sub_OnIGU?.Invoke(cursor);
             myRect.SetSize(cursor.GridRect);

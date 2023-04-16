@@ -1,0 +1,85 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1f18be2b9192f1546a26ef4aae55220c, type: 3}
+  m_Name: Black horizontal slider thumb style
+  m_EditorClassIdentifier: 
+  style:
+    name: Black horizontal slider thumb
+    fixedWidth: 0
+    fixedHeight: 12
+    stretchWidth: 0
+    stretchHeight: 0
+    font: {fileID: 0}
+    fontSize: 0
+    fontStyle: 0
+    wordWrap: 0
+    richText: 1
+    alignment: 0
+    imagePosition: 3
+    clipping: 0
+    contentOffset: {x: 0, y: 0}
+    normal:
+      background: {fileID: 2800000, guid: 706106ac39a91a4409eb5c0885f8cb43, type: 3}
+      textColor: {r: 0, g: 0, b: 0, a: 1}
+      foldout: 0
+      scaledBackgrounds: []
+    hover:
+      background: {fileID: 2800000, guid: e1d396b9493a3c446a146a20d187845a, type: 3}
+      textColor: {r: 0, g: 0, b: 0, a: 1}
+      foldout: 0
+      scaledBackgrounds: []
+    active:
+      background: {fileID: 2800000, guid: d69e551fe5fc1a6419a065794d509c30, type: 3}
+      textColor: {r: 0, g: 0, b: 0, a: 1}
+      foldout: 0
+      scaledBackgrounds: []
+    focused:
+      background: {fileID: 0}
+      textColor: {r: 0, g: 0, b: 0, a: 1}
+      foldout: 0
+      scaledBackgrounds: []
+    onNormal:
+      background: {fileID: 0}
+      textColor: {r: 0, g: 0, b: 0, a: 1}
+      foldout: 0
+      scaledBackgrounds: []
+    onHover:
+      background: {fileID: 0}
+      textColor: {r: 0, g: 0, b: 0, a: 1}
+      foldout: 0
+      scaledBackgrounds: []
+    onActive:
+      background: {fileID: 0}
+      textColor: {r: 0, g: 0, b: 0, a: 1}
+      foldout: 0
+      scaledBackgrounds: []
+    onFocused:
+      background: {fileID: 0}
+      textColor: {r: 0, g: 0, b: 0, a: 1}
+      foldout: 0
+      scaledBackgrounds: []
+    border:
+      foldout: 0
+      rectOffSet_xy: {x: 4, y: 4}
+      rectOffSet_zw: {x: 0, y: 0}
+    margin:
+      foldout: 0
+      rectOffSet_xy: {x: 0, y: 0}
+      rectOffSet_zw: {x: 0, y: 0}
+    padding:
+      foldout: 0
+      rectOffSet_xy: {x: 7, y: 7}
+      rectOffSet_zw: {x: 0, y: 0}
+    overflow:
+      foldout: 0
+      rectOffSet_xy: {x: -1, y: -1}
+      rectOffSet_zw: {x: 0, y: 0}

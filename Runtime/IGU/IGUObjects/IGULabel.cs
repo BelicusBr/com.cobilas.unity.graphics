@@ -22,12 +22,6 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
         }
 
         public override void OnIGU() {
-            IGUConfig config = GetModIGUConfig();
-            if (!config.IsVisible) return;
-            GUI.color = myColor.MyColor;
-            GUI.enabled = config.IsEnabled;
-            GUI.contentColor = myColor.TextColor;
-            GUI.backgroundColor = myColor.BackgroundColor;
 
             labelStyle = GetDefaultValue(labelStyle, GUI.skin.label);
             labelStyle.richText = richText;
@@ -35,12 +29,10 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
 
             _ = myRect.SetSize(autoSize ? labelStyle.CalcSize(mycontent) + Vector2.right * 2f : myRect.Size);
 
-            Rect rectTemp = new Rect(GetPosition(), myRect.Size);
-
-            GUI.Label(rectTemp, mycontent, labelStyle);
+            GUI.Label(GetRect(), mycontent, labelStyle);
 
             if (useTooltip)
-                if (rectTemp.Contains(Event.current.mousePosition))
+                if (GetRect(true).Contains(Event.current.mousePosition))
                     DrawTooltip();
         }
 

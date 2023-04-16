@@ -4,12 +4,14 @@ using Cobilas.Unity.Graphics.IGU.Events;
 namespace Cobilas.Unity.Graphics.IGU.Elements {
     public class IGUHorizontalScrollbar : IGUSliderObject {
         [SerializeField] protected float scrollbarThumbSize;
+        [SerializeField] protected GUIStyle sliderObjectThumbStyle;
         [SerializeField] protected IGUOnSliderValueEvent onModifiedScrollbar;
         [SerializeField] protected IGUOnSliderIntValueEvent onModifiedScrollbarInt;
 
         public IGUOnSliderValueEvent OnModifiedScrollbar => onModifiedScrollbar;
         public IGUOnSliderIntValueEvent OnModifiedScrollbarInt => onModifiedScrollbarInt;
         public float ScrollbarThumbSize { get => scrollbarThumbSize; set => scrollbarThumbSize = value; }
+        public GUIStyle SliderObjectThumbStyle { get => sliderObjectThumbStyle; set => sliderObjectThumbStyle = value; }
 
         protected override void Awake() {
             base.Awake();
@@ -21,20 +23,20 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
         }
 
         public override void OnIGU() {
-            IGUConfig config = GetModIGUConfig();
-            if (!config.IsVisible) return;
-            GUI.color = myColor.MyColor;
-            GUI.enabled = config.IsEnabled;
-            GUI.contentColor = myColor.TextColor;
-            GUI.backgroundColor = myColor.BackgroundColor;
 
             sliderObjectStyle = GetDefaultValue(sliderObjectStyle, GUI.skin.horizontalScrollbar);
-            Rect rectTemp = new Rect(GetPosition(), myRect.Size);
+            sliderObjectThumbStyle = GetDefaultValue(sliderObjectThumbStyle, GUI.skin.horizontalScrollbarThumb);
 
             MaxMinSlider temp = isInt ? maxMinSlider.ToMaxMinSliderInt() : maxMinSlider;
             value = Mathf.Clamp(value, temp.Min, temp.Max);
 
-            float valuetemp = GUI.HorizontalScrollbar(rectTemp, isInt ? ValueToInt : value, scrollbarThumbSize, temp.Min, temp.Max, sliderObjectStyle);
+            Rect rect = GetRect();
+
+            float valuetemp = GUI.Slider(rect, isInt ? ValueToInt : value, scrollbarThumbSize,
+                temp.Min, temp.Max, sliderObjectStyle, sliderObjectThumbStyle, true,
+                GUIUtility.GetControlID(FocusType.Passive, rect));
+
+            //float valuetemp = GUI.HorizontalScrollbar(GetRect(), isInt ? ValueToInt : value, scrollbarThumbSize, temp.Min, temp.Max, sliderObjectStyle);
 
             if (valuetemp != value) {
                 if (IGUDrawer.Drawer.GetMouseButton(myConfg.MouseType)) {

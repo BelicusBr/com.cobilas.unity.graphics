@@ -28,18 +28,11 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
         }
 
         public override void OnIGU() {
-            IGUConfig config = GetModIGUConfig();
-
-            if (!config.IsVisible) return;
-            GUI.color = myColor.MyColor;
-            GUI.enabled = config.IsEnabled;
-            GUI.contentColor = myColor.TextColor;
-            GUI.backgroundColor = myColor.BackgroundColor;
 
             windowStyle = GetDefaultValue(windowStyle, GUI.skin.window);
             GUIContent mycontent = GetGUIContent(DefaultIGUWindow);
 
-            Rect rectTemp = new Rect(GetPosition(), myRect.Size);
+            Rect rectTemp = GetRect();
             int ID = GUIUtility.GetControlID(FocusType.Passive);
 
             Rect rectTemp2 = GUI.Window(ID, rectTemp, internalIndowFunction, mycontent, windowStyle);
@@ -52,9 +45,12 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
                 }
             }
 
-            if (useTooltip)
-                if (dragFlap.Contains(IGUDrawer.Drawer.GetMousePosition()))
+            if (useTooltip) {
+                rectTemp = GetRect(true);
+                rectTemp.size = dragFlap.size;
+                if (rectTemp.Contains(IGUDrawer.Drawer.GetMousePosition()))
                     DrawTooltip();
+            }
         }
 
         protected override void DrawTooltip()

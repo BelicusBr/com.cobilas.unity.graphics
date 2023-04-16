@@ -48,11 +48,13 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
             buttonLeft.Text = "<";
             textField.Text = "0";
             buttonRight.Text = ">";
+            buttonLeft.Parent =
+                buttonRight.Parent =
+                textField.Parent = this;
             InitEvents();
         }
 
         public override void OnIGU() {
-            if (!GetModIGUConfig().IsVisible) return;
             IGURect rect = myRect;
 
             float buttonWidgh = rect.Width * .5f;

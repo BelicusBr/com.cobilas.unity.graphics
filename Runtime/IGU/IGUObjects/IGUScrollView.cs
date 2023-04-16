@@ -42,19 +42,11 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
         }
 
         public override void OnIGU() {
-            IGUConfig config = GetModIGUConfig();
-            if (!config.IsVisible) return;
-            GUI.color = myColor.MyColor;
-            GUI.enabled = config.IsEnabled;
-            GUI.contentColor = myColor.TextColor;
-            GUI.backgroundColor = myColor.BackgroundColor;
 
             verticalScrollbarStyle = GetDefaultValue(verticalScrollbarStyle, GUI.skin.verticalScrollbar);
             horizontalScrollbarStyle = GetDefaultValue(horizontalScrollbarStyle, GUI.skin.horizontalScrollbar);
 
-            Rect rectTemp = new Rect(GetPosition(), myRect.Size);
-
-            Vector2 scrollPositiontemp = GUI.BeginScrollView(rectTemp, scrollPosition, viewRect, alwaysShowHorizontal, alwaysShowVertical, horizontalScrollbarStyle, verticalScrollbarStyle);
+            Vector2 scrollPositiontemp = GUI.BeginScrollView(GetRect(), scrollPosition, viewRect, alwaysShowHorizontal, alwaysShowVertical, horizontalScrollbarStyle, verticalScrollbarStyle);
             doNots = DoNotModifyRect.True;
             ScrollViewAction?.Invoke(this);
             doNots = DoNotModifyRect.False;

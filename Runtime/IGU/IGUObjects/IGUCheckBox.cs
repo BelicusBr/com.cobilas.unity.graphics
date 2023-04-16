@@ -34,17 +34,9 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
         }
 
         public override void OnIGU() {
-            IGUConfig config = GetModIGUConfig();
-
-            if (!config.IsVisible) return;
-            GUI.color = myColor.MyColor;
-            GUI.enabled = config.IsEnabled;
-            GUI.contentColor = myColor.TextColor;
-            GUI.backgroundColor = myColor.BackgroundColor;
 
             checkBoxStyle = GetDefaultValue(checkBoxStyle, GUI.skin.toggle);
-            Rect rectTemp = new Rect(GetPosition(), myRect.Size);
-            bool checkedtemp = GUI.Toggle(rectTemp, _checked, GetGUIContent(DefaultContantIGUCheckBox), checkBoxStyle);
+            bool checkedtemp = GUI.Toggle(GetRect(), _checked, GetGUIContent(DefaultContantIGUCheckBox), checkBoxStyle);
 
             if (checkedtemp) {
                 if (oneClick)
@@ -58,7 +50,7 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
             else checkBoxOff.Invoke();
 
             if (useTooltip)
-                if (rectTemp.Contains(IGUDrawer.Drawer.GetMousePosition()))
+                if (GetRect(true).Contains(IGUDrawer.Drawer.GetMousePosition()))
                     DrawTooltip();
         }
 
