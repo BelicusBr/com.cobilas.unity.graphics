@@ -23,6 +23,7 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
         public MaxMinSlider MaxMin { get => maxMinSlider; set => maxMinSlider = value; }
         /// <summary>Valor de soma ou subtração.(.001f valor padrão)</summary>
         public float AdditionValue { get => additionValue; set => additionValue = value; }
+        public string Tooltip { get => textField.ToolTip; set => textField.ToolTip = value; }
         public bool UseTooltip { get => textField.UseTooltip; set => textField.UseTooltip = value; }
         public IGUStyle TooltipStyle { get => textField.TooltipStyle; set => textField.TooltipStyle = value; }
         public IGUStyle ButtonLeftStyle { get => buttonLeft.ButtonStyle; set => buttonLeft.ButtonStyle = value; }

@@ -5,7 +5,6 @@ using Cobilas.Unity.Editor.Utility;
 using Cobilas.Unity.Graphics.IGU.Elements;
 
 namespace Cobilas.Unity.Editor.Graphics.IGU {
-    [IGUCustomFieldDrawer("#IGUColor")]
     [CustomPropertyDrawer(typeof(IGUColor))]
     public class IGUColorDraw : CPropertyDrawer {
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label) {

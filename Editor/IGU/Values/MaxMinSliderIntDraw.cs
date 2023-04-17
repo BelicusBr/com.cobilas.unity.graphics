@@ -6,7 +6,6 @@ using Cobilas.Unity.Graphics.IGU.Elements;
 
 namespace Cobilas.Unity.Editor.Graphics.IGU {
     [CustomPropertyDrawer(typeof(MaxMinSliderInt))]
-    [IGUCustomFieldDrawer("#MaxMinSliderInt")]
     public class MaxMinSliderIntDraw : CPropertyDrawer {
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label) {
             //foldout

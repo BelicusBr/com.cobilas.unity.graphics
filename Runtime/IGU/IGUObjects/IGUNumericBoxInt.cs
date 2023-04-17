@@ -21,6 +21,7 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
         public int AdditionValue { get => additionValue; set => additionValue = value; }
         /// <summary>-130x130 pareão, <see cref="MaxMinSliderInt"/>.Zero para ser ilimitado.</summary>
         public MaxMinSliderInt MaxMin { get => maxMinSlider; set => maxMinSlider = value; }
+        public string Tooltip { get => textField.ToolTip; set => textField.ToolTip = value; }
         public bool UseTooltip { get => textField.UseTooltip; set => textField.UseTooltip = value; }
         public IGUStyle TooltipStyle { get => textField.TooltipStyle; set => textField.TooltipStyle = value; }
         public IGUStyle ButtonLeftStyle { get => buttonLeft.ButtonStyle; set => buttonLeft.ButtonStyle = value; }

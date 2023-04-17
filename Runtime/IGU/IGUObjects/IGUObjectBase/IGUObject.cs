@@ -12,10 +12,7 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
         [SerializeField] protected IGUContainer container;
         protected DoNotModifyRect doNots;
 #if UNITY_EDITOR
-        [SerializeField] private string subname;
-        public bool foldout;
-
-        public new string name { get => base.name = subname; set => base.name = subname = value; }
+        [SerializeField] private bool foldout;
 #endif
         public IGURect MyRect { get => myRect; set => myRect = value; }
         public IGUObject Parent { get => parent; set => parent = value; }

@@ -18,7 +18,7 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
         [SerializeField] protected float comboBoxButtonHeight;
         [SerializeField] protected IGUComboBoxButton[] boxButtons;
         [SerializeField] protected IGUScrollView comboBoxScrollView;
-        [SerializeField] protected GUIStyle scrollViewBackgroundStyle;
+        [SerializeField] protected IGUStyle scrollViewBackgroundStyle;
         [SerializeField] protected bool closeOnClickComboBoxViewButton;
         [SerializeField] protected IGUOnClickEvent onActivatedComboBox;
         [SerializeField] protected IGUComboBoxClickEvent onSelectedIndex;
@@ -39,6 +39,7 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
         public IGUOnClickEvent OnActivatedComboBox => onActivatedComboBox;
         public int Index { get => index; set => SetDisplayText(index = value); }
         /// <summary>A altura do scrollView.(130f padrão)</summary>
+        public string Tooltip { get => comboBoxButton.ToolTip; set => comboBoxButton.ToolTip = value; }
         public float ScrollViewHeight { get => scrollViewHeight; set => scrollViewHeight = value; }
         public bool UseTooltip { get => comboBoxButton.UseTooltip; set => comboBoxButton.UseTooltip = value; }
         /// <summary>A altura dos botões.(25f padrão)</summary>
@@ -48,10 +49,12 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
         public IGUStyle ComboBoxButtonStyle { get => comboBoxButton.ButtonStyle; set => comboBoxButton.ButtonStyle = value; }
         /// <summary>A propriedade permite o <see cref="IGUComboBox"/> a fechar janela de exibição de botões automaticamente.</summary>
         public bool CloseComboBoxView { get => closeOnClickComboBoxViewButton; set => closeOnClickComboBoxViewButton = value; }
-        public GUIStyle ScrollViewBackgroundStyle { get => scrollViewBackgroundStyle; set => scrollViewBackgroundStyle = value; }
+        public IGUStyle ScrollViewBackgroundStyle { get => scrollViewBackgroundStyle; set => scrollViewBackgroundStyle = value; }
         public IGUStyle VerticalScrollbarStyle { get => comboBoxScrollView.VerticalScrollbarStyle; set => comboBoxScrollView.VerticalScrollbarStyle = value; }
         public bool AdjustComboBoxView { get => adjustComboBoxViewAccordingToTheButtonsPresent; set => adjustComboBoxViewAccordingToTheButtonsPresent = value; }
         public IGUStyle HorizontalScrollbarStyle { get => comboBoxScrollView.HorizontalScrollbarStyle; set => comboBoxScrollView.HorizontalScrollbarStyle = value; }
+        public IGUStyle VerticalScrollbarThumbStyle { get => comboBoxScrollView.VerticalScrollbarThumbStyle; set => comboBoxScrollView.VerticalScrollbarThumbStyle = value; }
+        public IGUStyle HorizontalScrollbarThumbStyle { get => comboBoxScrollView.HorizontalScrollbarThumbStyle; set => comboBoxScrollView.HorizontalScrollbarThumbStyle = value; }
 
         protected override void Awake() {
             base.Awake();
@@ -69,10 +72,8 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
             onClick = new IGUOnClickEvent();
             onActivatedComboBox = new IGUOnClickEvent();
             onSelectedIndex = new IGUComboBoxClickEvent();
-            comboBoxButton = CreateIGUInstance<IGUButton>();
-            comboBoxScrollView = CreateIGUInstance<IGUScrollView>();
-            comboBoxButton.name = "--ComboBoxButton";
-            comboBoxScrollView.name = "--ComboBoxScrollView";
+            comboBoxButton = CreateIGUInstance<IGUButton>($"--[{name}]ComboBoxButton");
+            comboBoxScrollView = CreateIGUInstance<IGUScrollView>($"--[{name}]ComboBoxScrollView");
             comboBoxButton.Parent = comboBoxScrollView.Parent = this;
             InitScrollViewAction();
             SetIGUComboBoxButtonList("Item1", "Item2", "Item3");
@@ -116,10 +117,8 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
                 if (!compare.HashCodeEqual(3, rwWidth.GetHashCode()))
                     IGUComboBoxButtonChangeWidth?.Invoke(rwWidth);
 
-                scrollViewBackgroundStyle = GetDefaultValue(scrollViewBackgroundStyle, GUI.skin.box);
-
                 GUI.Box(new Rect(rectTemp.position + Vector2.up * comboBoxButton.MyRect.Height, comboBoxScrollView.MyRect.Size),
-                    IGUTextObject.GetGUIContentTemp(""), scrollViewBackgroundStyle);
+                    IGUTextObject.GetGUIContentTemp(""), IGUStyle.GetGUIStyleTemp(scrollViewBackgroundStyle));
 
                 comboBoxScrollView.OnIGU();
 

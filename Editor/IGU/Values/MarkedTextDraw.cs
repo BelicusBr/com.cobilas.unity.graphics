@@ -6,7 +6,6 @@ using Cobilas.Unity.Graphics.IGU.Elements;
 
 namespace Cobilas.Unity.Editor.Graphics.IGU {
     [CustomPropertyDrawer(typeof(MarkedText))]
-    [IGUCustomFieldDrawer("#MarkedText")]
     public class MarkedTextDraw : CPropertyDrawer {
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label) {
             //foldout
