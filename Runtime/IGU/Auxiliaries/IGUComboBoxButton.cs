@@ -17,7 +17,7 @@ namespace Cobilas.Unity.Graphics.IGU {
         }
             //=> this.button = IGUButton.CreateIGUInstance($"({parentInstanceID})CBXBT[index:{this.index = index}]", content);
 
-        public void OnIGU(GUIStyle style, IGUScrollView sv) {
+        public void OnIGU(IGUStyle style, IGUScrollView sv) {
             button.ButtonStyle = style;
             IGURect rect = button.MyRect = button.MyRect.SetPosition(0, button.MyRect.Height * index);
             rect.SetPosition(rect.X, rect.Y - sv.ScrollPosition.y);

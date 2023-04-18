@@ -30,7 +30,7 @@ namespace Cobilas.Unity.Graphics.IGU.Layouts {
             myColor = IGUColor.DefaultBoxColor;
         }
 
-        public override void OnIGU() {
+        protected override void LowCallOnIGU() {
             cursor.Reset();
             sub_OnIGU?.Invoke(cursor);
             myRect = myRect.SetSize(cursor.GridRect);

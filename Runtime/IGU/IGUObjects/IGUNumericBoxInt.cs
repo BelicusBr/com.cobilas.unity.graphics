@@ -21,11 +21,12 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
         public int AdditionValue { get => additionValue; set => additionValue = value; }
         /// <summary>-130x130 pareão, <see cref="MaxMinSliderInt"/>.Zero para ser ilimitado.</summary>
         public MaxMinSliderInt MaxMin { get => maxMinSlider; set => maxMinSlider = value; }
+        public string Tooltip { get => textField.ToolTip; set => textField.ToolTip = value; }
         public bool UseTooltip { get => textField.UseTooltip; set => textField.UseTooltip = value; }
-        public GUIStyle TooltipStyle { get => textField.TooltipStyle; set => textField.TooltipStyle = value; }
-        public GUIStyle ButtonLeftStyle { get => buttonLeft.ButtonStyle; set => buttonLeft.ButtonStyle = value; }
-        public GUIStyle ButtonRightStyle { get => buttonRight.ButtonStyle; set => buttonRight.ButtonStyle = value; }
-        public GUIStyle TextFieldStyle { get => textField.TextFieldStyle; set => textField.TextFieldStyle = value; }
+        public IGUStyle TooltipStyle { get => textField.TooltipStyle; set => textField.TooltipStyle = value; }
+        public IGUStyle ButtonLeftStyle { get => buttonLeft.ButtonStyle; set => buttonLeft.ButtonStyle = value; }
+        public IGUStyle ButtonRightStyle { get => buttonRight.ButtonStyle; set => buttonRight.ButtonStyle = value; }
+        public IGUStyle TextFieldStyle { get => textField.TextFieldStyle; set => textField.TextFieldStyle = value; }
 
         protected override void Awake() {
             value = 0;
@@ -34,22 +35,20 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
             myColor = IGUColor.DefaultBoxColor;
             maxMinSlider = new MaxMinSliderInt(-130, 130);
             myRect = IGURect.DefaultButton.SetSize(50f, 32f);
-            buttonLeft = CreateIGUInstance<IGUButton>();
-            textField = CreateIGUInstance<IGUTextField>();
-            buttonRight = CreateIGUInstance<IGUButton>();
-            buttonLeft.name = "--ButtonLeft";
-            textField.name = "--TextField";
-            buttonRight.name = "--ButtonRight";
+            buttonLeft = CreateIGUInstance<IGUButton>($"--[{name}]ButtonLeft");
+            textField = CreateIGUInstance<IGUTextField>($"--[{name}]TextField");
+            buttonRight = CreateIGUInstance<IGUButton>($"--[{name}]ButtonRight");
             buttonLeft.Text = "<";
             textField.Text = "0";
             buttonRight.Text = ">";
+            textField.TextFieldStyle.Alignment = TextAnchor.MiddleCenter;
             buttonLeft.Parent =
                 buttonRight.Parent =
                 textField.Parent = this;
             InitEvents();
         }
 
-        public override void OnIGU() {
+        protected override void LowCallOnIGU() {
             IGURect rect = myRect;
 
             float buttonWidgh = rect.Width * .5f;
@@ -77,9 +76,6 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
             } catch {
                 textField.Text = "0";
             }
-
-            if (textField.TextFieldStyle != (GUIStyle)null)
-                textField.TextFieldStyle.alignment = TextAnchor.MiddleCenter;
 
             textField.OnIGU();
             buttonLeft.OnIGU();

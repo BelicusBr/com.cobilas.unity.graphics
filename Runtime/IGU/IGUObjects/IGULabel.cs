@@ -6,30 +6,30 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
     public class IGULabel : IGUTextObject {
         public const string DefaultIGULabel = "IGU Label";
         [SerializeField] private bool autoSize;
-        [SerializeField] private bool richText;
-        [SerializeField] private GUIStyle labelStyle;
+        [SerializeField] private IGUStyle labelStyle;
 
         public bool AutoSize { get => autoSize; set => autoSize = value; }
-        public bool RichText { get => richText; set => richText = value; }
-        public GUIStyle LabelStyle { get => labelStyle; set => labelStyle = value; }
+        public IGUStyle LabelStyle { get => labelStyle; set => labelStyle = value; }
+        public bool RichText { get => labelStyle.RichText; set => labelStyle.RichText = value; }
 
         protected override void Awake() {
             myConfg = IGUConfig.Default;
             myRect = IGURect.DefaultButton;
             myColor = IGUColor.DefaultLabelColor;
-            autoSize = richText = false;
+            labelStyle = IGUSkins.GetIGUStyle("Label");
+            autoSize = RichText = false;
             content = new IGUContent(DefaultIGULabel);
         }
 
-        public override void OnIGU() {
+        protected override void LowCallOnIGU() {
 
-            labelStyle = GetDefaultValue(labelStyle, GUI.skin.label);
-            labelStyle.richText = richText;
+            GUIStyle style = IGUStyle.GetGUIStyleTemp(labelStyle);
+
             GUIContent mycontent = GetGUIContent(DefaultIGULabel);
 
-            _ = myRect.SetSize(autoSize ? labelStyle.CalcSize(mycontent) + Vector2.right * 2f : myRect.Size);
+            _ = myRect.SetSize(autoSize ? style.CalcSize(mycontent) + Vector2.right * 2f : myRect.Size);
 
-            GUI.Label(GetRect(), mycontent, labelStyle);
+            GUI.Label(GetRect(), mycontent, style);
 
             if (useTooltip)
                 if (GetRect(true).Contains(Event.current.mousePosition))

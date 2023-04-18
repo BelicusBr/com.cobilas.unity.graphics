@@ -7,30 +7,29 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
         [SerializeField, HideInInspector] 
         protected bool isFocused;
         [SerializeField] protected IGUOnClickEvent onClick;
-        [SerializeField] protected GUIStyle selectableTextStyle;
+        [SerializeField] protected IGUStyle selectableTextStyle;
 
         /// <summary>Indica sé o <see cref="IGUSelectableText"/> está focado.</summary>
         public bool IsFocused => isFocused;
         public IGUOnClickEvent OnClick => onClick;
-        public GUIStyle SelectableTextStyle { get => selectableTextStyle; set => selectableTextStyle = value; }
+        public IGUStyle SelectableTextStyle { get => selectableTextStyle; set => selectableTextStyle = value; }
 
         protected override void Awake() {
             base.Awake();
             myConfg = IGUConfig.Default;
             myRect = IGURect.DefaultTextArea;
             myColor = IGUColor.DefaultBoxColor;
+            selectableTextStyle = IGUSkins.GetIGUStyle("Black text field border");
         }
 
-        public override void OnIGU() {
-
-            selectableTextStyle = GetDefaultValue(selectableTextStyle, GUI.skin.textArea);
+        protected override void LowCallOnIGU() {
 
             GUISettings oldSettings = GUI.skin.settings;
             SetGUISettings(settings);
 
             Event current = Event.current;
 
-            Text = ModifyText(GetGUIContent(string.Empty), current, GetRect(), selectableTextStyle).text;
+            Text = ModifyText(GetGUIContent(string.Empty), current, GetRect(), IGUStyle.GetGUIStyleTemp(selectableTextStyle)).text;
 
             SetGUISettings(oldSettings);
 

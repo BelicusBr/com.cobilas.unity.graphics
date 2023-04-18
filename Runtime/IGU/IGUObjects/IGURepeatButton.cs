@@ -14,11 +14,10 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
             onRepeatClick = new IGUOnClickEvent();
         }
 
-        public override void OnIGU() {
+        protected override void LowCallOnIGU() {
 
-            buttonStyle = GetDefaultValue(buttonStyle, GUI.skin.button);
-
-            bool restemp = GUI.RepeatButton(GetRect(), GetGUIContent(DefaultContentIGURepeatButton), buttonStyle);
+            bool restemp = GUI.RepeatButton(GetRect(), GetGUIContent(DefaultContentIGURepeatButton),
+                IGUStyle.GetGUIStyleTemp(buttonStyle));
 
             if (restemp) {
                 if (IGUDrawer.Drawer.GetMouseButton(myConfg.MouseType)) RepeatButtonClick();

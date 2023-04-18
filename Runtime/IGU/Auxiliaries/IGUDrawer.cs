@@ -89,8 +89,7 @@ namespace Cobilas.Unity.Graphics.IGU {
 #endif
             toolTip.Close();
             onIGU?.Invoke();
-            toolTip.SetScaleFactor(ScaleFactor);
-            toolTip.Draw();
+            toolTip.Draw(Event.current.mousePosition, ScaleFactor);
         }
 
         public void OpenTooltip() => toolTip.Open();
@@ -98,8 +97,6 @@ namespace Cobilas.Unity.Graphics.IGU {
         public void GUIStyleTootip(GUIStyle style) => toolTip.SetGuiStyle(style);
 
         public void SetTootipText(string txt) => toolTip.SetMSM(txt);
-
-        public void SetTootipPosition(Vector2 pos) => toolTip.SetPosition(pos);
 
         public bool GetMouseButton(MouseButtonType type) {
             if (type == MouseButtonType.All) return true;
@@ -170,52 +167,6 @@ namespace Cobilas.Unity.Graphics.IGU {
         internal static void RemoveReserialization(IGUObject item) {
             if (ArrayManipulation.Exists(item, drawer.reserialization))
                 ArrayManipulation.Remove(item, ref drawer.reserialization);
-        }
-
-        private sealed class IGUToolTip {
-            private string tooltip;
-            private bool close;
-            private Vector2 position;
-            private Vector2 scaleFactor;
-            private GUIStyle style;
-            private IGUColor color;
-            private readonly GUIContent gUIContent;
-
-            public IGUToolTip() {
-                color = IGUColor.DefaultBoxColor;
-                style = null;
-                tooltip = string.Empty;
-                gUIContent = new GUIContent();
-                close = true;
-                position = scaleFactor = Vector2.zero;
-            }
-
-            public void SetMSM(string txt) => this.tooltip = txt;
-
-            public void Close() => close = true;
-
-            public void Open() => close = false;
-
-            public void SetPosition(Vector2 pos) => this.position = pos;
-
-            public void SetScaleFactor(Vector2 sf) => this.scaleFactor = sf;
-
-            public void SetGuiStyle(GUIStyle style) => this.style = style;
-
-            public void Draw() {
-                if (close) return;
-                gUIContent.text = tooltip;
-                style = style ?? GUI.skin.box;
-                Vector2 size = style.CalcSize(gUIContent);
-                Matrix4x4 oldMatrix = GUI.matrix;
-                GUI.color = color.MyColor;
-                GUI.contentColor = color.TextColor;
-                GUI.backgroundColor = color.BackgroundColor;
-                GUIUtility.RotateAroundPivot(0, position);
-                GUIUtility.ScaleAroundPivot(scaleFactor, position);
-                GUI.Box(new Rect(position + Vector2.right * 15f, size), gUIContent, style);
-                GUI.matrix = oldMatrix;
-            }
         }
     }
 }

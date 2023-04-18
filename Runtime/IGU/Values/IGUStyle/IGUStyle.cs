@@ -58,7 +58,7 @@ namespace Cobilas.Unity.Graphics.IGU {
         public IGUStyleRectOffSet Padding { get => padding; set => padding = value; }
         public IGUStyleRectOffSet Overflow { get => overflow; set => overflow = value; }
 
-        private static readonly GUIStyle styletemp = new GUIStyle();
+        private static GUIStyle[] styletemp = new GUIStyle[1];
         public static IGUStyle none => new IGUStyle();
 
         public IGUStyle() {
@@ -76,69 +76,72 @@ namespace Cobilas.Unity.Graphics.IGU {
             Overflow = new IGUStyleRectOffSet();
         }
 
-        public static GUIStyle GetGUIStyleTemp(IGUStyle style) {
-            styletemp.name = style.Name;
-            styletemp.fixedWidth = style.FixedWidth;
-            styletemp.fixedHeight = style.FixedHeight;
-            styletemp.stretchWidth = style.StretchWidth;
-            styletemp.stretchHeight = style.StretchHeight;
-            styletemp.font = style.Font;
-            styletemp.fontSize = style.FontSize;
-            styletemp.fontStyle = style.FontStyle;
-            styletemp.wordWrap = style.WordWrap;
-            styletemp.richText = style.RichText;
-            styletemp.alignment = style.Alignment;
-            styletemp.imagePosition = style.ImagePosition;
-            styletemp.clipping = style.Clipping;
-            styletemp.contentOffset = style.ContentOffset;
-            
-            styletemp.normal.background = style.normal.Background;
-            styletemp.normal.textColor = style.normal.TextColor;
-            styletemp.normal.scaledBackgrounds = style.normal.ScaledBackgrounds;
-            styletemp.hover.background = style.hover.Background;
-            styletemp.hover.textColor = style.hover.TextColor;
-            styletemp.hover.scaledBackgrounds = style.hover.ScaledBackgrounds;
-            styletemp.active.background = style.active.Background;
-            styletemp.active.textColor = style.active.TextColor;
-            styletemp.active.scaledBackgrounds = style.active.ScaledBackgrounds;
-            styletemp.focused.background = style.focused.Background;
-            styletemp.focused.textColor = style.focused.TextColor;
-            styletemp.focused.scaledBackgrounds = style.focused.ScaledBackgrounds;
+        public static GUIStyle GetGUIStyleTemp(IGUStyle style, int index) {
+            index = index < 0 ? 0 : index;
+            if (index + 1 > styletemp.Length)
+                Array.Resize(ref styletemp, index + 1);
+            if (styletemp[index] == null)
+                styletemp[index] = new GUIStyle();
 
-            styletemp.onNormal.background = style.onNormal.Background;
-            styletemp.onNormal.textColor = style.onNormal.TextColor;
-            styletemp.onNormal.scaledBackgrounds = style.onNormal.ScaledBackgrounds;
-            styletemp.onHover.background = style.onHover.Background;
-            styletemp.onHover.textColor = style.onHover.TextColor;
-            styletemp.onHover.scaledBackgrounds = style.onHover.ScaledBackgrounds;
-            styletemp.onActive.background = style.onActive.Background;
-            styletemp.onActive.textColor = style.onActive.TextColor;
-            styletemp.onActive.scaledBackgrounds = style.onActive.ScaledBackgrounds;
-            styletemp.onFocused.background = style.onFocused.Background;
-            styletemp.onFocused.textColor = style.onFocused.TextColor;
-            styletemp.onFocused.scaledBackgrounds = style.onFocused.ScaledBackgrounds;
-
-            styletemp.border.left = style.border.Left;
-            styletemp.border.right = style.border.Right;
-            styletemp.border.top = style.border.Top;
-            styletemp.border.bottom = style.border.Bottom;
-
-            styletemp.margin.left = style.margin.Left;
-            styletemp.margin.right = style.margin.Right;
-            styletemp.margin.top = style.margin.Top;
-            styletemp.margin.bottom = style.margin.Bottom;
-
-            styletemp.padding.left = style.padding.Left;
-            styletemp.padding.right = style.padding.Right;
-            styletemp.padding.top = style.padding.Top;
-            styletemp.padding.bottom = style.padding.Bottom;
-
-            styletemp.overflow.left = style.overflow.Left;
-            styletemp.overflow.right = style.overflow.Right;
-            styletemp.overflow.top = style.overflow.Top;
-            styletemp.overflow.bottom = style.overflow.Bottom;
-            return styletemp;
+            styletemp[index].name = style.Name;
+            styletemp[index].fixedWidth = style.FixedWidth;
+            styletemp[index].fixedHeight = style.FixedHeight;
+            styletemp[index].stretchWidth = style.StretchWidth;
+            styletemp[index].stretchHeight = style.StretchHeight;
+            styletemp[index].font = style.Font;
+            styletemp[index].fontSize = style.FontSize;
+            styletemp[index].fontStyle = style.FontStyle;
+            styletemp[index].wordWrap = style.WordWrap;
+            styletemp[index].richText = style.RichText;
+            styletemp[index].alignment = style.Alignment;
+            styletemp[index].imagePosition = style.ImagePosition;
+            styletemp[index].clipping = style.Clipping;
+            styletemp[index].contentOffset = style.ContentOffset;
+            styletemp[index].normal.background = style.normal.Background;
+            styletemp[index].normal.textColor = style.normal.TextColor;
+            styletemp[index].normal.scaledBackgrounds = style.normal.ScaledBackgrounds;
+            styletemp[index].hover.background = style.hover.Background;
+            styletemp[index].hover.textColor = style.hover.TextColor;
+            styletemp[index].hover.scaledBackgrounds = style.hover.ScaledBackgrounds;
+            styletemp[index].active.background = style.active.Background;
+            styletemp[index].active.textColor = style.active.TextColor;
+            styletemp[index].active.scaledBackgrounds = style.active.ScaledBackgrounds;
+            styletemp[index].focused.background = style.focused.Background;
+            styletemp[index].focused.textColor = style.focused.TextColor;
+            styletemp[index].focused.scaledBackgrounds = style.focused.ScaledBackgrounds;
+            styletemp[index].onNormal.background = style.onNormal.Background;
+            styletemp[index].onNormal.textColor = style.onNormal.TextColor;
+            styletemp[index].onNormal.scaledBackgrounds = style.onNormal.ScaledBackgrounds;
+            styletemp[index].onHover.background = style.onHover.Background;
+            styletemp[index].onHover.textColor = style.onHover.TextColor;
+            styletemp[index].onHover.scaledBackgrounds = style.onHover.ScaledBackgrounds;
+            styletemp[index].onActive.background = style.onActive.Background;
+            styletemp[index].onActive.textColor = style.onActive.TextColor;
+            styletemp[index].onActive.scaledBackgrounds = style.onActive.ScaledBackgrounds;
+            styletemp[index].onFocused.background = style.onFocused.Background;
+            styletemp[index].onFocused.textColor = style.onFocused.TextColor;
+            styletemp[index].onFocused.scaledBackgrounds = style.onFocused.ScaledBackgrounds;
+            styletemp[index].border.left = style.border.Left;
+            styletemp[index].border.right = style.border.Right;
+            styletemp[index].border.top = style.border.Top;
+            styletemp[index].border.bottom = style.border.Bottom;
+            styletemp[index].margin.left = style.margin.Left;
+            styletemp[index].margin.right = style.margin.Right;
+            styletemp[index].margin.top = style.margin.Top;
+            styletemp[index].margin.bottom = style.margin.Bottom;
+            styletemp[index].padding.left = style.padding.Left;
+            styletemp[index].padding.right = style.padding.Right;
+            styletemp[index].padding.top = style.padding.Top;
+            styletemp[index].padding.bottom = style.padding.Bottom;
+            styletemp[index].overflow.left = style.overflow.Left;
+            styletemp[index].overflow.right = style.overflow.Right;
+            styletemp[index].overflow.top = style.overflow.Top;
+            styletemp[index].overflow.bottom = style.overflow.Bottom;
+            return styletemp[index];
         }
+
+        public static GUIStyle GetGUIStyleTemp(IGUStyle style)
+            => GetGUIStyleTemp(style, 0);
 
         public static explicit operator GUIStyle(IGUStyle style)
             => new GUIStyle(GetGUIStyleTemp(style));

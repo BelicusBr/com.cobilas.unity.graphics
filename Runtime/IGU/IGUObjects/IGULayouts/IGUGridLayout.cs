@@ -33,7 +33,7 @@ namespace Cobilas.Unity.Graphics.IGU.Layouts {
             DirectionalBreak = DirectionalBreak.VerticalBreak;
         }
 
-        public override void OnIGU() {
+        protected override void LowCallOnIGU() {
             cursor.Reset();
             cursor.elementCount = Count;
             sub_OnIGU?.Invoke(cursor);

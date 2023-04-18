@@ -9,7 +9,7 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
         protected bool isFocused;
         [SerializeField] protected bool isTextArea;
         [SerializeField] protected IGUOnClickEvent onClick;
-        [SerializeField] protected GUIStyle textFieldStyle;
+        [SerializeField] protected IGUStyle textFieldStyle;
         [SerializeField] protected IGUTextFieldKeyCodeEvent onKeyDown;
         [SerializeField] protected IGUTextFieldKeyCharEvent onCharDown;
 
@@ -22,7 +22,7 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
         public int MaxLength { get => maxLength; set => maxLength = value; }
         /// <summary>Permite o <see cref="IGUTextField"/> ser multi-linha.</summary>
         public bool IsTextArea { get => isTextArea; set => isTextArea = value; }
-        public GUIStyle TextFieldStyle { get => textFieldStyle; set => textFieldStyle = value; }
+        public IGUStyle TextFieldStyle { get => textFieldStyle; set => textFieldStyle = value; }
 
         protected override void Awake() {
             base.Awake();
@@ -33,17 +33,16 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
             myColor = IGUColor.DefaultBoxColor;
             onKeyDown = new IGUTextFieldKeyCodeEvent();
             onCharDown = new IGUTextFieldKeyCharEvent();
+            textFieldStyle = IGUSkins.GetIGUStyle("Black text field border");
         }
 
-        public override void OnIGU() {
-
-            textFieldStyle = GetDefaultValue(textFieldStyle, GUI.skin.textField);
+        protected override void LowCallOnIGU() {
 
             GUISettings oldSettings = GUI.skin.settings;
             SetGUISettings(settings);
 
-            if (isTextArea) Text = GUI.TextArea(GetRect(), GetGUIContent("").text, maxLength, textFieldStyle);
-            else Text = GUI.TextField(GetRect(), GetGUIContent("").text, maxLength, textFieldStyle);
+            if (isTextArea) Text = GUI.TextArea(GetRect(), GetGUIContent("").text, maxLength, IGUStyle.GetGUIStyleTemp(textFieldStyle));
+            else Text = GUI.TextField(GetRect(), GetGUIContent("").text, maxLength, IGUStyle.GetGUIStyleTemp(textFieldStyle));
             
             SetGUISettings(oldSettings);
             Event current = Event.current;
