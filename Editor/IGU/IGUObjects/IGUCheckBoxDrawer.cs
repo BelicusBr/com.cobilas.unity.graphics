@@ -24,7 +24,6 @@ namespace Cobilas.Unity.Editor.Graphics.IGU {
                 SerializedProperty prop_myConfg = serialized.FindProperty("myConfg");
                 SerializedProperty prop_useTooltip = serialized.FindProperty("useTooltip");
                 SerializedProperty prop_content = serialized.FindProperty("content");
-
                 SerializedProperty prop__checked = serialized.FindProperty("_checked");
                 SerializedProperty prop_onClick = serialized.FindProperty("onClick");
                 SerializedProperty prop_checkBoxOn = serialized.FindProperty("checkBoxOn");

@@ -3,11 +3,11 @@ using UnityEngine;
 using UnityEditor;
 using UnityEditorInternal;
 using System.Collections.Generic;
+using Cobilas.Unity.Graphics.IGU;
 using Cobilas.Unity.Editor.Utility;
 using Cobilas.Unity.Graphics.IGU.Elements;
 
 using UEObject = UnityEngine.Object;
-using Cobilas.Unity.Graphics.IGU;
 
 namespace Cobilas.Unity.Editor.Graphics.IGU {
     [CustomPropertyDrawer(typeof(IGUSelectionGrid))]
@@ -63,7 +63,6 @@ namespace Cobilas.Unity.Editor.Graphics.IGU {
                     _ = EditorGUI.PropertyField(position, prop_myColor, EditorGUIUtility.TrTempContent("Color"));
                     --EditorGUI.indentLevel;
 
-                    //position.y += EditorGUIUtility.standardVerticalSpacing;
                     DrawBackground(position = MoveDown(position, pheight + BlankSpace), pheight = EditorGUI.GetPropertyHeight(prop_myConfg));
                     ++EditorGUI.indentLevel;
                     _ = EditorGUI.PropertyField(position, prop_myConfg, EditorGUIUtility.TrTempContent("Config"));

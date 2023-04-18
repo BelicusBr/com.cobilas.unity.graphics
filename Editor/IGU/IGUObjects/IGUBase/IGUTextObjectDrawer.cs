@@ -59,7 +59,7 @@ namespace Cobilas.Unity.Editor.Graphics.IGU {
                         EditorGUI.GetPropertyHeight(prop_content) + BlankSpace);
                     ++EditorGUI.indentLevel;
                     _ = EditorGUI.PropertyField(position, prop_useTooltip, EditorGUIUtility.TrTempContent("Use Tooltip"));
-                    _ = EditorGUI.PropertyField(position = MoveDownWithBlankSpace(position), prop_content, EditorGUIUtility.TrTempContent("Content"));
+                    _ = EditorGUI.PropertyField(MoveDownWithBlankSpace(position), prop_content, EditorGUIUtility.TrTempContent("Content"));
                     --EditorGUI.indentLevel;
                 }
                 serialized.ApplyModifiedProperties();

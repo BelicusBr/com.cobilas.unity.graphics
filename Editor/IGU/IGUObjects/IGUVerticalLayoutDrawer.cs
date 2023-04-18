@@ -1,11 +1,9 @@
 ﻿using UnityEngine;
 using UnityEditor;
-using Cobilas.Unity.Graphics.IGU;
 using Cobilas.Unity.Editor.Utility;
 using Cobilas.Unity.Graphics.IGU.Layouts;
 
-namespace Cobilas.Unity.Editor.Graphics.IGU
-{
+namespace Cobilas.Unity.Editor.Graphics.IGU {
     [CustomPropertyDrawer(typeof(IGUVerticalLayout))]
     public class IGUVerticalLayoutDrawer : CPropertyDrawer {
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label) {
@@ -50,7 +48,6 @@ namespace Cobilas.Unity.Editor.Graphics.IGU
                     _ = EditorGUI.PropertyField(position, prop_myColor, EditorGUIUtility.TrTempContent("Color"));
                     --EditorGUI.indentLevel;
 
-                    //position.y += EditorGUIUtility.standardVerticalSpacing;
                     DrawBackground(position = MoveDown(position, pheight + BlankSpace), EditorGUI.GetPropertyHeight(prop_myConfg));
                     ++EditorGUI.indentLevel;
                     _ = EditorGUI.PropertyField(position, prop_myConfg, EditorGUIUtility.TrTempContent("Config"));

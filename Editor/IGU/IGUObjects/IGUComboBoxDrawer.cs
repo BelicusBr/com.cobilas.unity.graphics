@@ -32,7 +32,6 @@ namespace Cobilas.Unity.Editor.Graphics.IGU {
                 SerializedProperty prop_myRect = serialized.FindProperty("myRect");
                 SerializedProperty prop_myColor = serialized.FindProperty("myColor");
                 SerializedProperty prop_myConfg = serialized.FindProperty("myConfg");
-                //comboBoxButtonHeight
                 SerializedProperty prop_onClick = serialized.FindProperty("onClick");
                 SerializedProperty prop_onSelectedIndex = serialized.FindProperty("onSelectedIndex");
                 SerializedProperty prop_onActivatedComboBox = serialized.FindProperty("onActivatedComboBox");

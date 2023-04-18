@@ -1,3 +1,22 @@
+## [3.2.0] - 17/04/2023
+### Changed
+- Refeita todas as classes `CustomPropertyDrawer` dos elementos `IGUObject`.
+## [3.1.1] - 17/04/2023
+### Fixed
+- Corrigido problema no método `IIGUObject.internalOnIGU` do `IGUObjetc` que estava verificando incorretamente a propriedade `IGUObject.Pivot`. Agora apenas `IGUObject.PivotX` é setado corretamente.
+- Corrigido erro inesperado que ocorria durante o processo de serialização e deserialização que fazia o campo `GUIStyle tooltipStyle` se tornar `GUIStyle.none` ao substituir o `GUIStyle` pelo `IGUStyle`.
+### Added
+- Adicionado método protegido `IGUObjetc.LowCallOnIGU()` como novo processo interno `OnIGU`.
+- Adicionada a classe `IGURectClip` para fazer recortes.
+### Removed
+- Removidos os métodos:
+  - `IGUObject.GetDefaultValue(GUIStyle, GUIStyle)`
+  - `IGUScrollView.ScrollTo(IGUObject)`
+  - `IGUScrollView.ScrollTo(IGURect)`
+  - `IGUScrollView.ScrollTo(Rect)`
+## [2.3.0] - 15/04/2023
+### Added
+- Adicionada a classe de estilo `IGUStyle`.
 ## [2.2.1] - 15/04/2023
 ### Changed
 Agora as funções IGUConfig e IGUColor são executadas no método `void:IIGUObject.InternalOnIGU()` da classe `IGUObject`.

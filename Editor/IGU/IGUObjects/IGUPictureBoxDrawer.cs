@@ -29,14 +29,6 @@ namespace Cobilas.Unity.Editor.Graphics.IGU {
                 SerializedProperty prop_scaleMode = serialized.FindProperty("scaleMode");
                 SerializedProperty prop_borderWidths = serialized.FindProperty("borderWidths");
                 SerializedProperty prop_borderRadiuses = serialized.FindProperty("borderRadiuses");
-                /*
-                         [SerializeField] protected Texture texture;
-        [SerializeField] protected bool alphaBlend;
-        [SerializeField] protected float imageAspect;
-        [SerializeField] protected ScaleMode scaleMode;
-        [SerializeField] protected Vector4 borderWidths;
-        [SerializeField] protected Vector4 borderRadiuses;
-                 */
 
                 prop_foldout.boolValue = EditorGUI.Foldout(position, prop_foldout.boolValue,
                     EditorGUIUtility.TrTempContent($"[{temp.GetType().Name}]{temp.name}"));
@@ -63,7 +55,6 @@ namespace Cobilas.Unity.Editor.Graphics.IGU {
                     _ = EditorGUI.PropertyField(position, prop_myColor, EditorGUIUtility.TrTempContent("Color"));
                     --EditorGUI.indentLevel;
 
-                    //position.y += EditorGUIUtility.standardVerticalSpacing;
                     DrawBackground(position = MoveDown(position, pheight + BlankSpace), pheight = EditorGUI.GetPropertyHeight(prop_myConfg));
                     ++EditorGUI.indentLevel;
                     _ = EditorGUI.PropertyField(position, prop_myConfg, EditorGUIUtility.TrTempContent("Config"));
@@ -91,8 +82,6 @@ namespace Cobilas.Unity.Editor.Graphics.IGU {
                         prop_borderRadiuses.vector4Value = borderRadiuses;
                     }
 
-                    //_ = EditorGUI.PropertyField(position = MoveDownWithBlankSpace(position), prop_borderWidths, EditorGUIUtility.TrTempContent("border Widths"));
-                    //_ = EditorGUI.PropertyField(MoveDown(position, EditorGUI.GetPropertyHeight(prop_borderWidths)), prop_borderRadiuses, EditorGUIUtility.TrTempContent("Border Radiuses"));
                     --EditorGUI.indentLevel;
                 }
                 serialized.ApplyModifiedProperties();

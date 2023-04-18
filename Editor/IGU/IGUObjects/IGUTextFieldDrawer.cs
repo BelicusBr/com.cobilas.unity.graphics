@@ -33,21 +33,6 @@ namespace Cobilas.Unity.Editor.Graphics.IGU {
                 SerializedProperty prop_onKeyDown = serialized.FindProperty("onKeyDown");
                 SerializedProperty prop_onCharDown = serialized.FindProperty("onCharDown");
 
-                /*
-        [SerializeField] protected int maxLength;
-        [SerializeField] protected char maskChar;
-        [SerializeField, HideInInspector] protected bool isFocused;
-        [SerializeField] protected IGUOnClickEvent onClick;
-
-                        [SerializeField] protected int maxLength;
-        [SerializeField, HideInInspector] 
-        protected bool isFocused;
-        [SerializeField] protected bool isTextArea;
-        [SerializeField] protected IGUOnClickEvent onClick;
-        [SerializeField] protected IGUTextFieldKeyCodeEvent onKeyDown;
-        [SerializeField] protected IGUTextFieldKeyCharEvent onCharDown;
-                 */
-
                 prop_foldout.boolValue = EditorGUI.Foldout(position, prop_foldout.boolValue,
                     EditorGUIUtility.TrTempContent($"[{temp.GetType().Name}]{temp.name}"));
 

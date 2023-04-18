@@ -52,7 +52,6 @@ namespace Cobilas.Unity.Editor.Graphics.IGU {
                     _ = EditorGUI.PropertyField(position, prop_myColor, EditorGUIUtility.TrTempContent("Color"));
                     --EditorGUI.indentLevel;
 
-                    //position.y += EditorGUIUtility.standardVerticalSpacing;
                     DrawBackground(position = MoveDown(position, pheight + BlankSpace), pheight = EditorGUI.GetPropertyHeight(prop_myConfg));
                     ++EditorGUI.indentLevel;
                     _ = EditorGUI.PropertyField(position, prop_myConfg, EditorGUIUtility.TrTempContent("Config"));
