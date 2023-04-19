@@ -63,12 +63,13 @@ namespace Cobilas.Unity.Graphics.IGU {
         }
 
         protected override void OnGUI() {
+            Vector2 mousePosition = Event.current.mousePosition;
 #if PLATFORM_STANDALONE || UNITY_EDITOR
             mouses[0] = mouses[0].SetValues(
                 Input.GetKeyDown(KeyCode.Mouse0),
                 Input.GetKey(KeyCode.Mouse0),
                 Input.GetKeyUp(KeyCode.Mouse0),
-                Event.current.mousePosition
+                mousePosition
                 );
             mouses[1] = mouses[1].SetValues(
                 Input.GetKeyDown(KeyCode.Mouse1),
@@ -85,11 +86,11 @@ namespace Cobilas.Unity.Graphics.IGU {
 #else
             mouses[0] = 
                 mouses[1] = 
-                mouses[2] = mouses[0].SetValues(true, true, true, Event.current.mousePosition);
+                mouses[2] = mouses[0].SetValues(true, true, true, mousePosition);
 #endif
             toolTip.Close();
             onIGU?.Invoke();
-            toolTip.Draw(Event.current.mousePosition, ScaleFactor);
+            toolTip.Draw(mousePosition, ScaleFactor);
         }
 
         public void OpenTooltip() => toolTip.Open();

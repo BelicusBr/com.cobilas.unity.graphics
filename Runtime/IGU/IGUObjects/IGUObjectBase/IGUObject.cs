@@ -31,9 +31,13 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
 
         public void OnIGU() {
             GUI.SetNextControlName(name);
+            IGUConfig config = GetModIGUConfig();
+            bool oldEnabled = GUI.enabled;
+            GUI.enabled = config.IsEnabled;
             (this as IIGUObject).InternalPreOnIGU();
             LowCallOnIGU();
             (this as IIGUObject).InternalPostOnIGU();
+            GUI.enabled = oldEnabled;
         }
 
         public IGUContainer ApplyToContainer(IGUContainer container) {
@@ -119,11 +123,9 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
 
             if (config.IsVisible) {
                 Color oldColor = GUI.color;
-                bool oldEnabled = GUI.enabled;
                 Color oldContentColor = GUI.contentColor;
                 Color oldBackgroundColor = GUI.backgroundColor;
                 GUI.color = myColor.MyColor;
-                GUI.enabled = config.IsEnabled;
                 GUI.contentColor = myColor.TextColor;
                 GUI.backgroundColor = myColor.BackgroundColor;
 
@@ -134,7 +136,6 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
                 GUI.matrix = oldMatrix;
 
                 GUI.color = oldColor;
-                GUI.enabled = oldEnabled;
                 GUI.contentColor = oldContentColor;
                 GUI.backgroundColor = oldBackgroundColor;
             }
