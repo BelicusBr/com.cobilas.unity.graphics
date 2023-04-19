@@ -1,3 +1,9 @@
+## [3.2.3] - 18/04/2023
+### Fixed
+- O campo protegido `IGUComboBox.scrollViewBackgroundStyle` não era inicializada o que ocasionava referencia nula.
+- Agora a verificação se o mouse está dentro do `IGUComboBox` foi corrigido.
+- As propriedades protegidas `IGUScrollView.alwaysShowVertical` e `IGUScrollView.alwaysShowHorizontal` não earm usadas.
+- O posicionamento dos scrolls foram corrigidos.
 ## [3.2.0] - 17/04/2023
 ### Changed
 - Refeita todas as classes `CustomPropertyDrawer` dos elementos `IGUObject`.

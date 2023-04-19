@@ -70,6 +70,7 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
             closeOnClickComboBoxViewButton =
             adjustComboBoxViewAccordingToTheButtonsPresent = true;
             onClick = new IGUOnClickEvent();
+            scrollViewBackgroundStyle = IGUSkins.GetIGUStyle("Black box border");
             onActivatedComboBox = new IGUOnClickEvent();
             onSelectedIndex = new IGUComboBoxClickEvent();
             comboBoxButton = CreateIGUInstance<IGUButton>($"--[{name}]ComboBoxButton");
@@ -105,7 +106,8 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
             comboBoxScrollView.ViewRect = rectView;
 
             comboBoxButton.OnIGU();
-            if (!GetRect(true).Contains(IGUDrawer.Drawer.GetMousePosition()))
+            rectTemp.position = GetRect(true).position;
+            if (!rectTemp.Contains(IGUDrawer.Drawer.GetMousePosition()))
                 if (IGUDrawer.Drawer.GetMouseButtonUp(myConfg.MouseType))
                     activatedComboBox = false;
 
