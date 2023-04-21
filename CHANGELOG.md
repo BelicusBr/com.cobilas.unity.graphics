@@ -1,3 +1,6 @@
+## [3.2.4] - 18/04/2023
+### Fixed
+- A o chamar o evento `IGUScrollView.ScrollViewAction` o doNots não erá ativado.
 ## [3.2.3] - 18/04/2023
 ### Fixed
 - O campo protegido `IGUComboBox.scrollViewBackgroundStyle` não era inicializada o que ocasionava referencia nula.

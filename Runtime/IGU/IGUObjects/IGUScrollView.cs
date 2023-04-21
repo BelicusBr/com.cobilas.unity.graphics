@@ -95,7 +95,11 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
         }
 
         void IIGUSerializationCallbackReceiver.Reserialization() {
-            rectClip.RectClipAction += (r) => ScrollViewAction?.Invoke(this);
+            rectClip.RectClipAction += (r) => {
+                doNots = DoNotModifyRect.True;
+                ScrollViewAction?.Invoke(this);
+                doNots = DoNotModifyRect.False;
+            };
         }
     }
 }
