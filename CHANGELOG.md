@@ -1,3 +1,9 @@
+## [3.2.5] - 22/04/2023
+### Fixed
+- Ocorria um erro visual que acontecia quando dois elementos `IGUWindow` eram exibidos na tela pelo fato de usar o mesmo elemento temporario.
+- Nos estilos `Black text field style` e `Black text field border style` o campo `Text Clipping` estava marcado errado com o valor `TextClipping.Overflow` que foi mudado para `TextClipping.Clip`.
+### Deprecated
+- Os métodos `GUIStyle:IGUStyle.GetGUIStyleTemp(IGUStyle)` e `GUIStyle:IGUStyle.GetGUIStyleTemp(IGUStyle, int)` não possuem mas suporte, use a conveção explicita do `IGUStyle`.
 ## [3.2.4] - 18/04/2023
 ### Fixed
 - A o chamar o evento `IGUScrollView.ScrollViewAction` o doNots não erá ativado.
