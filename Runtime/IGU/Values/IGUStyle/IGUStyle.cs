@@ -30,6 +30,8 @@ namespace Cobilas.Unity.Graphics.IGU {
         [SerializeField] private IGUStyleRectOffSet margin;
         [SerializeField] private IGUStyleRectOffSet padding;
         [SerializeField] private IGUStyleRectOffSet overflow;
+        [SerializeField, HideInInspector]
+        private GUIStyle gUIStyle;
 
         public string Name { get => name; set => name = value; }
         public float FixedWidth { get => fixedWidth; set => fixedWidth = value; }
@@ -58,10 +60,10 @@ namespace Cobilas.Unity.Graphics.IGU {
         public IGUStyleRectOffSet Padding { get => padding; set => padding = value; }
         public IGUStyleRectOffSet Overflow { get => overflow; set => overflow = value; }
 
-        private static GUIStyle[] styletemp = new GUIStyle[1];
         public static IGUStyle none => new IGUStyle();
 
         public IGUStyle() {
+            gUIStyle = new GUIStyle();
             Normal = new IGUStyleStatus();
             Hover = new IGUStyleStatus();
             Active = new IGUStyleStatus();
@@ -76,74 +78,73 @@ namespace Cobilas.Unity.Graphics.IGU {
             Overflow = new IGUStyleRectOffSet();
         }
 
-        public static GUIStyle GetGUIStyleTemp(IGUStyle style, int index) {
-            index = index < 0 ? 0 : index;
-            if (index + 1 > styletemp.Length)
-                Array.Resize(ref styletemp, index + 1);
-            if (styletemp[index] == null)
-                styletemp[index] = new GUIStyle();
+        [Obsolete("Use the explicit (GUIStyle)style conversion.")]
+        public static GUIStyle GetGUIStyleTemp(IGUStyle style, int index)
+            => InternalGetGUIStyleTemp(style);
 
-            styletemp[index].name = style.Name;
-            styletemp[index].fixedWidth = style.FixedWidth;
-            styletemp[index].fixedHeight = style.FixedHeight;
-            styletemp[index].stretchWidth = style.StretchWidth;
-            styletemp[index].stretchHeight = style.StretchHeight;
-            styletemp[index].font = style.Font;
-            styletemp[index].fontSize = style.FontSize;
-            styletemp[index].fontStyle = style.FontStyle;
-            styletemp[index].wordWrap = style.WordWrap;
-            styletemp[index].richText = style.RichText;
-            styletemp[index].alignment = style.Alignment;
-            styletemp[index].imagePosition = style.ImagePosition;
-            styletemp[index].clipping = style.Clipping;
-            styletemp[index].contentOffset = style.ContentOffset;
-            styletemp[index].normal.background = style.normal.Background;
-            styletemp[index].normal.textColor = style.normal.TextColor;
-            styletemp[index].normal.scaledBackgrounds = style.normal.ScaledBackgrounds;
-            styletemp[index].hover.background = style.hover.Background;
-            styletemp[index].hover.textColor = style.hover.TextColor;
-            styletemp[index].hover.scaledBackgrounds = style.hover.ScaledBackgrounds;
-            styletemp[index].active.background = style.active.Background;
-            styletemp[index].active.textColor = style.active.TextColor;
-            styletemp[index].active.scaledBackgrounds = style.active.ScaledBackgrounds;
-            styletemp[index].focused.background = style.focused.Background;
-            styletemp[index].focused.textColor = style.focused.TextColor;
-            styletemp[index].focused.scaledBackgrounds = style.focused.ScaledBackgrounds;
-            styletemp[index].onNormal.background = style.onNormal.Background;
-            styletemp[index].onNormal.textColor = style.onNormal.TextColor;
-            styletemp[index].onNormal.scaledBackgrounds = style.onNormal.ScaledBackgrounds;
-            styletemp[index].onHover.background = style.onHover.Background;
-            styletemp[index].onHover.textColor = style.onHover.TextColor;
-            styletemp[index].onHover.scaledBackgrounds = style.onHover.ScaledBackgrounds;
-            styletemp[index].onActive.background = style.onActive.Background;
-            styletemp[index].onActive.textColor = style.onActive.TextColor;
-            styletemp[index].onActive.scaledBackgrounds = style.onActive.ScaledBackgrounds;
-            styletemp[index].onFocused.background = style.onFocused.Background;
-            styletemp[index].onFocused.textColor = style.onFocused.TextColor;
-            styletemp[index].onFocused.scaledBackgrounds = style.onFocused.ScaledBackgrounds;
-            styletemp[index].border.left = style.border.Left;
-            styletemp[index].border.right = style.border.Right;
-            styletemp[index].border.top = style.border.Top;
-            styletemp[index].border.bottom = style.border.Bottom;
-            styletemp[index].margin.left = style.margin.Left;
-            styletemp[index].margin.right = style.margin.Right;
-            styletemp[index].margin.top = style.margin.Top;
-            styletemp[index].margin.bottom = style.margin.Bottom;
-            styletemp[index].padding.left = style.padding.Left;
-            styletemp[index].padding.right = style.padding.Right;
-            styletemp[index].padding.top = style.padding.Top;
-            styletemp[index].padding.bottom = style.padding.Bottom;
-            styletemp[index].overflow.left = style.overflow.Left;
-            styletemp[index].overflow.right = style.overflow.Right;
-            styletemp[index].overflow.top = style.overflow.Top;
-            styletemp[index].overflow.bottom = style.overflow.Bottom;
-            return styletemp[index];
+        [Obsolete("Use the explicit (GUIStyle)style conversion.")]
+        public static GUIStyle GetGUIStyleTemp(IGUStyle style)
+            => InternalGetGUIStyleTemp(style);
+
+        private static GUIStyle InternalGetGUIStyleTemp(IGUStyle style) {
+            style.gUIStyle.name = style.Name;
+            style.gUIStyle.fixedWidth = style.FixedWidth;
+            style.gUIStyle.fixedHeight = style.FixedHeight;
+            style.gUIStyle.stretchWidth = style.StretchWidth;
+            style.gUIStyle.stretchHeight = style.StretchHeight;
+            style.gUIStyle.font = style.Font;
+            style.gUIStyle.fontSize = style.FontSize;
+            style.gUIStyle.fontStyle = style.FontStyle;
+            style.gUIStyle.wordWrap = style.WordWrap;
+            style.gUIStyle.richText = style.RichText;
+            style.gUIStyle.alignment = style.Alignment;
+            style.gUIStyle.imagePosition = style.ImagePosition;
+            style.gUIStyle.clipping = style.Clipping;
+            style.gUIStyle.contentOffset = style.ContentOffset;
+            style.gUIStyle.normal.background = style.normal.Background;
+            style.gUIStyle.normal.textColor = style.normal.TextColor;
+            style.gUIStyle.normal.scaledBackgrounds = style.normal.ScaledBackgrounds;
+            style.gUIStyle.hover.background = style.hover.Background;
+            style.gUIStyle.hover.textColor = style.hover.TextColor;
+            style.gUIStyle.hover.scaledBackgrounds = style.hover.ScaledBackgrounds;
+            style.gUIStyle.active.background = style.active.Background;
+            style.gUIStyle.active.textColor = style.active.TextColor;
+            style.gUIStyle.active.scaledBackgrounds = style.active.ScaledBackgrounds;
+            style.gUIStyle.focused.background = style.focused.Background;
+            style.gUIStyle.focused.textColor = style.focused.TextColor;
+            style.gUIStyle.focused.scaledBackgrounds = style.focused.ScaledBackgrounds;
+            style.gUIStyle.onNormal.background = style.onNormal.Background;
+            style.gUIStyle.onNormal.textColor = style.onNormal.TextColor;
+            style.gUIStyle.onNormal.scaledBackgrounds = style.onNormal.ScaledBackgrounds;
+            style.gUIStyle.onHover.background = style.onHover.Background;
+            style.gUIStyle.onHover.textColor = style.onHover.TextColor;
+            style.gUIStyle.onHover.scaledBackgrounds = style.onHover.ScaledBackgrounds;
+            style.gUIStyle.onActive.background = style.onActive.Background;
+            style.gUIStyle.onActive.textColor = style.onActive.TextColor;
+            style.gUIStyle.onActive.scaledBackgrounds = style.onActive.ScaledBackgrounds;
+            style.gUIStyle.onFocused.background = style.onFocused.Background;
+            style.gUIStyle.onFocused.textColor = style.onFocused.TextColor;
+            style.gUIStyle.onFocused.scaledBackgrounds = style.onFocused.ScaledBackgrounds;
+            style.gUIStyle.border.left = style.border.Left;
+            style.gUIStyle.border.right = style.border.Right;
+            style.gUIStyle.border.top = style.border.Top;
+            style.gUIStyle.border.bottom = style.border.Bottom;
+            style.gUIStyle.margin.left = style.margin.Left;
+            style.gUIStyle.margin.right = style.margin.Right;
+            style.gUIStyle.margin.top = style.margin.Top;
+            style.gUIStyle.margin.bottom = style.margin.Bottom;
+            style.gUIStyle.padding.left = style.padding.Left;
+            style.gUIStyle.padding.right = style.padding.Right;
+            style.gUIStyle.padding.top = style.padding.Top;
+            style.gUIStyle.padding.bottom = style.padding.Bottom;
+            style.gUIStyle.overflow.left = style.overflow.Left;
+            style.gUIStyle.overflow.right = style.overflow.Right;
+            style.gUIStyle.overflow.top = style.overflow.Top;
+            style.gUIStyle.overflow.bottom = style.overflow.Bottom;
+            return style.gUIStyle;
         }
 
-        public static GUIStyle GetGUIStyleTemp(IGUStyle style)
-            => GetGUIStyleTemp(style, 0);
-
-        public static explicit operator GUIStyle(IGUStyle style)
-            => new GUIStyle(GetGUIStyleTemp(style));
+        public static explicit operator GUIStyle(IGUStyle style) 
+            => InternalGetGUIStyleTemp(style);
     }
 }
