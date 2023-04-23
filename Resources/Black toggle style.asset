@@ -28,44 +28,44 @@ MonoBehaviour:
     clipping: 1
     contentOffset: {x: 0, y: 0}
     normal:
+      foldout: 0
       background: {fileID: 2800000, guid: daa1281e12954604a970f82589b6259c, type: 3}
       textColor: {r: 0.89112896, g: 0.89112896, b: 0.89112896, a: 1}
-      foldout: 0
       scaledBackgrounds: []
     hover:
+      foldout: 0
       background: {fileID: 2800000, guid: 90e77da6703366747ab55c5ab69fa2b0, type: 3}
       textColor: {r: 1, g: 1, b: 1, a: 1}
-      foldout: 0
       scaledBackgrounds: []
     active:
+      foldout: 0
       background: {fileID: 2800000, guid: 42b454a33328cc240b6760fb1589c0ee, type: 3}
       textColor: {r: 1, g: 1, b: 1, a: 1}
-      foldout: 0
       scaledBackgrounds: []
     focused:
+      foldout: 0
       background: {fileID: 0}
       textColor: {r: 0, g: 0, b: 0, a: 0}
-      foldout: 0
       scaledBackgrounds: []
     onNormal:
+      foldout: 0
       background: {fileID: 2800000, guid: e5edd3a7464965146abfc7b91735d687, type: 3}
       textColor: {r: 0.8901961, g: 0.8901961, b: 0.8901961, a: 1}
-      foldout: 0
       scaledBackgrounds: []
     onHover:
+      foldout: 0
       background: {fileID: 2800000, guid: e3a3f7e044f9f9e4eb4b0a8bf9231091, type: 3}
       textColor: {r: 1, g: 1, b: 1, a: 1}
-      foldout: 0
       scaledBackgrounds: []
     onActive:
+      foldout: 0
       background: {fileID: 2800000, guid: 49334a5cdf4fc7e4c8632fa6fb6dbdfa, type: 3}
       textColor: {r: 1, g: 1, b: 1, a: 1}
-      foldout: 0
       scaledBackgrounds: []
     onFocused:
+      foldout: 0
       background: {fileID: 0}
       textColor: {r: 0, g: 0, b: 0, a: 0}
-      foldout: 0
       scaledBackgrounds: []
     border:
       foldout: 0
@@ -83,3 +83,70 @@ MonoBehaviour:
       foldout: 0
       rectOffSet_xy: {x: -1, y: 0}
       rectOffSet_zw: {x: -4, y: 0}
+    gUIStyle:
+      m_Name: 
+      m_Normal:
+        m_Background: {fileID: 0}
+        m_ScaledBackgrounds: []
+        m_TextColor: {r: 0, g: 0, b: 0, a: 1}
+      m_Hover:
+        m_Background: {fileID: 0}
+        m_ScaledBackgrounds: []
+        m_TextColor: {r: 0, g: 0, b: 0, a: 1}
+      m_Active:
+        m_Background: {fileID: 0}
+        m_ScaledBackgrounds: []
+        m_TextColor: {r: 0, g: 0, b: 0, a: 1}
+      m_Focused:
+        m_Background: {fileID: 0}
+        m_ScaledBackgrounds: []
+        m_TextColor: {r: 0, g: 0, b: 0, a: 1}
+      m_OnNormal:
+        m_Background: {fileID: 0}
+        m_ScaledBackgrounds: []
+        m_TextColor: {r: 0, g: 0, b: 0, a: 1}
+      m_OnHover:
+        m_Background: {fileID: 0}
+        m_ScaledBackgrounds: []
+        m_TextColor: {r: 0, g: 0, b: 0, a: 1}
+      m_OnActive:
+        m_Background: {fileID: 0}
+        m_ScaledBackgrounds: []
+        m_TextColor: {r: 0, g: 0, b: 0, a: 1}
+      m_OnFocused:
+        m_Background: {fileID: 0}
+        m_ScaledBackgrounds: []
+        m_TextColor: {r: 0, g: 0, b: 0, a: 1}
+      m_Border:
+        m_Left: 0
+        m_Right: 0
+        m_Top: 0
+        m_Bottom: 0
+      m_Margin:
+        m_Left: 0
+        m_Right: 0
+        m_Top: 0
+        m_Bottom: 0
+      m_Padding:
+        m_Left: 0
+        m_Right: 0
+        m_Top: 0
+        m_Bottom: 0
+      m_Overflow:
+        m_Left: 0
+        m_Right: 0
+        m_Top: 0
+        m_Bottom: 0
+      m_Font: {fileID: 0}
+      m_FontSize: 0
+      m_FontStyle: 0
+      m_Alignment: 0
+      m_WordWrap: 0
+      m_RichText: 1
+      m_TextClipping: 0
+      m_ImagePosition: 0
+      m_ContentOffset: {x: 0, y: 0}
+      m_FixedWidth: 0
+      m_FixedHeight: 0
+      m_StretchWidth: 1
+      m_StretchHeight: 0
