@@ -1,3 +1,6 @@
+## [3.2.6] - 26/04/2023
+### Fixed
+- Propriedade `IGUStyleStatus.ScaledBackgrounds` só e acessivel pelo editor.
 ## [3.2.5] - 22/04/2023
 ### Fixed
 - Ocorria um erro visual que acontecia quando dois elementos `IGUWindow` eram exibidos na tela pelo fato de usar o mesmo elemento temporario.
