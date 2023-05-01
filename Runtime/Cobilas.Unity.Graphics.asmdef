@@ -1,9 +1,9 @@
 {
     "name": "Cobilas.Unity.Graphics",
     "references": [
+        "Cobilas.Core",
         "Cobilas.Unity.Extensions",
-        "Cobilas.Unity.Management.Runtime",
-        "Cobilas.Core"
+        "Cobilas.Unity.Management.Runtime"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

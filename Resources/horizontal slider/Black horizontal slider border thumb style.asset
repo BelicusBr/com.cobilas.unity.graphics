@@ -76,7 +76,7 @@ MonoBehaviour:
       rectOffSet_xy: {x: 0, y: 0}
       rectOffSet_zw: {x: 0, y: 0}
     padding:
-      foldout: 0
+      foldout: 1
       rectOffSet_xy: {x: 7, y: 7}
       rectOffSet_zw: {x: 0, y: 0}
     overflow:
