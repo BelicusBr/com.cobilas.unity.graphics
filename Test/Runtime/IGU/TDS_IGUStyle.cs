@@ -14,7 +14,7 @@ namespace Cobilas.Unity.Test.Graphics.IGU {
         public static bool DrawButton(Rect rect, IGUStyle style, IGUContent content, bool isFocused, bool noAction) {
             int ID = GUIUtility.GetControlID(FocusType.Passive, rect);
             Event @event = Event.current;
-            bool isHover = rect.Contains(@event.mousePosition);
+            bool isHover = rect.Contains(@event.mousePosition) && !noAction;
             switch (@event.GetTypeForControl(ID)) {
                 case EventType.MouseDown:
                     if (isHover) {
@@ -31,14 +31,12 @@ namespace Cobilas.Unity.Test.Graphics.IGU {
                     }
                     GUIUtility.hotControl = 0;
                     @event.Use();
-                    return true && !noAction;
+                    return true;
                 case EventType.Repaint:
                     ((GUIStyle)style).Draw(
                         rect, IGUTextObject.GetGUIContentTemp(content),
-                        isHover && !noAction, ID == GUIUtility.hotControl && !noAction,
+                        isHover, ID == GUIUtility.hotControl,
                         false, isFocused);
-                    //if (isRepeat)
-                    //    return ID == GUIUtility.hotControl && isHover && !noAction;
                     goto default;
                 default:
                     return false;
@@ -51,7 +49,7 @@ namespace Cobilas.Unity.Test.Graphics.IGU {
         public static bool DrawRepeatButton(Rect rect, IGUStyle style, IGUContent content, out bool onClick, bool isFocused, bool noAction) {
             int ID = GUIUtility.GetControlID(FocusType.Passive, rect);
             Event @event = Event.current;
-            bool isHover = rect.Contains(@event.mousePosition);
+            bool isHover = rect.Contains(@event.mousePosition) && !noAction;
             onClick = false;
             switch (@event.GetTypeForControl(ID)) {
                 case EventType.MouseDown:
@@ -70,13 +68,13 @@ namespace Cobilas.Unity.Test.Graphics.IGU {
                     }
                     GUIUtility.hotControl = 0;
                     @event.Use();
-                    return true && !noAction;
+                    return true;
                 case EventType.Repaint:
                     ((GUIStyle)style).Draw(
                         rect, IGUTextObject.GetGUIContentTemp(content),
-                        isHover && !noAction, ID == GUIUtility.hotControl && !noAction,
+                        isHover, ID == GUIUtility.hotControl,
                         false, isFocused);
-                    return ID == GUIUtility.hotControl && isHover && !noAction;
+                    return ID == GUIUtility.hotControl && isHover;
                 default:
                     return false;
             }
@@ -94,7 +92,7 @@ namespace Cobilas.Unity.Test.Graphics.IGU {
         public static bool DrawToggle(Rect rect, bool value, IGUStyle style, IGUContent content, out bool onClick, bool isFocused, bool noAction) {
             int ID = GUIUtility.GetControlID(FocusType.Passive, rect);
             Event @event = Event.current;
-            bool isHover = rect.Contains(@event.mousePosition);
+            bool isHover = rect.Contains(@event.mousePosition) && !noAction;
             onClick = false;
             switch (@event.GetTypeForControl(ID)) {
                 case EventType.MouseDown:
@@ -117,7 +115,7 @@ namespace Cobilas.Unity.Test.Graphics.IGU {
                 case EventType.Repaint:
                     ((GUIStyle)style).Draw(
                         rect, IGUTextObject.GetGUIContentTemp(content),
-                        isHover && !noAction, ID == GUIUtility.hotControl && !noAction,
+                        isHover, ID == GUIUtility.hotControl,
                         value, isFocused);
                     goto default;
                 default: return value;
@@ -163,8 +161,8 @@ namespace Cobilas.Unity.Test.Graphics.IGU {
 
             rectThumb.position = slider.NormalSize == 1f ? rect.position : rect.position + slider.GetThumbPosition();
 
-            bool isHover = rect.Contains(@event.mousePosition);
-            bool isThumbHover = rectThumb.Contains(@event.mousePosition);
+            bool isHover = rect.Contains(@event.mousePosition) && !noAction;
+            bool isThumbHover = rectThumb.Contains(@event.mousePosition) && !noAction;
 
             switch (@event.type) {
                 case EventType.MouseDown:
