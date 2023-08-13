@@ -2,18 +2,21 @@
 using UnityEngine;
 using System.Collections.Generic;
 using Cobilas.Unity.Graphics.IGU.Interfaces;
+using Cobilas.Unity.Graphics.IGU.Physics;
 
 namespace Cobilas.Unity.Graphics.IGU.Elements {
-    public abstract class IGUObject : ScriptableObject, IIGUObject {
+    public abstract class IGUObject : ScriptableObject, IIGUObject, IIGUPhysic {
         [SerializeField] protected IGURect myRect;
         [SerializeField] protected IGUColor myColor;
         [SerializeField] protected IGUObject parent;
         [SerializeField] protected IGUConfig myConfg;
+        [SerializeField] protected IGUPhysic myPhysic;
         [SerializeField] protected IGUContainer container;
         protected DoNotModifyRect doNots;
 #if UNITY_EDITOR
         [SerializeField] private bool foldout;
 #endif
+        public IGUPhysic MyPhysic => myPhysic;
         public IGURect MyRect { get => myRect; set => myRect = value; }
         public IGUObject Parent { get => parent; set => parent = value; }
         public IGUColor MyColor { get => myColor; set => myColor = value; }
@@ -22,8 +25,9 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
         public IGURect GlobalRect { get => GetGlobalPosition(false); set => myRect = SetGlobalPosition(value); }
 
         protected virtual void Awake() {
-            doNots = DoNotModifyRect.False;
             myConfg = IGUConfig.Default;
+            myPhysic = new IGUPhysic(this);
+            doNots = DoNotModifyRect.False;
         }
         protected virtual void OnEnable() { }
         protected virtual void OnDisable() { }
@@ -53,6 +57,11 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
 
         public IGUContainer ApplyToPermanentGenericContainer()
             => ApplyToContainer(IGUContainer.CreatePermanentGenericIGUContainer());
+
+        public void CallPhysicsFeedback()
+        {
+            
+        }
 
         public void RemoveFromContainer() {
             if (container != null)

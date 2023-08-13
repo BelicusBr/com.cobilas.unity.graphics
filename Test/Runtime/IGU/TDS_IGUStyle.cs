@@ -1,5 +1,6 @@
 ﻿using System;
 using UnityEngine;
+using Cobilas.Collections;
 using Cobilas.Unity.Graphics.IGU;
 using Cobilas.Unity.Graphics.IGU.Elements;
 
@@ -205,6 +206,234 @@ namespace Cobilas.Unity.Test.Graphics.IGU {
             return slider.NormalSize == 1f ? slider.Min : Mathf.Clamp(slider.Value, slider.Min, slider.Max);
         }
 
+        public static Rect DrawWindow(Rect rect, Rect rectDrag, int ID, GUI.WindowFunction function, IGUStyle style, IGUContent container) {
+            Event @event = Event.current;
+            GUIStyle winStyle = (GUIStyle)style;
+            SliderStatus window = (SliderStatus)GUIUtility.GetStateObject(typeof(SliderStatus), ID);
+
+            rectDrag.position += rect.position;
+
+            bool isHover = rect.Contains(@event.mousePosition);
+            bool isDrag = rectDrag.Contains(@event.mousePosition);
+
+            switch (@event.type) {
+                case EventType.MouseDown:
+                    if (!isHover || !isDrag) break;
+                    GUIUtility.hotControl = ID;
+                    window.currentPosition = @event.mousePosition - rect.position;
+                    break;
+                case EventType.MouseUp:
+                    if (GUIUtility.hotControl == ID)
+                        GUIUtility.hotControl = 0;
+                    break;
+                case EventType.MouseDrag:
+                    if (GUIUtility.hotControl == ID)
+                        rect.position = @event.mousePosition - window.currentPosition;
+                    break;
+                case EventType.Repaint:
+                    winStyle.Draw(rect, IGUTextObject.GetGUIContentTemp(container), ID);
+                    break;
+            }
+            GUI.BeginClip(rect, Vector2.zero, Vector2.zero, false);
+            function?.Invoke(ID);
+            GUI.EndClip();
+            return rect;
+        }
+
+        public static IGUContent DrawTextBox(Rect rect, IGUContent text, int ID, IGUStyle style, char maskChar, bool isMultiline, bool isPasswordField) {
+
+            Event @event = Event.current;
+            GUIStyle textStyle = (GUIStyle)style;
+            TextEditorStatus textEditorStatus = (TextEditorStatus)GUIUtility.GetStateObject(typeof(TextEditorStatus), ID);
+            TextEditor textEditor = textEditorStatus.textEditor;
+
+            bool flag = false;
+            bool isHover = rect.Contains(@event.mousePosition);
+
+#if UNITY_EDITOR
+            flag = textEditor.text != text.Text;
+            textEditor.text = text.Text;
+#else
+            textEditor.text = text.Text;
+#endif
+            textEditor.SaveBackup();
+            textEditor.controlID = ID;
+            textEditor.position = rect;
+            textEditor.style = textStyle;
+            textEditor.multiline = isMultiline;
+            textEditor.isPasswordField = isPasswordField;
+            textEditor.DetectFocusChange();
+
+            switch (@event.type) {
+                case EventType.MouseUp:
+                    if (!isHover) {
+                        //isFocused = false;
+                        GUIUtility.keyboardControl = 0;
+                        textEditor.OnLostFocus();
+                    }
+                    if (GUIUtility.hotControl == ID) {
+                        textEditor.MouseDragSelectsWholeWords(false);
+                        GUIUtility.hotControl = 0;
+                        @event.Use();
+                    }
+                    break;
+                case EventType.MouseDown:
+                    if (!isHover) break;
+                    GUIUtility.hotControl =
+                        GUIUtility.keyboardControl = ID;
+                    if (GUIUtility.keyboardControl == ID) {
+                        //isFocused = true;
+                        textEditor.OnFocus();
+                    }
+                    textEditor.MoveCursorToPosition(@event.mousePosition);
+                    if (@event.clickCount == 2 && GUI.skin.settings.doubleClickSelectsWord) {
+                        textEditor.SelectCurrentWord();
+                        textEditor.DblClickSnap(TextEditor.DblClickSnapping.WORDS);
+                        textEditor.MouseDragSelectsWholeWords(true);
+                    }
+                    if (@event.clickCount == 3 && GUI.skin.settings.tripleClickSelectsLine) {
+                        textEditor.SelectCurrentParagraph();
+                        textEditor.MouseDragSelectsWholeWords(true);
+                        textEditor.DblClickSnap(TextEditor.DblClickSnapping.PARAGRAPHS);
+                    }
+                    @event.Use();
+                    break;
+                case EventType.MouseDrag:
+                    if (GUIUtility.hotControl == ID) {
+                        if (@event.shift) textEditor.MoveCursorToPosition(@event.mousePosition);
+                        else textEditor.SelectToPosition(@event.mousePosition);
+                        @event.Use();
+                    }
+                    break;
+                case EventType.ValidateCommand:
+                case EventType.ExecuteCommand:
+                    if (GUIUtility.keyboardControl == ID) {
+                        if (@event.commandName == "Copy") {
+                            textEditor.Copy();
+                            @event.Use();
+                        } else if (@event.commandName == "Paste") {
+                            textEditor.Paste();
+                            @event.Use();
+                        }
+                    }
+                    break;
+                case EventType.KeyDown:
+                    if (GUIUtility.keyboardControl != ID) break;
+                    if (textEditor.HandleKeyEvent(@event)) {
+                        @event.Use();
+                        flag = true;
+                        text.Text = textEditor.text;
+                        break;
+                    }
+                    char character = @event.character;
+#if UNITY_EDITOR
+                    if (@event.keyCode == KeyCode.Tab || character == '\t')
+                        break;
+#else
+                    if (@event.keyCode == KeyCode.Tab || character == '\t') {
+                        textEditor.Insert(character);
+                        flag = true;
+                        break;
+                    }
+#endif
+                    if (character == '\n' && !isMultiline && !@event.alt)
+                        break;
+                    Font font = textStyle.font;
+                    font = !font ? GUI.skin.font : font;
+
+                    if (font.HasCharacter(character) || character == '\n') {
+                        textEditor.Insert(character);
+                        flag = true;
+                        break;
+                    }
+                    //if (character == char.MinValue) {
+                    //    textEditor.ReplaceSelection("");
+                    //    flag = true;
+                    //    @event.Use();
+                    //    break;
+                    //}
+
+                    switch (@event.keyCode) {
+                        case KeyCode.UpArrow:
+                            if (@event.shift) textEditor.SelectUp();
+                            else textEditor.MoveUp();
+                            break;
+                        case KeyCode.DownArrow:
+                            if (@event.shift) textEditor.SelectDown();
+                            else textEditor.MoveDown();
+                            break;
+                        case KeyCode.LeftArrow:
+                            if (@event.shift) textEditor.SelectLeft();
+                            else textEditor.MoveLeft();
+                            break;
+                        case KeyCode.RightArrow:
+                            if (@event.shift) textEditor.SelectRight();
+                            else textEditor.MoveRight();
+                            break;
+                        case KeyCode.Home:
+                            if (@event.shift) textEditor.SelectGraphicalLineStart();
+                            else textEditor.MoveGraphicalLineStart();
+                            break;
+                        case KeyCode.End:
+                            if (@event.shift) textEditor.SelectGraphicalLineEnd();
+                            else textEditor.MoveGraphicalLineEnd();
+                            break;
+                        case KeyCode.PageUp:
+                            if (@event.shift) textEditor.SelectTextStart();
+                            else textEditor.MoveTextStart();
+                            break;
+                        case KeyCode.PageDown:
+                            if (@event.shift) textEditor.SelectTextEnd();
+                            else textEditor.MoveTextEnd();
+                            break;
+                    }
+                    @event.Use();
+                    break;
+                case EventType.Repaint:
+                    if (GUIUtility.keyboardControl != ID)
+                        textEditor.style.Draw(rect, IGUTextObject.GetGUIContentTemp(textEditorStatus.textPasswordField), ID);
+                    else textEditor.DrawCursor(textEditorStatus.textPasswordField);
+                    break;
+            }
+            textEditor.UpdateScrollOffsetIfNeeded(@event);
+
+            if (!flag)
+                return text;
+            textEditorStatus.textPasswordField = string.Empty.PadRight(textEditor.text.Length, maskChar);
+            text.Text = textEditor.text;
+            return text;
+        }
+
+        public static void RectClip(Rect rect, Action action, Vector2 scrollOffset, Vector2 renderOffset, bool resetOffset) {
+            GUI.BeginClip(rect, scrollOffset, renderOffset, resetOffset);
+            action?.Invoke();
+            GUI.EndClip();
+        }
+
+        public sealed class TextEditorStatus {
+            public TextEditor textEditor;
+            public string textPasswordField;
+
+            public TextEditorStatus() {
+                textEditor = new TextEditor();
+                textPasswordField = string.Empty;
+            }
+        }
+
+        public sealed class IGUObjectInfo {
+            public int ID;
+            public bool onClick;
+            public bool isFocused;
+            public bool noAction;
+
+            public IGUObjectInfo() {
+                this.ID = 0;
+                this.onClick =
+                this.isFocused =
+                this.noAction = false;
+            }
+        }
+
         public sealed class SliderStatus {
             public bool isHoriz;
             public Vector2 rectSize;
@@ -265,9 +494,81 @@ namespace Cobilas.Unity.Test.Graphics.IGU {
                 normalSize = this.size / MinMaxLength;
             }
         }
+    
+        /* 
+         * criar rectclip
+         * bom criando o rectclip tem que criar uma especie de profundidade para a "fisica" dos
+         * elementos igu o rectclip vai ser +/- a base do sistema IGU.
+         */
 
-        public sealed class ButtonClick {
-            public bool click;
+    }
+
+    public class TDS_IGURectClip : IDisposable {
+
+        public IGUPhysics physics;
+
+        public TDS_IGURectClip()
+        {
+            physics = new IGUPhysics();
+        }
+
+        public void Dispose()  {
+            physics?.Dispose();
+        }
+
+        public void Draw(Rect position, Action function, Vector2 scrollOffset, Vector2 renderOffset, bool resetOffset) {
+            GUI.BeginClip(position, scrollOffset, renderOffset, resetOffset);
+            function?.Invoke();
+            GUI.EndClip();
+        }
+
+        public void Draw(Rect position, Action function, Vector2 scrollOffset, Vector2 renderOffset)
+            => Draw(position, function, scrollOffset, renderOffset, false);
+
+        public void Draw(Rect position, Action function, Vector2 scrollOffset)
+            => Draw(position, function, scrollOffset, Vector2.zero);
+
+        public void Draw(Rect position, Action function)
+            => Draw(position, function, Vector2.zero);
+    }
+
+    public sealed class IGUPhysics : IDisposable {
+        public Rect rect;
+        public bool onPhysycs;
+        public IGUConfig config;
+
+        public Action onDestroy;
+
+        public void Dispose() {
+            onDestroy?.Invoke();
+        }
+
+        public void IGUPhysicsFeedbackInfo(IGUPhysicsFeedback feedback) {
+        
+        }
+    }
+
+    /*
+     * tenho que o quema de batata quente onde o ultimo fica quente
+     * bom isso fica da forma onde o rato fica em cima do objeto e o ultimo e selecionado
+     * incluindo o rect do beginclip
+     */
+
+    public class IGUPhysicsFeedback {
+
+        public static event Action<IGUPhysicsFeedback> _PhysicsFeedback;
+        public static IGUPhysicsFeedback feedback = new IGUPhysicsFeedback();
+
+        public static void Add(IGUPhysics physicsItem) {
+            if (physicsItem == null) return;
+            _PhysicsFeedback?.Invoke(feedback);
+            _PhysicsFeedback += physicsItem.IGUPhysicsFeedbackInfo;
+        }
+
+        public static void Remove(IGUPhysics physicsItem) {
+            if (physicsItem == null) return;
+            _PhysicsFeedback -= physicsItem.IGUPhysicsFeedbackInfo;
+            _PhysicsFeedback?.Invoke(feedback);
         }
     }
 }

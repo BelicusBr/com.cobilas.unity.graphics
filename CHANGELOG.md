@@ -1,3 +1,12 @@
+## [3.3.0-preview4] - 13/08/20223
+### Added
+As classes
+```c#
+	public class IGUPhysic;
+	public interface IIGUClip;
+	public interface IIGUPhysic;
+```
+foram adicionados.
 ## [3.2.6] - 26/04/2023
 ### Fixed
 - Propriedade `IGUStyleStatus.ScaledBackgrounds` só e acessivel pelo editor.
