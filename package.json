@@ -1,6 +1,6 @@
 {
   "name": "com.cobilas.unity.graphics",
-  "version": "3.3.0",
+  "version": "3.3.1",
   "displayName": "Cobilas Graphics",
   "description": "Pacote que adiciona e manipula elementos",
   "licensesUrl": "https://github.com/BelicusBr/com.cobilas.unity.graphics/blob/main/LICENSE.md",
@@ -32,6 +32,6 @@
     "com.cobilas.core": "3.0.0",
     "com.cobilas.unity.utility": "2.8.0",
     "com.cobilas.unity.extensions": "1.22.0",
-    "com.cobilas.unity.management.runtime": "1.15.0-ch1"
+    "com.cobilas.unity.management.runtime": "1.15.0"
   }
 }
