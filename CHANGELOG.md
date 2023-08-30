@@ -1,3 +1,10 @@
+# Changelog
+## [3.3.0] - 29/08/2023
+## Changed
+- As dependencias do pacote foram aluteradas.
+## [3.2.6-ch1] - 28/08/2023
+### Changed
+- O autor do pacote foi alterado de `Cobilas CTB` para `BélicusBr`.
 ## [3.2.5] - 22/04/2023
 ### Fixed
 - Ocorria um erro visual que acontecia quando dois elementos `IGUWindow` eram exibidos na tela pelo fato de usar o mesmo elemento temporario.
