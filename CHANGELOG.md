@@ -1,4 +1,8 @@
 # Changelog
+## [3.3.1] - 30/08/2023
+### Fixed
+- Corrigido uma dependencia que estava incorreta.
+A dependencia em questão era `com.cobilas.unity.management.runtime@1.15.0-ch1` que não exitia.
 ## [3.3.0] - 29/08/2023
 ## Changed
 - As dependencias do pacote foram aluteradas.
