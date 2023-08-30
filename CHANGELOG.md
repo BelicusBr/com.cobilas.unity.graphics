@@ -1,3 +1,4 @@
+# Changelog
 ## [3.4.0-preview4] - 13/08/20223
 ### Added
 As classes
@@ -7,6 +8,12 @@ As classes
 	public interface IIGUPhysic;
 ```
 foram adicionados.
+## [3.3.0] - 29/08/2023
+## Changed
+- As dependencias do pacote foram aluteradas.
+## [3.2.6-ch1] - 28/08/2023
+### Changed
+- O autor do pacote foi alterado de `Cobilas CTB` para `BélicusBr`.
 ## [3.2.6] - 26/04/2023
 ### Fixed
 - Propriedade `IGUStyleStatus.ScaledBackgrounds` só e acessivel pelo editor.

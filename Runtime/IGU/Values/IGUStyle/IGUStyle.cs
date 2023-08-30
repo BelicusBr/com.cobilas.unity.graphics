@@ -103,30 +103,28 @@ namespace Cobilas.Unity.Graphics.IGU {
             style.gUIStyle.contentOffset = style.ContentOffset;
             style.gUIStyle.normal.background = style.normal.Background;
             style.gUIStyle.normal.textColor = style.normal.TextColor;
-            #if UNITY_EDITOR
             style.gUIStyle.normal.scaledBackgrounds = style.normal.ScaledBackgrounds;
-            style.gUIStyle.hover.scaledBackgrounds = style.hover.ScaledBackgrounds;
-            style.gUIStyle.active.scaledBackgrounds = style.active.ScaledBackgrounds;
-            style.gUIStyle.focused.scaledBackgrounds = style.focused.ScaledBackgrounds;
-            style.gUIStyle.onNormal.scaledBackgrounds = style.onNormal.ScaledBackgrounds;
-            style.gUIStyle.onHover.scaledBackgrounds = style.onHover.ScaledBackgrounds;
-            style.gUIStyle.onActive.scaledBackgrounds = style.onActive.ScaledBackgrounds;
-            style.gUIStyle.onFocused.scaledBackgrounds = style.onFocused.ScaledBackgrounds;
-            #endif
             style.gUIStyle.hover.background = style.hover.Background;
             style.gUIStyle.hover.textColor = style.hover.TextColor;
+            style.gUIStyle.hover.scaledBackgrounds = style.hover.ScaledBackgrounds;
             style.gUIStyle.active.background = style.active.Background;
             style.gUIStyle.active.textColor = style.active.TextColor;
+            style.gUIStyle.active.scaledBackgrounds = style.active.ScaledBackgrounds;
             style.gUIStyle.focused.background = style.focused.Background;
             style.gUIStyle.focused.textColor = style.focused.TextColor;
+            style.gUIStyle.focused.scaledBackgrounds = style.focused.ScaledBackgrounds;
             style.gUIStyle.onNormal.background = style.onNormal.Background;
             style.gUIStyle.onNormal.textColor = style.onNormal.TextColor;
+            style.gUIStyle.onNormal.scaledBackgrounds = style.onNormal.ScaledBackgrounds;
             style.gUIStyle.onHover.background = style.onHover.Background;
             style.gUIStyle.onHover.textColor = style.onHover.TextColor;
+            style.gUIStyle.onHover.scaledBackgrounds = style.onHover.ScaledBackgrounds;
             style.gUIStyle.onActive.background = style.onActive.Background;
             style.gUIStyle.onActive.textColor = style.onActive.TextColor;
+            style.gUIStyle.onActive.scaledBackgrounds = style.onActive.ScaledBackgrounds;
             style.gUIStyle.onFocused.background = style.onFocused.Background;
             style.gUIStyle.onFocused.textColor = style.onFocused.TextColor;
+            style.gUIStyle.onFocused.scaledBackgrounds = style.onFocused.ScaledBackgrounds;
             style.gUIStyle.border.left = style.border.Left;
             style.gUIStyle.border.right = style.border.Right;
             style.gUIStyle.border.top = style.border.Top;
