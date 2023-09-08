@@ -7,7 +7,7 @@ using Cobilas.Unity.Graphics.IGU.Elements;
 using Cobilas.Unity.Graphics.IGU.Interfaces;
 
 namespace Cobilas.Unity.Graphics.IGU {
-    [AddToPermanentContainer]
+    [AddSceneContainer]
     public class IGUDrawer : IGUBehaviour, ISerializationCallbackReceiver {
         private Action onIGU;
         private Coroutine EndOfFrameCoroutine = null;
