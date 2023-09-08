@@ -5,7 +5,7 @@ using Cobilas.Unity.Management.Container;
  
 namespace Cobilas.Unity.Graphics.Resolutions {
     using UEResolution = UnityEngine.Resolution;
-    [AddToPermanentContainer]
+    [AddSceneContainer]
     public class CobilasResolutions : MonoBehaviour, ISerializationCallbackReceiver {
         [SerializeField] private Resolution[] resolutions;
         [SerializeField] private AspectRatio[] aspectRatios;
