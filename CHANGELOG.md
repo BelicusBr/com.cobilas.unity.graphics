@@ -1,4 +1,7 @@
 # Changelog
+## [3.4.0] - 08/09/2023
+### Changed
+- dependencias do pacote foram alteradas.
 ## [3.3.1] - 30/08/2023
 ### Fixed
 - Corrigido uma dependencia que estava incorreta.
