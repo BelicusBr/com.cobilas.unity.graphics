@@ -1,4 +1,9 @@
 # Changelog
+## [3.4.1] - 08/09/2023
+### Fixed
+- O atributo `AddToPermanentContainer` nas classes `CobilasResolutions` e `IGUDrawer` foi substituido por `[AddSceneContainer]`.
+- A referencia do assembly <kbd>Cobilas.Unity.Utility</kbd> foi adicionada a o <kbd>Cobilas.Unity.Graphics.asmdef</kbd>.
+- ps:Falta de ateção da nisso XD.
 ## [3.4.0] - 08/09/2023
 ### Changed
 - dependencias do pacote foram alteradas.
