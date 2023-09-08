@@ -1,6 +1,8 @@
 # Changelog
-<<<<<<< HEAD
-## [3.4.0-preview4] - 13/08/20223
+## [3.4.0] - 08/09/2023
+### Changed
+- dependencias do pacote foram alteradas.
+## [3.5.0-preview4] - 13/08/20223
 ### Added
 As classes
 ```c#
@@ -9,11 +11,6 @@ As classes
 	public interface IIGUPhysic;
 ```
 foram adicionados.
-=======
-## [3.4.0] - 08/09/2023
-### Changed
-- dependencias do pacote foram alteradas.
->>>>>>> main-3.4.x
 ## [3.3.1] - 30/08/2023
 ### Fixed
 - Corrigido uma dependencia que estava incorreta.
