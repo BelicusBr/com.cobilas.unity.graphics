@@ -1,180 +1,179 @@
 # Changelog
-## [3.4.1] - 08/09/2023
-### Fixed
-- O atributo `AddToPermanentContainer` nas classes `CobilasResolutions` e `IGUDrawer` foi substituido por `[AddSceneContainer]`.
-- A referencia do assembly <kbd>Cobilas.Unity.Utility</kbd> foi adicionada a o <kbd>Cobilas.Unity.Graphics.asmdef</kbd>.
-- ps:Falta de ateção da nisso XD.
-## [3.4.0] - 08/09/2023
+## [3.5.0] 26/01/2024
 ### Changed
-- dependencias do pacote foram alteradas.
+A change in package dependencies.
 ## [3.5.0-preview4] - 13/08/20223
 ### Added
-As classes
+To the classes that were added.
 ```c#
 	public class IGUPhysic;
 	public interface IIGUClip;
 	public interface IIGUPhysic;
 ```
-foram adicionados.
+## [3.4.1] - 08/09/2023
+###Fixed
+- The `AddToPermanentContainer` attribute in the `CobilasResolutions` and `IGUDrawer` classes has been replaced by `[AddSceneContainer]`.
+- The <kbd>Cobilas.Unity.Utility</kbd> assembly reference has been added to <kbd>Cobilas.Unity.Graphics.asmdef</kbd>.
+- ps: Lack of attention in this XD.
+## [3.4.0] - 08/09/2023
+### Changed
+- package dependencies have been changed.
 ## [3.3.1] - 30/08/2023
-### Fixed
-- Corrigido uma dependencia que estava incorreta.
-A dependencia em questão era `com.cobilas.unity.management.runtime@1.15.0-ch1` que não exitia.
+###Fixed
+- Fixed a dependency that was incorrect.
+The dependency in question was `com.cobilas.unity.management.runtime@1.15.0-ch1` which did not exist.
 ## [3.3.0] - 29/08/2023
 ## Changed
-- As dependencias do pacote foram aluteradas.
+- Package dependencies have been changed.
 ## [3.2.6-ch1] - 28/08/2023
 ### Changed
-- O autor do pacote foi alterado de `Cobilas CTB` para `BélicusBr`.
-## [3.2.6] - 26/04/2023
-### Fixed
-- Propriedade `IGUStyleStatus.ScaledBackgrounds` só e acessivel pelo editor.
+- The package author was changed from `Cobilas CTB` to `BélicusBr`.
 ## [3.2.5] - 22/04/2023
-### Fixed
-- Ocorria um erro visual que acontecia quando dois elementos `IGUWindow` eram exibidos na tela pelo fato de usar o mesmo elemento temporario.
-- Nos estilos `Black text field style` e `Black text field border style` o campo `Text Clipping` estava marcado errado com o valor `TextClipping.Overflow` que foi mudado para `TextClipping.Clip`.
+###Fixed
+- There was a visual error that occurred when two `IGUWindow` elements were displayed on the screen due to the fact that the same temporary element was used.
+- In the styles `Black text field style` and `Black text field border style` the `Text Clipping` field was marked incorrectly with the value `TextClipping.Overflow` which was changed to `TextClipping.Clip`.
 ### Deprecated
-- Os métodos `GUIStyle:IGUStyle.GetGUIStyleTemp(IGUStyle)` e `GUIStyle:IGUStyle.GetGUIStyleTemp(IGUStyle, int)` não possuem mas suporte, use a conveção explicita do `IGUStyle`.
+- The methods `GUIStyle:IGUStyle.GetGUIStyleTemp(IGUStyle)` and `GUIStyle:IGUStyle.GetGUIStyleTemp(IGUStyle, int)` are not supported, use the explicit convention of `IGUStyle`.
 ## [3.2.4] - 18/04/2023
-### Fixed
-- A o chamar o evento `IGUScrollView.ScrollViewAction` o doNots não erá ativado.
+###Fixed
+- When calling the `IGUScrollView.ScrollViewAction` event, doNots will not be activated.
 ## [3.2.3] - 18/04/2023
-### Fixed
-- O campo protegido `IGUComboBox.scrollViewBackgroundStyle` não era inicializada o que ocasionava referencia nula.
-- Agora a verificação se o mouse está dentro do `IGUComboBox` foi corrigido.
-- As propriedades protegidas `IGUScrollView.alwaysShowVertical` e `IGUScrollView.alwaysShowHorizontal` não earm usadas.
-- O posicionamento dos scrolls foram corrigidos.
+###Fixed
+- The protected field `IGUComboBox.scrollViewBackgroundStyle` was not initialized which caused a null reference.
+- Now checking whether the mouse is inside the `IGUComboBox` has been fixed.
+- The protected properties `IGUScrollView.alwaysShowVertical` and `IGUScrollView.alwaysShowHorizontal` are not used.
+- The positioning of the scrolls has been corrected.
 ## [3.2.0] - 17/04/2023
 ### Changed
-- Refeita todas as classes `CustomPropertyDrawer` dos elementos `IGUObject`.
+- Reworked all `CustomPropertyDrawer` classes of `IGUObject` elements.
 ## [3.1.1] - 17/04/2023
-### Fixed
-- Corrigido problema no método `IIGUObject.internalOnIGU` do `IGUObjetc` que estava verificando incorretamente a propriedade `IGUObject.Pivot`. Agora apenas `IGUObject.PivotX` é setado corretamente.
-- Corrigido erro inesperado que ocorria durante o processo de serialização e deserialização que fazia o campo `GUIStyle tooltipStyle` se tornar `GUIStyle.none` ao substituir o `GUIStyle` pelo `IGUStyle`.
+###Fixed
+- Fixed problem in the `IIGUObject.internalOnIGU` method of `IGUObjetc` which was incorrectly checking the `IGUObject.Pivot` property. Now only `IGUObject.PivotX` is set correctly.
+- Fixed an unexpected error that occurred during the serialization and deserialization process that caused the `GUIStyle tooltipStyle` field to become `GUIStyle.none` when replacing `GUIStyle` with `IGUStyle`.
 ### Added
-- Adicionado método protegido `IGUObjetc.LowCallOnIGU()` como novo processo interno `OnIGU`.
-- Adicionada a classe `IGURectClip` para fazer recortes.
+- Added protected method `IGUObjetc.LowCallOnIGU()` as new internal process `OnIGU`.
+- Added the `IGURectClip` class to make clippings.
 ### Removed
-- Removidos os métodos:
-  - `IGUObject.GetDefaultValue(GUIStyle, GUIStyle)`
-  - `IGUScrollView.ScrollTo(IGUObject)`
-  - `IGUScrollView.ScrollTo(IGURect)`
-  - `IGUScrollView.ScrollTo(Rect)`
+- Removed methods:
+   - `IGUObject.GetDefaultValue(GUIStyle, GUIStyle)`
+   - `IGUScrollView.ScrollTo(IGUObject)`
+   - `IGUScrollView.ScrollTo(IGURect)`
+   - `IGUScrollView.ScrollTo(Rect)`
 ## [2.3.0] - 15/04/2023
 ### Added
-- Adicionada a classe de estilo `IGUStyle`.
+- Added the `IGUStyle` style class.
 ## [2.2.1] - 15/04/2023
 ### Changed
-Agora as funções IGUConfig e IGUColor são executadas no método `void:IIGUObject.InternalOnIGU()` da classe `IGUObject`.
-### Fixed
-Nas classes `IGUNumericBox` e `IGUNumericBoxInt` os sub-elementos não eram parenteados o que não alterava a posição dos sub-elementos.
+Now the IGUConfig and IGUColor functions are executed in the `void:IIGUObject.InternalOnIGU()` method of the `IGUObject` class.
+###Fixed
+In the `IGUNumericBox` and `IGUNumericBoxInt` classes, the sub-elements were not parented, which did not change the position of the sub-elements.
 ### Deprecated
-O método protegido `Vector2:IGUObject.GetPosition()` não tem suporte.
+The protected method `Vector2:IGUObject.GetPosition()` is not supported.
 ### Added
-A propriedade `IGUObject.GlobalRect { get; set; }` representa posição local do elemento `IGUObject` somado com o elemento `IGUObject` pai.
-Os métodos protegidos
+The property `IGUObject.GlobalRect { get; set; }` represents the local position of the `IGUObject` element added to the parent `IGUObject` element.
+The protected methods
 ```c#
-	protected Rect GetRect(bool iginoreNotMod);
-	protected Rect GetRect();
+protected Rect GetRect(bool iginoreNotMod);
+protected Rect GetRect();
 ```
-foram adicionados para obter a posição e tamanho.
+were added to obtain the position and size.
 ## [2.1.1] - 14/04/2023
 ### Changed
-Agora as propriedades `IGUTextObject.UseTooltip`, `IGUTextObject.MyContent` e `IGUObject.MyConfg` resebem um valor padrão.
+Now the properties `IGUTextObject.UseTooltip`, `IGUTextObject.MyContent` and `IGUObject.MyConfg` receive a default value.
 ## [2.1.0-rc1] - 08/04/2023
 ### Added
-A interface `IIGUSerializationCallbackReceiver` foi adicionada para serializar `IGUObject` no Editor.
-## [2.0.2] - 05/04/2023
+The `IIGUSerializationCallbackReceiver` interface has been added to serialize `IGUObject` in the Editor.
+## [2.0.2] - 04/05/2023
 ### Fixed(IGU)
-No `IGUComboBox` avia um problema que acontecia quando o objeto era filiado a outro que fazia a posição da `IGUComboBox` não ser alterada.
+In `IGUComboBox` there was a problem that occurred when the object was affiliated with another that caused the position of the `IGUComboBox` not to be changed.
 ### Removed(IGU)
-As fuções `BeginDoNotMofifyRect` e `EndDoNotMofifyRect` por afetar os objetos filhos e sub-filhos, e foram substituidos pelo compo doNots.
-Os métodos `CreateIGUInstance` foram removidos de todas as classes `IGUObject` e substituidas por
+The `BeginDoNotMofifyRect` and `EndDoNotMofifyRect` functions affect child and sub-child objects, and have been replaced by the doNots compo.
+`CreateIGUInstance` methods have been removed from all `IGUObject` classes and replaced with
 ```c#
-	IGUObject.CreateIGUInstace(Type);
-	IGUObject.CreateIGUInstace(Type, string);
-	IGUObject.CreateIGUInstace<T>(string);
-	IGUObject.CreateIGUInstace<T>();
+IGUObject.CreateIGUInstace(Type);
+IGUObject.CreateIGUInstace(Type, string);
+IGUObject.CreateIGUInstace<T>(string);
+IGUObject.CreateIGUInstace<T>();
 ```
 ## [1.7.1] - 12/02/2023
 ### Added
-Agora foi adicionado os esquemas de layout.
+Now the layout schemes have been added.
 ```c#
-	public sealed class IGUHorizontalLayout{}
-	public sealed class IGUVerticalLayout{}
-	public sealed class IGUGridLayout{}
+public sealed class IGUHorizontalLayout{}
+public sealed class IGUVerticalLayout{}
+public sealed class IGUGridLayout{}
 ```
-### Fixed
+###Fixed
 #### IGUObject
-No método `IGUConfig:GetModIGUConfig()` além de verificar se o parent é nulo também são verificados
-se `parent.GetModIGUConfig().IsEnabled && myConfg.IsEnabled` é `parent.GetModIGUConfig().IsVisible && myConfg.IsVisible`
-são verdadeiros.
-No método `Vector2:GetPosition()` a posição do parent erá obtida da propriedade `parent.myRect.ModifiedPosition`
-o que vai ocasionar um posicionamento incorreto.
+In the `IGUConfig:GetModIGUConfig()` method, in addition to checking whether the parent is null, they are also checked
+if `parent.GetModIGUConfig().IsEnabled && myConfg.IsEnabled` is `parent.GetModIGUConfig().IsVisible && myConfg.IsVisible`
+are true.
+In the `Vector2:GetPosition()` method, the parent's position will be obtained from the `parent.myRect.ModifiedPosition` property
+which will cause incorrect positioning.
 ## [1.0.16] - 12/02/2023
-### Fixed
-No metódo `IGUConatiner.AddDeepAction(int)` á instrução `RefreshDepth();` era executada antes do objeto `DeepAction`
-o que fazia que o primeiro objeto `DeepAction` não fosse adicionado ao evento OnIGU.
+###Fixed
+In the `IGUConatiner.AddDeepAction(int)` method, the `RefreshDepth();` instruction was executed before the `DeepAction` object
+which meant that the first `DeepAction` object was not added to the OnIGU event.
 ## [1.0.15] - 09/02/2023
-### Fixed
-#### Profundidade não aplicada corretamente [#ISU-IGU0001](https://github.com/BelicusBr/com.cobilas.unity.graphics/issues/2)
-Na classe `IGUContainer` onde é feito a aplicação de profundidade, agora ao adicionar uma nova profundidade o evento responsável por chamar `DeepAction.OnIGU()` é atualizado.
+###Fixed
+#### Depth not applied correctly [#ISU-IGU0001](https://github.com/BelicusBr/com.cobilas.unity.graphics/issues/2)
+In the `IGUContainer` class where depth is applied, now when adding a new depth the event responsible for calling `DeepAction.OnIGU()` is updated.
 ## [1.0.14] - 05/02/2023
-### Fixed
-No método `void:InitInternalIndowFunction()` a instrução `GUI.DragWindow` era executado depois da ação `windowFunction` o que podia ocasionar a parada de movimento da janela pelo fato de
-que se algum elemento IGU fosse desativado ou quando fosse chamado a propriedade `GUI.enabled = false` dentro da ação `windowFunction`.
+###Fixed
+In the `void:InitInternalIndowFunction()` method, the `GUI.DragWindow` instruction was executed after the `windowFunction` action, which could cause the window to stop moving due to the fact that
+that if any IGU element was disabled or when the `GUI.enabled = false` property was called within the `windowFunction` action.
 ## [1.0.13] - 30/01/2023
 ### Changed
-- Romoção de campos não utilizados.
-- Remoção de atribuições desnecessárias.
-- Transformando possiveis campos em `readonly`.
+- Removal of unused fields.
+- Removal of unnecessary assignments.
+- Transforming possible fields into `readonly`.
 ## [1.0.12] 09/01/2023
 ### Changed
-O corpo do método `public static Vector2Int GetBaseResolutionPlatform()` foi alterado.
+The body of the `public static Vector2Int GetBaseResolutionPlatform()` method has been changed.
 ## [1.0.9] 06/09/2022
-### Fixed
-A propriedade `IGUEvent` foi removida por casar sertos conflitos com os metódos da classe `GUI`.<br/><br/>
+###Fixed
+The `IGUEvent` property was removed due to conflicts with the `GUI` class methods.<br/><br/>
 
-Nas calsses `IGUDrawer` e `IGUConatiner` ocorria o problema com os eventos OnIGU que a cada deserialização<br/>
-os eventos OnIGU não eram limpos o que fazia com que os elementos IGU fossem duplicados.
+In the `IGUDrawer` and `IGUConatiner` classes, there was a problem with the OnIGU events that with each deserialization<br/>
+OnIGU events were not cleared which caused IGU elements to be duplicated.
 
 ### Changed
-Agora os gatilhos do mouse são detectados pela classe `Imput`.
+Mouse triggers are now detected by the `Imput` class.
 ## [1.0.7] 02/09/2022
 ### Fixed (IGUDrawer)
-Agora o evento coletado e marcado como usado.
+Now the event collected and marked as used.
 ### Fixed (IGUObjectDrawer)
-As instruções `property.serializedObject.Update();` e `property.serializedObject.ApplyModifiedProperties();`<br/>
-foram removidas por causar o congelamento dos valores já pre-definidos no inspetor depóis de mudado<br/>
-pro modo jogo.
-## [1.0.6] 27/08/2022 
+The statements `property.serializedObject.Update();` and `property.serializedObject.ApplyModifiedProperties();`<br/>
+were removed because they caused the values already pre-defined in the inspector to freeze after being changed<br/>
+for game mode.
+## [1.0.6] 27/08/2022
 ### Fixed (MarkedText)
-No metódo `string:MarkedText.ToString();` existia o problema em que marcar o MarkedText<br/>
-como `FontStyle.Normal`, o texto não aparecia.
+In the method `string:MarkedText.ToString();` there was a problem where marking the MarkedText<br/>
+like `FontStyle.Normal`, the text did not appear.
 ### Fixed (IGURect)
-Na propriedade `Vector2:IGURect.ModifiedPosition` se utiliza da propriedade `Vector2:IGURect.ModifiedSize`<br/>
-para realizar o calculo em vez da propriedade `Vector2:IGURect.Size` como anteriormente.
+In the `Vector2:IGURect.ModifiedPosition` property, the `Vector2:IGURect.ModifiedSize` property is used<br/>
+to perform the calculation instead of the `Vector2:IGURect.Size` property as before.
 ### Added (IGUContainer)
-O metódo
+The method
 ```c#
-	public static IGUContainer GetOrCreateIGUContainer(string name);
+public static IGUContainer GetOrCreateIGUContainer(string name);
 ```
-cria um novo IGUContainer ou pega um IGUContainer já existente.
+creates a new IGUContainer or takes an existing IGUContainer.
 ### Changed (IGUContainer)
-Agora os metódos `IGUContainer:IGUContainer.CreateGenericIGUContainer();` é `IGUContainer:IGUContainer.CreatePermanentGenericIGUContainer();`<br/>
-utilizão o metódo `IGUContainer:IGUContainer.GetOrCreateIGUContainer(string)`.
+Now the methods `IGUContainer:IGUContainer.CreateGenericIGUContainer();` is `IGUContainer:IGUContainer.CreatePermanentGenericIGUContainer();`<br/>
+use the `IGUContainer:IGUContainer.GetOrCreateIGUContainer(string)` method.
 ### Fixed (IGUDrawer)
-No metódo `void:IGUDrawer.OnGUI()` se usava o `Event.current` para coletar o estado dos gatilhos do<br/>
-mouse, mais ocorria o problema que quando o metódo `Event.Use()` isso interferia na coletar o estado dos gatilhos do<br/>
-mouse o que foi resolvido usando o metódo `bool:Event.PopEvent(Event)`.
+In the `void:IGUDrawer.OnGUI()` method, `Event.current` was used to collect the state of the<br/> triggers
+mouse, but the problem occurred when the `Event.Use()` method interfered with collecting the state of the <br/> triggers.
+mouse which was resolved using the `bool:Event.PopEvent(Event)` method.
 ## [1.0.2] 31/07/2022
-Agora a classe `CobilasResolutions` é MonoBehaviour.
+Now the `CobilasResolutions` class is MonoBehaviour.
 ## [1.0.1] 27/07/2022
 ### Fixed (IGUDrawer)
-Ao remover um objeto `IGUContainer` ele não era removido do evento OnIGU.
+When removing an `IGUContainer` object it was not removed from the OnIGU event.
 ## [1.0.0] 25/07/2022
-### Beta do repositorio com.cobilas.unity.graphics finalizado.
-- Lançado para o GitHub
+### Beta of the com.cobilas.unity.graphics repository completed.
+- Released to GitHub
 ## [0.1.0] 15/07/2022
-### Repositorio com.cobilas.unity.graphics iniciado
-- Lançado para o GitHub
+### Com.cobilas.unity.graphics repository started
+- Released to GitHub

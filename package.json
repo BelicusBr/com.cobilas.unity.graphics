@@ -2,7 +2,7 @@
   "name": "com.cobilas.unity.graphics",
   "version": "3.5.0",
   "displayName": "Cobilas Graphics",
-  "description": "Pacote que adiciona e manipula elementos",
+  "description": "Package that adds and manipulates graphic elements.",
   "licensesUrl": "https://github.com/BelicusBr/com.cobilas.unity.graphics/blob/main/LICENSE.md",
   "changelogUrl": "https://github.com/BelicusBr/com.cobilas.unity.graphics/blob/main/CHANGELOG.md",
   "unity": "2019.1",
@@ -19,7 +19,8 @@
   "homepage": "https://github.com/BelicusBr/com.cobilas.unity.graphics#readme",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "init_pack": "npm pack --pack-destination C:/local.npm"
   },
   "keywords": [
     "unity3d",
@@ -29,7 +30,7 @@
   ],
   "license": "MIT",
   "dependencies": {
-    "com.cobilas.unity.utility": "2.9.0",
-    "com.cobilas.unity.management.runtime": "2.0.0"
+    "com.cobilas.unity.utility": "2.10.1",
+    "com.cobilas.unity.management.runtime": "2.1.0"
   }
 }
