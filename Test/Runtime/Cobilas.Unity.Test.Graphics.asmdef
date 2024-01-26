@@ -1,10 +1,9 @@
 {
     "name": "Cobilas.Unity.Test.Graphics",
     "references": [
-        "Cobilas.Core",
+        "Cobilas.Core.Net4x",
         "Cobilas.Unity.Utility",
-        "Cobilas.Unity.Graphics",
-        "Cobilas.Unity.Extensions"
+        "Cobilas.Unity.Graphics"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
