@@ -1,10 +1,9 @@
 {
     "name": "Cobilas.Unity.Editor.Graphics",
     "references": [
-        "Cobilas.Unity.Graphics",
         "Cobilas.Unity.Utility",
-        "Cobilas.Unity.Editor.Utility",
-        "Cobilas.Core"
+        "Cobilas.Unity.Graphics",
+        "Cobilas.Unity.Editor.Utility"
     ],
     "includePlatforms": [
         "Editor"
