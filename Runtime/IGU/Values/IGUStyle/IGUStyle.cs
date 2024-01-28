@@ -103,28 +103,44 @@ namespace Cobilas.Unity.Graphics.IGU {
             style.gUIStyle.contentOffset = style.ContentOffset;
             style.gUIStyle.normal.background = style.normal.Background;
             style.gUIStyle.normal.textColor = style.normal.TextColor;
+#if UNITY_EDITOR
             style.gUIStyle.normal.scaledBackgrounds = style.normal.ScaledBackgrounds;
+#endif
             style.gUIStyle.hover.background = style.hover.Background;
             style.gUIStyle.hover.textColor = style.hover.TextColor;
+#if UNITY_EDITOR
             style.gUIStyle.hover.scaledBackgrounds = style.hover.ScaledBackgrounds;
+#endif
             style.gUIStyle.active.background = style.active.Background;
             style.gUIStyle.active.textColor = style.active.TextColor;
+#if UNITY_EDITOR
             style.gUIStyle.active.scaledBackgrounds = style.active.ScaledBackgrounds;
+#endif
             style.gUIStyle.focused.background = style.focused.Background;
             style.gUIStyle.focused.textColor = style.focused.TextColor;
+#if UNITY_EDITOR
             style.gUIStyle.focused.scaledBackgrounds = style.focused.ScaledBackgrounds;
+#endif
             style.gUIStyle.onNormal.background = style.onNormal.Background;
             style.gUIStyle.onNormal.textColor = style.onNormal.TextColor;
+#if UNITY_EDITOR
             style.gUIStyle.onNormal.scaledBackgrounds = style.onNormal.ScaledBackgrounds;
+#endif
             style.gUIStyle.onHover.background = style.onHover.Background;
             style.gUIStyle.onHover.textColor = style.onHover.TextColor;
+#if UNITY_EDITOR
             style.gUIStyle.onHover.scaledBackgrounds = style.onHover.ScaledBackgrounds;
+#endif
             style.gUIStyle.onActive.background = style.onActive.Background;
             style.gUIStyle.onActive.textColor = style.onActive.TextColor;
+#if UNITY_EDITOR
             style.gUIStyle.onActive.scaledBackgrounds = style.onActive.ScaledBackgrounds;
+#endif
             style.gUIStyle.onFocused.background = style.onFocused.Background;
             style.gUIStyle.onFocused.textColor = style.onFocused.TextColor;
+#if UNITY_EDITOR
             style.gUIStyle.onFocused.scaledBackgrounds = style.onFocused.ScaledBackgrounds;
+#endif
             style.gUIStyle.border.left = style.border.Left;
             style.gUIStyle.border.right = style.border.Right;
             style.gUIStyle.border.top = style.border.Top;
