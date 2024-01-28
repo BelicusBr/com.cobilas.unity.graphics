@@ -1,4 +1,7 @@
 # Changelog
+## [3.5.1] 28/01/2024
+### Fixed
+The `IGUStyleStatus.ScaledBackgrounds` property caused compilation errors because it depended on the `GUIStyleState.ScaledBackgrounds` property, which in turn is exclusive to the editor.
 ## [3.5.0] 26/01/2024
 ### Changed
 A change in package dependencies.
