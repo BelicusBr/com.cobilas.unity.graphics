@@ -5,10 +5,11 @@ using Cobilas.Collections;
 using Cobilas.Unity.Management.Container;
 using Cobilas.Unity.Graphics.IGU.Elements;
 using Cobilas.Unity.Graphics.IGU.Interfaces;
+using UnityEngine.SceneManagement;
 
 namespace Cobilas.Unity.Graphics.IGU {
     [AddSceneContainer]
-    public class IGUDrawer : IGUBehaviour, ISerializationCallbackReceiver {
+    public class IGUDrawer : IGUBehaviour, ISerializationCallbackReceiver, ISceneContainerItem {
         private Action onIGU;
         private Coroutine EndOfFrameCoroutine = null;
         private IGUToolTip toolTip = new IGUToolTip();
@@ -132,6 +133,10 @@ namespace Cobilas.Unity.Graphics.IGU {
             for (int I = 0; I < ArrayManipulation.ArrayLength(containers); I++)
                 onIGU += (containers[I] as IIGUContainer).OnIGU;
         }
+
+        void ISceneContainerItem.sceneUnloaded(Scene scene) {}
+
+        void ISceneContainerItem.sceneLoaded(Scene scene, LoadSceneMode mode) {}
 
         internal void Add(IGUContainer container) {
             if (Contains(container)) return;
