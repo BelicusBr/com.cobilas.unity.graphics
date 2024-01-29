@@ -1,12 +1,13 @@
 ﻿using UnityEngine;
 using Cobilas.Collections;
+using UnityEngine.SceneManagement;
 using Cobilas.Unity.Management.Runtime;
 using Cobilas.Unity.Management.Container;
- 
+
 namespace Cobilas.Unity.Graphics.Resolutions {
     using UEResolution = UnityEngine.Resolution;
     [AddSceneContainer]
-    public class CobilasResolutions : MonoBehaviour, ISerializationCallbackReceiver {
+    public class CobilasResolutions : MonoBehaviour, ISerializationCallbackReceiver, ISceneContainerItem {
         [SerializeField] private Resolution[] resolutions;
         [SerializeField] private AspectRatio[] aspectRatios;
         [SerializeField] private int[] frequencys;
@@ -70,6 +71,10 @@ namespace Cobilas.Unity.Graphics.Resolutions {
         void ISerializationCallbackReceiver.OnBeforeSerialize() { }
 
         void ISerializationCallbackReceiver.OnAfterDeserialize() => AfterDeserialize = true;
+        
+        void ISceneContainerItem.sceneUnloaded(Scene scene) {}
+
+        void ISceneContainerItem.sceneLoaded(Scene scene, LoadSceneMode mode) {}
 
         //[CRIOLM_CallWhen(typeof(ContainerManager), CRIOLMType.AfterSceneLoad)]
         [CallWhenStart(InitializePriority.Low, "#ContainerManager")]
@@ -102,29 +107,6 @@ namespace Cobilas.Unity.Graphics.Resolutions {
             => new Resolution(resolution.Width, resolution.Height / aspect.Width * aspect.Height);
 
         public static void Refresh() => cb_resolutions.Internal_Refresh();
-        //{
-        //    ArrayManipulation.ClearArraySafe(ref cb_resolutions.resolutions);
-        //    ArrayManipulation.ClearArraySafe(ref cb_resolutions.aspectRatios);
-        //    ArrayManipulation.ClearArraySafe(ref cb_resolutions.frequencys);
-        //    cb_resolutions.aspectRatios = new AspectRatio[] {
-        //        new AspectRatio(16, 10),
-        //        new AspectRatio(16, 9),
-        //        new AspectRatio(13, 7),
-        //        new AspectRatio(7, 3),
-        //        new AspectRatio(5, 4),
-        //        new AspectRatio(4, 3),
-        //        new AspectRatio(3, 2)
-        //    };
-
-        //    UEResolution[] resolutionstemp = Screen.cb_resolutions.resolutions;
-        //    for (int I = 0; I < ArrayManipulation.ArrayLength(resolutionstemp); I++) {
-        //        Resolution resolutionTemp = new Resolution(resolutionstemp[I]);
-        //        if (!ContainsResolution(resolutionTemp))
-        //            ArrayManipulation.Add(resolutionTemp, ref cb_resolutions.resolutions);
-        //        if (!ContainsFrequency(resolutionstemp[I].refreshRate))
-        //            ArrayManipulation.Add(resolutionstemp[I].refreshRate, ref cb_resolutions.frequencys);
-        //    }
-        //}
 
         private static bool ContainsFrequency(int frequency) {
             for (int I = 0; I < ArrayManipulation.ArrayLength(cb_resolutions.frequencys); I++)
@@ -132,13 +114,6 @@ namespace Cobilas.Unity.Graphics.Resolutions {
                     return true;
             return false;
         }
-
-        //private static bool ContainsAspectRatio(AspectRatio aspectRatio) {
-        //    for (int I = 0; I < ArrayManipulation.ArrayLength(cb_resolutions.aspectRatios); I++)
-        //        if (cb_resolutions.aspectRatios[I] == aspectRatio)
-        //            return true;
-        //    return false;
-        //}
 
         private static bool ContainsResolution(Resolution resolution) {
             for (int I = 0; I < ArrayManipulation.ArrayLength(cb_resolutions.resolutions); I++)

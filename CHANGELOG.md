@@ -1,4 +1,7 @@
 # Changelog
+## [3.5.2] 28/01/2024
+### Fixed
+The `IGUDrawer` and `CobilasResolutions` classes inherit the `ISceneContainerItem` interface so they can be added to the SceneContainerManager.
 ## [3.5.1] 28/01/2024
 ### Fixed
 The `IGUStyleStatus.ScaledBackgrounds` property caused compilation errors because it depended on the `GUIStyleState.ScaledBackgrounds` property, which in turn is exclusive to the editor.
