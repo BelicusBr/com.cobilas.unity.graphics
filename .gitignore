@@ -1,0 +1,6 @@
+.libs/
+obj/
+bin/
+node_modules/
+*.sln
+*.ps1
