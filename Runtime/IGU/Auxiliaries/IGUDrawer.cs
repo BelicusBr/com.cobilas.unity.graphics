@@ -171,7 +171,7 @@ namespace Cobilas.Unity.Graphics.IGU {
             => ArrayManipulation.Add(item, ref drawer.reserialization);
 
         internal static void RemoveReserialization(IGUObject item) {
-            if (ArrayManipulation.Exists(item, drawer.reserialization))
+            if (drawer.reserialization != null && ArrayManipulation.Exists(item, drawer.reserialization))
                 ArrayManipulation.Remove(item, ref drawer.reserialization);
         }
     }

@@ -1,6 +1,9 @@
 # Changelog
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+## [3.5.4] (10/02/2024)
+- ### Fixed
+- - In the internal method `IGUDrawer.RemoveReserialization(IGUObject)` a null argument exception could occur, this occurred when the method first checked whether the object `IGUObject` existed in a list that could be null.
 ## [3.5.3] - 05/02/2024
 - ### Changed
 - - Updated dependency `com.cobilas.unity.utility` to version `2.10.3`.

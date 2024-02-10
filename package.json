@@ -1,6 +1,6 @@
 {
   "name": "com.cobilas.unity.graphics",
-  "version": "3.5.3",
+  "version": "3.5.4",
   "displayName": "Cobilas Graphics",
   "description": "Package that adds and manipulates graphic elements.",
   "licensesUrl": "https://github.com/BelicusBr/com.cobilas.unity.graphics/blob/main/LICENSE.md",
@@ -21,7 +21,7 @@
   "scripts": {
     "npm_pack": "npm pack --pack-destination C:/local.npm",
     "npm_push": "@powershell -Command . cobilas.package.funcs.ps1 ; npm_push -package_name %npm_package_name% -package_version %npm_package_version%",
-	"npm_pack_push": "npm run npm_pack && npm run npm_push"
+    "npm_pack_push": "npm run npm_pack && npm run npm_push"
   },
   "keywords": [
     "unity3d",
