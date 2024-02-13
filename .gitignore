@@ -1,6 +1,18 @@
-.libs/
-obj/
-bin/
-node_modules/
+# folders
+.libs
+bin
+obj
+.vscode
+.github
+node_modules
+# files
+bin.meta
+obj.meta
+node_modules.meta
+# extension files
 *.sln
+*.sln.meta
+*.csproj
+*.csproj.meta
 *.ps1
+*.ps1.meta
