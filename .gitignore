@@ -5,14 +5,10 @@ obj
 .vscode
 .github
 node_modules
-Test
-test
 # files
 bin.meta
 obj.meta
 node_modules.meta
-Test.meta
-test.meta
 # extension files
 *.sln
 *.sln.meta

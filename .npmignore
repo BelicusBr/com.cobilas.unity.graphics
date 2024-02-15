@@ -14,6 +14,8 @@ node_modules.meta
 Test.meta
 test.meta
 # extension files
+*.metafreeze
+*.metafreeze.meta
 *.sln
 *.sln.meta
 *.csproj

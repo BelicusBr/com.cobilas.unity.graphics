@@ -2,11 +2,9 @@
 	"version": "2.0.0",
 	"tasks": [
 		{
-			"type": "npm",
-			"script": "init_pack",
-			"problemMatcher": [],
-			"label": "npm: init_pack",
-			"detail": "npm pack --pack-destination C:/local.npm"
+			"type": "shell",
+			"label": "Git Push",
+			"command": "git push --tags -u origin main:main main.dev:main.dev main.fix:main.fix ; git push --tags -u glb-origin main:main main.dev:main.dev main.fix:main.fix"
 		}
 	]
 }
