@@ -1,0 +1,21 @@
+{
+    "name": "Cobilas.Unity.Test.Editor.Graphics",
+    "references": [
+        "Cobilas.Unity.Graphics",
+        "Cobilas.Unity.Editor.Utility",
+        "Cobilas.Unity.Test.Graphics"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": true,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [
+        "UNITY_EDITOR"
+    ],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

@@ -1,0 +1,35 @@
+{
+    "name": "Cobilas.Unity.Test.Graphics",
+    "references": [
+        "Cobilas.Core.Net4x",
+        "Cobilas.Unity.Utility",
+        "Cobilas.Unity.Graphics"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": true,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [
+        "UNITY_EDITOR"
+    ],
+    "versionDefines": [
+        {
+            "name": "com.cobilas.unity.graphics",
+            "expression": "[2.3]",
+            "define": "IGU230"
+        },
+        {
+            "name": "com.cobilas.unity.graphics",
+            "expression": "[2.2.1]",
+            "define": "IGU220"
+        },
+        {
+            "name": "com.cobilas.unity.graphics",
+            "expression": "[2.1,2.2)",
+            "define": "IGU210"
+        }
+    ],
+    "noEngineReferences": false
+}

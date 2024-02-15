@@ -1,6 +1,6 @@
 {
   "name": "com.cobilas.unity.graphics",
-  "version": "3.5.4",
+  "version": "3.5.5",
   "displayName": "Cobilas Graphics",
   "description": "Package that adds and manipulates graphic elements.",
   "licensesUrl": "https://github.com/BelicusBr/com.cobilas.unity.graphics/blob/main/LICENSE.md",
@@ -31,8 +31,8 @@
   ],
   "license": "MIT",
   "dependencies": {
-    "com.cobilas.unity.utility": "2.10.3",
-    "com.cobilas.unity.core.net4x": "1.4.1",
+    "com.cobilas.unity.utility": "2.10.4",
+    "com.cobilas.unity.core.net4x": "1.4.2",
     "com.cobilas.unity.management.runtime": "2.2.1"
   }
 }
