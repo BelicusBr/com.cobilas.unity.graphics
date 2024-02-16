@@ -28,6 +28,7 @@ namespace Cobilas.Unity.Graphics.IGU {
             checkBox.MyRect = checkBox.MyRect.SetSize(checkBox.Parent.MyRect.Size);
             checkBox.CheckBoxStyle = style;
             checkBox.TooltipStyle = tooltipStyle;
+            Debug.Log(checkBox.MyRect);
             checkBox.OnIGU();
         }
 

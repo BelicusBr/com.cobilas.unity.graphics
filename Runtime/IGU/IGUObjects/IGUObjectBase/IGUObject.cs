@@ -10,19 +10,23 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
         [SerializeField] protected IGUObject parent;
         [SerializeField] protected IGUConfig myConfg;
         [SerializeField] protected IGUContainer container;
+        [Obsolete]
         protected DoNotModifyRect doNots;
 #if UNITY_EDITOR
         [SerializeField] private bool foldout;
 #endif
+        private static readonly Rect rectTemp = Rect.zero;
+
+        public IGURect LocalRect => GetLocalPosition(this);
         public IGURect MyRect { get => myRect; set => myRect = value; }
         public IGUObject Parent { get => parent; set => parent = value; }
         public IGUColor MyColor { get => myColor; set => myColor = value; }
+        [Obsolete]
+        public IGURect GlobalRect { get => myRect; set => myRect = value; }
         public IGUConfig MyConfg { get => myConfg; set => myConfg = value; }
         public IGUContainer Container { get => container; set => container = value; }
-        public IGURect GlobalRect { get => GetGlobalPosition(false); set => myRect = SetGlobalPosition(value); }
 
         protected virtual void Awake() {
-            doNots = DoNotModifyRect.False;
             myConfg = IGUConfig.Default;
         }
         protected virtual void OnEnable() { }
@@ -71,31 +75,19 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
         protected virtual void PreOnIGU() { }
         protected virtual void PostOnIGU() { }
 
+        [Obsolete]
         protected Rect GetRect(bool iginoreNotMod) {
-            Rect rect = Rect.zero;
-            IGURect temp;
-            if (iginoreNotMod) temp = GetGlobalPosition(true);
-            else temp = GlobalRect;
-            if (parent != null) temp = temp.SetScaleFactor(IGUDrawer.ScaleFactor);
-            rect.position = temp.ModifiedPosition;
-            rect.size = temp.Size;
-            return rect;
+            Rect res = rectTemp;
+            IGURect rect = GetLocalPosition(this);
+            res.position = rect.ModifiedPosition;
+            res.size = rect.Size;
+            return res;
         }
 
+        [Obsolete]
         protected Rect GetRect() => GetRect(false);
 
         protected virtual void LowCallOnIGU() { }
-
-        private IGURect SetGlobalPosition(IGURect rect) {
-            IGURect grect = parent == null || NotMod() ? IGURect.Zero : parent.GetGlobalPosition(false);
-            return rect.SetPosition(rect.Position - grect.Position);
-        }
-
-        private IGURect GetGlobalPosition(bool iginoreNotMod) {
-            IGURect grect = parent == null || (NotMod() && !iginoreNotMod) ? IGURect.Zero : parent.GetGlobalPosition(false);
-            IGURect res = myRect;
-            return res.SetPosition(myRect.Position + grect.Position);
-        }
 
         private void OnDestroy() {
             if (container != null)
@@ -130,8 +122,8 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
                 GUI.backgroundColor = myColor.BackgroundColor;
 
                 Matrix4x4 oldMatrix = GUI.matrix;
-                GUIUtility.RotateAroundPivot(myRect.Rotation, GetRect().position);
-                GUIUtility.ScaleAroundPivot(myRect.ScaleFactor, GetRect().position);
+                GUIUtility.RotateAroundPivot(myRect.Rotation, LocalRect.ModifiedPosition);
+                GUIUtility.ScaleAroundPivot(myRect.ScaleFactor, LocalRect.ModifiedPosition);
                 OnIGU();
                 GUI.matrix = oldMatrix;
 
@@ -149,8 +141,6 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
         void IIGUObject.InternalPreOnIGU() => PreOnIGU();
 
         void IIGUObject.InternalPostOnIGU() => PostOnIGU();
-
-        private bool NotMod() => parent != null && parent.doNots;
 
         public static T CreateIGUInstance<T>() where T : IGUObject
             => (T)CreateIGUInstance(typeof(T));
@@ -171,6 +161,15 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
             if (instance is IIGUSerializationCallbackReceiver)
                 IGUDrawer.AddReserialization(instance);
             return instance;
+        }
+
+        public static IGURect GetLocalPosition(IGUObject obj) {
+            if (obj.parent != null && !(obj.parent is IIGUClipping)) {
+                IGURect res = obj.myRect;
+                return res.SetScaleFactor(Vector2.one)
+                    .SetPosition(res.Position + GetLocalPosition(obj.parent).ModifiedPosition);
+            }
+            return obj.myRect;
         }
     }
 }

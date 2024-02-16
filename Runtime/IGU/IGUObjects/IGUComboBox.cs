@@ -5,7 +5,7 @@ using Cobilas.Unity.Graphics.IGU.Events;
 using Cobilas.Unity.Graphics.IGU.Interfaces;
 
 namespace Cobilas.Unity.Graphics.IGU.Elements {
-    public class IGUComboBox : IGUObject, IIGUSerializationCallbackReceiver {
+    public class IGUComboBox : IGUObject, IIGUClipping, IIGUSerializationCallbackReceiver {
 
         private HashCodeCompare compare;
         private bool _onActivatedComboBox;
@@ -55,6 +55,11 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
         public IGUStyle HorizontalScrollbarStyle { get => comboBoxScrollView.HorizontalScrollbarStyle; set => comboBoxScrollView.HorizontalScrollbarStyle = value; }
         public IGUStyle VerticalScrollbarThumbStyle { get => comboBoxScrollView.VerticalScrollbarThumbStyle; set => comboBoxScrollView.VerticalScrollbarThumbStyle = value; }
         public IGUStyle HorizontalScrollbarThumbStyle { get => comboBoxScrollView.HorizontalScrollbarThumbStyle; set => comboBoxScrollView.HorizontalScrollbarThumbStyle = value; }
+        
+        Rect IIGUClipping.RectView { 
+            get => throw new NotImplementedException(); 
+            set => throw new NotImplementedException(); 
+        }
 
         protected override void Awake() {
             base.Awake();

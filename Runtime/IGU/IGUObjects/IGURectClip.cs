@@ -1,8 +1,9 @@
 ﻿using System;
 using UnityEngine;
+using Cobilas.Unity.Graphics.IGU.Interfaces;
 
 namespace Cobilas.Unity.Graphics.IGU.Elements {
-    public class IGURectClip : IGUObject {
+    public class IGURectClip : IGUObject, IIGUClipping {
 
         public event Action<Rect> RectClipAction;
         [SerializeField] protected Rect rectView;

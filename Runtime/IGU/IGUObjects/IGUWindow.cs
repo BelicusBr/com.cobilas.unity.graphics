@@ -1,9 +1,10 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using Cobilas.Unity.Graphics.IGU.Events;
 using Cobilas.Unity.Graphics.IGU.Interfaces;
 
 namespace Cobilas.Unity.Graphics.IGU.Elements {
-    public class IGUWindow : IGUTextObject, IIGUSerializationCallbackReceiver {
+    public class IGUWindow : IGUTextObject, IIGUClipping, IIGUSerializationCallbackReceiver {
         public event GUI.WindowFunction windowFunction;
         public const string DefaultIGUWindow = "IGU Window";
 
@@ -16,6 +17,11 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
         /// <summary>O <see cref="Rect"/> da aba de arrasto da janela.</summary>
         public Rect DragFlap { get => dragFlap; set => dragFlap = value; }
         public IGUStyle WindowStyle { get => windowStyle; set => windowStyle = value; }
+
+        Rect IIGUClipping.RectView { 
+            get => throw new NotImplementedException(); 
+            set => throw new NotImplementedException(); 
+        }
 
         protected override void Awake() {
             myConfg = IGUConfig.Default;

@@ -11,7 +11,7 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
      * (") => &quot;
      * (') => &apos;
      */
-    public class IGUScrollView : IGUObject, IIGUSerializationCallbackReceiver {
+    public class IGUScrollView : IGUObject, IIGUClipping, IIGUSerializationCallbackReceiver {
 
         public event Action<IGUScrollView> ScrollViewAction;
         [SerializeField] protected IGURectClip rectClip;
@@ -23,7 +23,9 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
 
         public Vector2 RectClipSize => rectClip.MyRect.Size;
         public IGUScrollViewEvent OnScrollView => onScrollView;
+        [Obsolete]
         public Rect ViewRect { get => rectClip.RectView; set => rectClip.RectView = value; }
+        public Rect RectView { get => rectClip.RectView; set => rectClip.RectView = value; }
         public bool AlwaysShowVertical { get => alwaysShowVertical; set => alwaysShowVertical = value; }
         public Vector2 ScrollPosition { get => rectClip.ScrollView; set => rectClip.ScrollView = value; }
         public bool AlwaysShowHorizontal { get => alwaysShowHorizontal; set => alwaysShowHorizontal = value; }
