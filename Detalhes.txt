@@ -1,0 +1,22 @@
+IGUSelectionGrid precissa de uma atualização
+IGUComboBox precissa de uma atualização
+Remover classe HashCodeCompare
+Remover o método IGUObject.GetRect()
+Remover o método IGUObject.GetRect(bool)
+* Remover a propriedade IGUObject.GlobalRect
+* Remover o campo IGUObject.doNots
+* Remover a propriedade IGUScrollView.ViewRect
+
+//===============================================================
+Os métodos foram adicionandos
+IGUObject.Ignition()
+IGUObject.Start()
+IGUObject.IgnitionEnable()
+IGUObject.IgnitionDisable()
+IGUObject.DestroyIgnition()
+
+Os métodos foram substituidos
+IGUObject.Awake() >> IGUObject.Ignition()
+IGUObject.OnEnable() >> IGUObject.IgnitionEnable()
+IGUObject.OnDisable() >> IGUObject.IgnitionDisable()
+IGUObject.OnIGUDestroy() >> IGUObject.DestroyIgnition()

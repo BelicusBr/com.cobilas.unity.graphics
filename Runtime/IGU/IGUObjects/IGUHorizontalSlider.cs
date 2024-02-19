@@ -11,8 +11,8 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
         public IGUOnSliderIntValueEvent OnModifiedSliderInt => onModifiedSliderInt;
         public IGUStyle HorizontalSliderThumb { get => horizontalSliderThumb; set => horizontalSliderThumb = value; }
 
-        protected override void Awake() {
-            base.Awake();
+        protected override void Ignition() {
+            base.Ignition();
             myConfg = IGUConfig.Default;
             myColor = IGUColor.DefaultBoxColor;
             sliderObjectStyle = IGUSkins.GetIGUStyle("Black horizontal slider border");

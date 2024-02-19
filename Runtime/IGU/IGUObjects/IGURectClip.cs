@@ -7,12 +7,15 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
 
         public event Action<Rect> RectClipAction;
         [SerializeField] protected Rect rectView;
+        [SerializeField, HideInInspector]
+        private bool isClipping;
 
+        public bool IsClipping => isClipping;
         public Rect RectView { get => GetRectView(); set => rectView = AdjustRectview(value); }
         public Vector2 ScrollView { get => rectView.position; set => rectView = AdjustRectview(value); }
 
-        protected override void Awake() {
-            base.Awake();
+        protected override void Ignition() {
+            base.Ignition();
             myRect = IGURect.DefaultBox;
             myColor = IGUColor.DefaultBoxColor;
             rectView = new Rect(Vector2.zero, myRect.Size * 2f);
@@ -20,9 +23,9 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
 
         protected override void LowCallOnIGU() {
             GUI.BeginClip(GetRect(), rectView.position, Vector2.zero, false);
-            doNots = DoNotModifyRect.True;
+            isClipping = true;
             RectClipAction?.Invoke(RectView);
-            doNots = DoNotModifyRect.False;
+            isClipping = false;
             GUI.EndClip();
         }
 

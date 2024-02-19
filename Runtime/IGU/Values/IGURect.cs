@@ -17,6 +17,8 @@ namespace Cobilas.Unity.Graphics.IGU {
         [HideInInspector] public bool foldout;
 #endif
 
+        public static readonly Rect rectTemp = Rect.zero;
+
         public float X => x;
         public float Y => y;
         public float Width => width;

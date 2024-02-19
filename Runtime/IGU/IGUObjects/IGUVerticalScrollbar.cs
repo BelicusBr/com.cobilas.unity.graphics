@@ -13,8 +13,8 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
         public float ScrollbarThumbSize { get => scrollbarThumbSize; set => scrollbarThumbSize = value; }
         public IGUStyle SliderObjectThumbStyle { get => sliderObjectThumbStyle; set => sliderObjectThumbStyle = value; }
 
-        protected override void Awake() {
-            base.Awake();
+        protected override void Ignition() {
+            base.Ignition();
             myConfg = IGUConfig.Default;
             myColor = IGUColor.DefaultBoxColor;
             sliderObjectStyle = IGUSkins.GetIGUStyle("Black vertical scrollbar border");

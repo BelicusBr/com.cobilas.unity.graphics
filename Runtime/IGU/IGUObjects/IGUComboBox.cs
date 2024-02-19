@@ -61,8 +61,12 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
             set => throw new NotImplementedException(); 
         }
 
-        protected override void Awake() {
-            base.Awake();
+        public bool IsClipping => throw new NotImplementedException();
+
+        public Vector2 ScrollView { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+
+        protected override void Ignition() {
+            base.Ignition();
             compare = new HashCodeCompare(4);
             myConfg = IGUConfig.Default;
             myRect = IGURect.DefaultButton;
@@ -108,7 +112,7 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
             comboBoxScrollView.MyRect = comboBoxScrollView.MyRect.SetPosition(0, comboBoxButton.MyRect.Height);
             comboBoxScrollView.MyRect = comboBoxScrollView.MyRect.SetSize(myRect.Width, newScrollViewHeight);
             comboBoxScrollView.MyColor = myColor;
-            comboBoxScrollView.ViewRect = rectView;
+            comboBoxScrollView.RectView = rectView;
 
             comboBoxButton.OnIGU();
             rectTemp.position = GetRect(true).position;
@@ -215,8 +219,8 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
             };
         }
 
-        protected override void OnIGUDestroy() {
-            base.OnIGUDestroy();
+        protected override void DestroyIgnition() {
+            base.DestroyIgnition();
             DestroyList(ref boxButtons);
         }
 

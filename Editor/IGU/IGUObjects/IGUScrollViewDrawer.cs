@@ -63,7 +63,7 @@ namespace Cobilas.Unity.Editor.Graphics.IGU {
                     Rect recttemp;
                     _ = EditorGUI.PropertyField(position, prop_alwaysShowVertical, EditorGUIUtility.TrTempContent("always Show Vertical"));
                     _ = EditorGUI.PropertyField(recttemp = MoveDownWithBlankSpace(position), prop_alwaysShowHorizontal, EditorGUIUtility.TrTempContent("always Show Horizontal"));
-                    obj.ViewRect = EditorGUI.RectField(MoveDownWithBlankSpace(recttemp), EditorGUIUtility.TrTempContent("View Rect"), obj.ViewRect);
+                    obj.RectView = EditorGUI.RectField(MoveDownWithBlankSpace(recttemp), EditorGUIUtility.TrTempContent("View Rect"), obj.RectView);
                     --EditorGUI.indentLevel;
 
                     _ = EditorGUI.PropertyField(MoveDown(position, pheight + BlankSpace), prop_onScrollView, EditorGUIUtility.TrTempContent("On ScrollView"));

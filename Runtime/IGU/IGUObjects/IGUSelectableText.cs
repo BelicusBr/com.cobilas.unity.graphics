@@ -14,8 +14,8 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
         public IGUOnClickEvent OnClick => onClick;
         public IGUStyle SelectableTextStyle { get => selectableTextStyle; set => selectableTextStyle = value; }
 
-        protected override void Awake() {
-            base.Awake();
+        protected override void Ignition() {
+            base.Ignition();
             myConfg = IGUConfig.Default;
             myRect = IGURect.DefaultTextArea;
             myColor = IGUColor.DefaultBoxColor;

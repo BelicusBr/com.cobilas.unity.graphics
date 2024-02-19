@@ -23,7 +23,12 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
             set => throw new NotImplementedException(); 
         }
 
-        protected override void Awake() {
+        public bool IsClipping => throw new NotImplementedException();
+
+        public Vector2 ScrollView { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+
+        protected override void Ignition() {
+            base.Ignition();
             myConfg = IGUConfig.Default;
             myRect = IGURect.DefaultWindow;
             myColor = IGUColor.DefaultBoxColor;
@@ -68,9 +73,7 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
         void IIGUSerializationCallbackReceiver.Reserialization() {
             internalIndowFunction = (id) => {
                 GUI.DragWindow(dragFlap);
-                doNots = DoNotModifyRect.True;
                 windowFunction?.Invoke(id);
-                doNots = DoNotModifyRect.False;
             };
         }
     }

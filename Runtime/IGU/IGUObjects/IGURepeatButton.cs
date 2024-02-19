@@ -8,8 +8,8 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
         private bool onClicked;
 
         public override bool Clicked => clicked[0];
-        protected override void Awake() {
-            base.Awake();
+        protected override void Ignition() {
+            base.Ignition();
             content = new IGUContent(DefaultContentIGURepeatButton);
             onRepeatClick = new IGUOnClickEvent();
         }

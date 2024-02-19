@@ -19,8 +19,8 @@ namespace Cobilas.Unity.Graphics.IGU.Layouts {
 
         public override IGUObject this[int index] => objects[index].@object;
 
-        protected override void Awake() {
-            base.Awake();
+        protected override void Ignition() {
+            base.Ignition();
             cursor = new HorizontalLayoutCellCursor();
             Spacing = 3f;
             UseCellSize = false;

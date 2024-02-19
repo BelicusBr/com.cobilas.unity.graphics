@@ -19,8 +19,8 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
         public int MaxLength { get => maxLength; set => maxLength = value; }
         public IGUStyle PasswordFieldStyle { get => passwordFieldStyle; set => passwordFieldStyle = value; }
 
-        protected override void Awake() {
-            base.Awake();
+        protected override void Ignition() {
+            base.Ignition();
             maskChar = '*';
             maxLength = 50000;
             onClick = new IGUOnClickEvent();

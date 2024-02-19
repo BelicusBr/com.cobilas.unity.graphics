@@ -14,17 +14,17 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
         public MaxMinSlider MaxMinValue { get => maxMinSlider; set => maxMinSlider = value; }
         public IGUStyle SliderObjectStyle { get => sliderObjectStyle; set => sliderObjectStyle = value; }
 
-        protected override void Awake() {
-            base.Awake();
+        protected override void Ignition() {
+            base.Ignition();
             myRect = IGURect.DefaultSlider;
             value = 0f;
             isInt = false;
             maxMinSlider = new MaxMinSlider(0f, 30f);
         }
 
-        protected override void LowCallOnIGU() => base.OnIGU();
-        protected override void OnEnable() => base.OnEnable();
-        protected override void OnDisable() => base.OnDisable();
-        protected override void OnIGUDestroy() => base.OnIGUDestroy();
+        protected override void LowCallOnIGU() => base.LowCallOnIGU();
+        protected override void IgnitionEnable() => base.IgnitionEnable();
+        protected override void IgnitionDisable() => base.IgnitionDisable();
+        protected override void DestroyIgnition() => base.DestroyIgnition();
     }
 }
