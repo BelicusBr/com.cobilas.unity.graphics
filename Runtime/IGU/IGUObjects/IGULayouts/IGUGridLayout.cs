@@ -53,11 +53,20 @@ namespace Cobilas.Unity.Graphics.IGU.Layouts {
             return true;
         }
 
-        public override bool Remove(IGUObject item) {
-            if (item == this || !Contains(item))
-                return false;
-            item.Parent = null;
-            int index = IndexOf(item);
+        public override bool Remove(IGUObject item)
+            => Remove(item, false);
+
+        public override bool Remove(IGUObject item, bool destroyObject)
+            => Remove(IndexOf(item), destroyObject);
+
+        public override bool Remove(int index)
+            => Remove(index, false);
+
+        public override bool Remove(int index, bool destroyObject) {
+            if (index < 0 || index >= Count) return false;
+            objects[index].@object.Parent = null;
+            if (destroyObject)
+                Destroy(objects[index].@object);
             objects[index].Dispose();
             ArrayManipulation.Remove(index, ref objects);
             RefreshOnIGUEvent();

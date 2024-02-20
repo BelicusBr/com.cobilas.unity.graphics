@@ -1,33 +1,31 @@
 using System;
 using UnityEngine;
-using Cobilas.Collections;
 using Cobilas.Unity.Graphics.IGU.Events;
+using Cobilas.Unity.Graphics.IGU.Layouts;
 using Cobilas.Unity.Graphics.IGU.Interfaces;
 using Cobilas.Unity.Graphics.IGU.Elements.Auxiliary;
 
 namespace Cobilas.Unity.Graphics.IGU.Elements {
-    public class TDS_IGUComboBox : IGUObject, IIGUClipping, IIGUSerializationCallbackReceiver {
+    public class TDS_IGUComboBox : IGUObject, IIGUClipping {
 
         [SerializeField] private int index;
         [SerializeField] private IGUOnClickEvent onClick;
         [SerializeField] private float comboBoxButtonHeight;
         [SerializeField] private IGUOnClickEvent onActivatedComboBox;
-        [SerializeField] protected TDS_IGUComboBoxButton[] cbx_buttons;
         [SerializeField] private IGUComboBoxClickEvent onSelectedIndex;
         [SerializeField, HideInInspector] protected IGUButton cbx_button;
         [SerializeField, HideInInspector] protected IGUScrollView cbx_scrollview;
         [SerializeField] private bool adjustComboBoxViewAccordingToTheButtonsPresent;
-
-        protected Action IGUComboBoxButtonOnIGU;
+        [SerializeField, HideInInspector] protected IGUVerticalLayout cbx_verticalLayout;
 
         public string Text => cbx_button.Text;
         public Texture Image => cbx_button.Image;
         public IGUOnClickEvent OnClick => onClick;
+        public int ButtonCount => cbx_verticalLayout.Count;
         public int Index { get => index; set => SetIndex(value); }
         public IGUComboBoxClickEvent OnSelectedIndex => onSelectedIndex;
         public IGUOnClickEvent OnActivatedComboBox => onActivatedComboBox;
         public bool IsClipping => ((IIGUClipping)cbx_scrollview).IsClipping;
-        public int ButtonCount => ArrayManipulation.ArrayLength(cbx_buttons);
         public string ToolTip { get => cbx_button.ToolTip; set => cbx_button.ToolTip = value; }
         public float ComboBoxButtonHeight { get => comboBoxButtonHeight; set => ComboBoxButtonHeightFunc(value); }
         public Rect RectView { get => ((IIGUClipping)cbx_scrollview).RectView; set => ((IIGUClipping)cbx_scrollview).RectView = value; }
@@ -39,16 +37,16 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
                 if (ButtonCount != 0)
                     RecursiveList((c, i) => {
                         c.TooltipStyle = value;
-                    }, 0, cbx_buttons);
+                    }, 0, cbx_verticalLayout);
             }
         }
         public bool UseTooltip { 
             get => cbx_button.UseTooltip; 
             set { cbx_button.UseTooltip = value;
-                if (!ArrayManipulation.EmpytArray(cbx_buttons))
+                if (cbx_verticalLayout.Count != 0)
                     RecursiveList((c, i) => {
                         c.UseTooltip = value;
-                    }, 0, cbx_buttons);
+                    }, 0, cbx_verticalLayout);
             }
         }
         public bool AdjustComboBoxView { 
@@ -88,22 +86,27 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
         }
 
         public TDS_IGUComboBoxButton this[int index] 
-            => cbx_buttons[index];
+            => cbx_verticalLayout[index] as TDS_IGUComboBoxButton;
 
         protected override void Start() {
             base.Start();
-            cbx_button = IGUObject.CreateIGUInstance<IGUButton>($"[{name}]--IGUButton");
-            cbx_scrollview = IGUObject.CreateIGUInstance<IGUScrollView>($"[{name}]--IGUScrollView");
+            cbx_button = IGUObject.CreateIGUInstance<IGUButton>($"[{name}]--{nameof(IGUButton)}");
+            cbx_scrollview = IGUObject.CreateIGUInstance<IGUScrollView>($"[{name}]--{nameof(IGUScrollView)}");
+            cbx_verticalLayout = IGUObject.CreateIGUInstance<IGUVerticalLayout>($"[{name}]--{nameof(IGUVerticalLayout)}");
             ScrollViewHeight = 150f;
             AdjustComboBoxView = true;
+            CloseComboBoxView = false;
             myConfg = IGUConfig.Default;
             myRect = IGURect.DefaultButton;
             onClick = new IGUOnClickEvent();
+            cbx_verticalLayout.Spacing = 0f;
             myColor = IGUColor.DefaultBoxColor;
             comboBoxButtonHeight = myRect.Height;
+            cbx_verticalLayout.UseCellSize = true;
             onActivatedComboBox = new IGUOnClickEvent();
             onSelectedIndex = new IGUComboBoxClickEvent();
             cbx_button.Parent = cbx_scrollview.Parent = this;
+            cbx_verticalLayout.Parent = cbx_scrollview;
 
             for (int I = 0; I < 10; I++)
                 Add($"Item[{I}]");
@@ -113,14 +116,13 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
         protected override void IgnitionEnable() {
             base.IgnitionEnable();
             cbx_scrollview.ScrollViewAction += (scv)=>{
-                IGUComboBoxButtonOnIGU?.Invoke();
+                cbx_verticalLayout.OnIGU();
             };
             cbx_scrollview.OnScrollView.AddListener(ChangeVisibility);
             cbx_button.OnClick.AddListener(ChangeCbxScrollviewVisibility);
             for (int I = 0; I < ButtonCount; I++) {
-                TDS_IGUComboBoxButton boxButton = cbx_buttons[I];
-                IGUComboBoxButtonOnIGU += cbx_buttons[I].OnIGU;
-                cbx_buttons[I].OnClick.AddListener(() => {
+                TDS_IGUComboBoxButton boxButton = cbx_verticalLayout[I] as TDS_IGUComboBoxButton;
+                boxButton.OnClick.AddListener(() => {
                     SetIndex(boxButton.Index);
                     OnSelectedIndex.Invoke(boxButton);
                     CloseComboBoxView = false;
@@ -134,11 +136,11 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
             button.Text = text;
             button.Image = image;
             button.ToolTip = toolTip;
+            button.Index = ButtonCount;
             button.UseTooltip = UseTooltip;
             button.Style = ComboBoxButtonStyle;
             button.TooltipStyle = TooltipStyle;
-            IGUComboBoxButtonOnIGU += button.OnIGU;
-            ArrayManipulation.Add(button, ref cbx_buttons);
+            cbx_verticalLayout.Add(button);
             ComboBoxButtonHeightFunc(comboBoxButtonHeight);
         }
 
@@ -155,23 +157,18 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
             => Add(text, string.Empty);
 
         public void Remove(int index) {
-            IGUComboBoxButtonOnIGU += cbx_buttons[index].OnIGU;
-            ArrayManipulation.Remove(index, ref cbx_buttons);
-            if (ButtonCount != 0)
-                ComboBoxButtonHeightFunc(comboBoxButtonHeight);
+            if (cbx_verticalLayout.Remove(index, true))
+                RecursiveList((c, i) => { c.Index = i; }, 0, cbx_verticalLayout);
         }
 
-        public void Clear() {
-            for (int I = 0; I < ButtonCount; I++)
-                Destroy(cbx_buttons[I]);
-            IGUComboBoxButtonOnIGU = null;
-            ArrayManipulation.ClearArraySafe(ref cbx_buttons);
-        }
+        public void Clear() => cbx_verticalLayout.Clear(true);
 
         //LowCallOnIGU
         protected override void LowCallOnIGU() {
             cbx_button.MyRect = cbx_button.MyRect.SetPosition(Vector2.zero).SetSize(myRect.Size);
-            cbx_scrollview.MyRect = cbx_scrollview.MyRect.SetPosition(Vector2.up * myRect.Size.y).SetSize(myRect.Size.x, 150f);
+            cbx_scrollview.MyRect = cbx_scrollview.MyRect.SetPosition(Vector2.up * myRect.Size.y).SetSize(myRect.Size.x, ScrollViewHeight);
+            float num1 = cbx_scrollview.VerticalScrollbarIsVisible ? cbx_scrollview.VerticalScrollbarStyle.FixedWidth : 0f;
+            cbx_verticalLayout.CellSize = Vector2.right * (myRect.Width - num1) + Vector2.up * ComboBoxButtonHeight;
 
             cbx_button.OnIGU();
             cbx_scrollview.OnIGU();
@@ -179,12 +176,12 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
 
         private void ChangeVisibility(Vector2 vector) {
             Vector2 scv_size = cbx_scrollview.MyRect.Size;
-            if (!ArrayManipulation.EmpytArray(cbx_buttons))
+            if (cbx_verticalLayout.Count != 0)
                 RecursiveList((c, i) => {
                     bool visible = c.MyRect.Donw >= vector.y &&
                     c.MyRect.Up <= vector.y + scv_size.y;
                     c.MyConfg = c.MyConfg.SetVisible(visible);
-                }, 0, cbx_buttons);
+                }, 0, cbx_verticalLayout);
         }
 
         private void ChangeCbxScrollviewVisibility() {
@@ -196,42 +193,31 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
 
         private void SetComboBoxStyle(IGUStyle style) {
             cbx_button.ButtonStyle = style;
-            if (!ArrayManipulation.EmpytArray(cbx_buttons))
-                RecursiveList((c, i) => { c.Style = style; }, 0, cbx_buttons);
+            if (cbx_verticalLayout.Count != 0)
+                RecursiveList((c, i) => { c.Style = style; }, 0, cbx_verticalLayout);
         }
 
         private void SetIndex(int index) {
             this.index = index;
-            cbx_button.Text = cbx_buttons[index].Text;
-            cbx_button.Image = cbx_buttons[index].Image;
-        }
-
-        void IIGUSerializationCallbackReceiver.Reserialization() {
-#if UNITY_EDITOR
-
-#endif
+            if (cbx_verticalLayout.Count == 0) return;
+            TDS_IGUComboBoxButton bt = cbx_verticalLayout[index] as TDS_IGUComboBoxButton;
+            cbx_button.Text = bt.Text;
+            cbx_button.Image = bt.Image;
         }
 
         private void ComboBoxButtonHeightFunc(float comboBoxButtonHeight) {
                 this.comboBoxButtonHeight = comboBoxButtonHeight;
-                if (!ArrayManipulation.EmpytArray(cbx_buttons)) {
-                    if (adjustComboBoxViewAccordingToTheButtonsPresent)
-                        RectView = new Rect(
-                            Vector2.zero, 
-                            Vector2.right * myRect.Width + comboBoxButtonHeight * cbx_buttons.Length * Vector2.up
-                        );
-                    RecursiveList((c, i) => {
-                        c.Index = i;
-                        c.MyRect = c.MyRect.SetPosition(comboBoxButtonHeight * i * Vector2.up)
-                            .SetSize(c.MyRect.Width, comboBoxButtonHeight);
-                    }, 0, cbx_buttons);
-                }
+                if (adjustComboBoxViewAccordingToTheButtonsPresent)
+                    RectView = new Rect(
+                        Vector2.zero, 
+                        Vector2.right * myRect.Width + comboBoxButtonHeight * cbx_verticalLayout.Count * Vector2.up
+                    );
         }
 
-        private static void RecursiveList(Action<TDS_IGUComboBoxButton, int> action, int index, TDS_IGUComboBoxButton[] cbx_buttons) {
-            action(cbx_buttons[index], index++);
-            if (index < ArrayManipulation.ArrayLength(cbx_buttons))
-                RecursiveList(action, index, cbx_buttons);
+        private static void RecursiveList(Action<TDS_IGUComboBoxButton, int> action, int index, IGUVerticalLayout verticalLayout) {
+            action(verticalLayout[index] as TDS_IGUComboBoxButton, index++);
+            if (index < verticalLayout.Count)
+                RecursiveList(action, index, verticalLayout);
         }
 
         [Serializable]

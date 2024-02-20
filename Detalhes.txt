@@ -1,3 +1,4 @@
+//===4.0.0-rc1
 IGUSelectionGrid precissa de uma atualização
 IGUComboBox precissa de uma atualização
 Remover classe HashCodeCompare
@@ -20,3 +21,15 @@ IGUObject.Awake() >> IGUObject.Ignition()
 IGUObject.OnEnable() >> IGUObject.IgnitionEnable()
 IGUObject.OnDisable() >> IGUObject.IgnitionDisable()
 IGUObject.OnIGUDestroy() >> IGUObject.DestroyIgnition()
+
+//===4.1.1
+#Fixed
+A atualização da classe 'IGUComboBox' solucionou problemas que avia que tornava a classe inviavel.
+
+#Added
+A classe abstrata 'IGULayout' recebeu novos métodos abstratos como 'IGULayout.Remove(int)', 
+'IGULayout.Remove(int, bool)' e 'IGULayout.Remove(IGUObject, bool)'.
+A classe 'IGUScrollView' recebeu novas propriedades como 'IGUScrollView.VerticalScrollbarIsVisible' e
+'IGUScrollView.HorizontalScrollbarIsVisible'.
+
+//===Testar a classe 'IGUScrollView' e 'TDS_IGUComboBox'
