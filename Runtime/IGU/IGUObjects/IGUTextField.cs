@@ -24,8 +24,8 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
         public bool IsTextArea { get => isTextArea; set => isTextArea = value; }
         public IGUStyle TextFieldStyle { get => textFieldStyle; set => textFieldStyle = value; }
 
-        protected override void Awake() {
-            base.Awake();
+        protected override void Ignition() {
+            base.Ignition();
             maxLength = 50000;
             myConfg = IGUConfig.Default;
             myRect = IGURect.DefaultButton;

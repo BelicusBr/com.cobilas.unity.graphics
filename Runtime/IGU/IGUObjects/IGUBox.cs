@@ -7,8 +7,8 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
 
         public IGUStyle BoxStyle { get => boxStyle; set => boxStyle = value; }
 
-        protected override void Awake() {
-            base.Awake();
+        protected override void Ignition() {
+            base.Ignition();
             myConfg = IGUConfig.Default;
             myRect = IGURect.DefaultBox;
             myColor = IGUColor.DefaultBoxColor;

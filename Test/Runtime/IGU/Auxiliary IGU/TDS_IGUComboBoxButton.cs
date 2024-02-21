@@ -1,9 +1,8 @@
-﻿using UnityEngine;
 using Cobilas.Unity.Graphics.IGU.Events;
-using Cobilas.Unity.Graphics.IGU.Elements;
+using UnityEngine;
 
-namespace Cobilas.Unity.Graphics.IGU {
-    public sealed class IGUComboBoxButton : IGUObject {
+namespace Cobilas.Unity.Graphics.IGU.Elements.Auxiliary {
+    public sealed class TDS_IGUComboBoxButton : IGUObject {
 
         [SerializeField] private int index;
         [SerializeField] private IGUStyle style;

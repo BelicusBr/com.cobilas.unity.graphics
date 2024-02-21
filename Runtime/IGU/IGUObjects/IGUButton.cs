@@ -16,8 +16,8 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
         public virtual bool Clicked => GetClicked();
         public IGUStyle ButtonStyle { get => buttonStyle; set => buttonStyle = value; }
 
-        protected override void Awake() {
-            base.Awake();
+        protected override void Ignition() {
+            base.Ignition();
             myConfg = IGUConfig.Default;
             myRect = IGURect.DefaultButton;
             myColor = IGUColor.DefaultBoxColor;

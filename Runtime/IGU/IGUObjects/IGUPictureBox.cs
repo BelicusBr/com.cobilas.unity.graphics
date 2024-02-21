@@ -18,7 +18,8 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
         public float BorderWidth { get => borderWidths.Summation() / 4f; set => borderWidths = Vector4.one * value; }
         public float BorderRadius { get => borderRadiuses.Summation() / 4f; set => borderRadiuses = Vector4.one * value; }
 
-        protected override void Awake() {
+        protected override void Ignition() {
+            base.Ignition();
             myConfg = IGUConfig.Default;
             myRect = IGURect.DefaultBox;
             myColor = IGUColor.DefaultBoxColor;

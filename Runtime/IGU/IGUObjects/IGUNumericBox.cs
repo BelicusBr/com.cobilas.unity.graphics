@@ -32,7 +32,8 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
         public IGUStyle ButtonRightStyle { get => buttonRight.ButtonStyle; set => buttonRight.ButtonStyle = value; }
         public IGUStyle TextFieldStyle { get => textField.TextFieldStyle; set => textField.TextFieldStyle = value; }
 
-        protected override void Awake() {
+        protected override void Ignition() {
+            base.Ignition();
             value = 0f;
             additionValue = .001f;
             myConfg = IGUConfig.Default;

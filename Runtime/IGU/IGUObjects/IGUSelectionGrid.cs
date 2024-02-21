@@ -46,7 +46,8 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
                 )
             );
 
-        protected override void Awake() {
+        protected override void Ignition() {
+            base.Ignition();
             _xCount = 3;
             spacing = Vector2.one * 3f;
             myConfg = IGUConfig.Default;
@@ -156,8 +157,8 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
             }
         }
 
-        protected override void OnIGUDestroy() {
-            base.OnIGUDestroy();
+        protected override void DestroyIgnition() {
+            base.DestroyIgnition();
             DestroyToggleList(ref selectionGridToggles);
         }
 

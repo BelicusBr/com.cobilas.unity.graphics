@@ -20,8 +20,8 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
         public bool Checked { get => _checked; set => _checked = value; }
         public IGUStyle CheckBoxStyle { get => checkBoxStyle; set => checkBoxStyle = value; }
 
-        protected override void Awake() {
-            base.Awake();
+        protected override void Ignition() {
+            base.Ignition();
             myConfg = IGUConfig.Default;
             myRect = IGURect.DefaultButton;
             myColor = IGUColor.DefaultBoxColor;

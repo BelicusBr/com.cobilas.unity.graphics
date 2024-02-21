@@ -5,38 +5,42 @@ using Cobilas.Unity.Graphics.IGU.Interfaces;
 
 namespace Cobilas.Unity.Graphics.IGU.Elements {
     public abstract class IGUObject : ScriptableObject, IIGUObject {
+        private bool isBuild;
         [SerializeField] protected IGURect myRect;
         [SerializeField] protected IGUColor myColor;
         [SerializeField] protected IGUObject parent;
         [SerializeField] protected IGUConfig myConfg;
         [SerializeField] protected IGUContainer container;
-        protected DoNotModifyRect doNots;
 #if UNITY_EDITOR
         [SerializeField] private bool foldout;
 #endif
+
+        public IGURect LocalRect => GetLocalPosition(this);
         public IGURect MyRect { get => myRect; set => myRect = value; }
         public IGUObject Parent { get => parent; set => parent = value; }
         public IGUColor MyColor { get => myColor; set => myColor = value; }
         public IGUConfig MyConfg { get => myConfg; set => myConfg = value; }
         public IGUContainer Container { get => container; set => container = value; }
-        public IGURect GlobalRect { get => GetGlobalPosition(false); set => myRect = SetGlobalPosition(value); }
 
-        protected virtual void Awake() {
-            doNots = DoNotModifyRect.False;
+        protected virtual void Ignition() {
             myConfg = IGUConfig.Default;
+            myColor = IGUColor.DefaultBoxColor;
         }
-        protected virtual void OnEnable() { }
-        protected virtual void OnDisable() { }
-        protected virtual void OnIGUDestroy() { }
+        protected virtual void Start() { }
+        protected virtual void IgnitionEnable() { }
+        protected virtual void IgnitionDisable() { }
+        protected virtual void DestroyIgnition() { }
 
         public void OnIGU() {
             GUI.SetNextControlName(name);
             IGUConfig config = GetModIGUConfig();
             bool oldEnabled = GUI.enabled;
             GUI.enabled = config.IsEnabled;
-            (this as IIGUObject).InternalPreOnIGU();
-            LowCallOnIGU();
-            (this as IIGUObject).InternalPostOnIGU();
+            if (config.IsVisible) {
+                (this as IIGUObject).InternalPreOnIGU();
+                LowCallOnIGU();
+                (this as IIGUObject).InternalPostOnIGU();
+            }
             GUI.enabled = oldEnabled;
         }
 
@@ -71,39 +75,38 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
         protected virtual void PreOnIGU() { }
         protected virtual void PostOnIGU() { }
 
+        [Obsolete]
         protected Rect GetRect(bool iginoreNotMod) {
-            Rect rect = Rect.zero;
-            IGURect temp;
-            if (iginoreNotMod) temp = GetGlobalPosition(true);
-            else temp = GlobalRect;
-            if (parent != null) temp = temp.SetScaleFactor(IGUDrawer.ScaleFactor);
-            rect.position = temp.ModifiedPosition;
-            rect.size = temp.Size;
-            return rect;
+            Rect res = IGURect.rectTemp;
+            IGURect rect = GetLocalPosition(this);
+            res.position = rect.ModifiedPosition;
+            res.size = rect.Size;
+            return res;
         }
 
+        [Obsolete]
         protected Rect GetRect() => GetRect(false);
 
         protected virtual void LowCallOnIGU() { }
 
-        private IGURect SetGlobalPosition(IGURect rect) {
-            IGURect grect = parent == null || NotMod() ? IGURect.Zero : parent.GetGlobalPosition(false);
-            return rect.SetPosition(rect.Position - grect.Position);
-        }
-
-        private IGURect GetGlobalPosition(bool iginoreNotMod) {
-            IGURect grect = parent == null || (NotMod() && !iginoreNotMod) ? IGURect.Zero : parent.GetGlobalPosition(false);
-            IGURect res = myRect;
-            return res.SetPosition(myRect.Position + grect.Position);
+        private void Awake() {
+            isBuild = true;
         }
 
         private void OnDestroy() {
             if (container != null)
                 if (container.Remove(this))
                     Debug.Log(string.Format("{0} removed from container", name));
-            OnIGUDestroy();
+            DestroyIgnition();
             IGUDrawer.RemoveReserialization(this);
         }
+
+        private void OnEnable() {
+            if (isBuild) return;
+            IgnitionEnable();
+        }
+
+        private void OnDisable() => IgnitionDisable();
 
         void IIGUObject.InternalOnIGU() {
 
@@ -130,8 +133,8 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
                 GUI.backgroundColor = myColor.BackgroundColor;
 
                 Matrix4x4 oldMatrix = GUI.matrix;
-                GUIUtility.RotateAroundPivot(myRect.Rotation, GetRect().position);
-                GUIUtility.ScaleAroundPivot(myRect.ScaleFactor, GetRect().position);
+                GUIUtility.RotateAroundPivot(myRect.Rotation, LocalRect.ModifiedPosition);
+                GUIUtility.ScaleAroundPivot(myRect.ScaleFactor, LocalRect.ModifiedPosition);
                 OnIGU();
                 GUI.matrix = oldMatrix;
 
@@ -150,8 +153,6 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
 
         void IIGUObject.InternalPostOnIGU() => PostOnIGU();
 
-        private bool NotMod() => parent != null && parent.doNots;
-
         public static T CreateIGUInstance<T>() where T : IGUObject
             => (T)CreateIGUInstance(typeof(T));
 
@@ -168,9 +169,23 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
                 throw new IGUException("The target class cannot be abstract.");
             IGUObject instance = (IGUObject)CreateInstance(type.Name);
             instance.name = name;
+            instance.Ignition();
+            instance.Start();
+            instance.IgnitionEnable();
+            instance.isBuild = false;
             if (instance is IIGUSerializationCallbackReceiver)
                 IGUDrawer.AddReserialization(instance);
             return instance;
+        }
+
+        public static IGURect GetLocalPosition(IGUObject obj) {
+            if (obj.parent != null) {
+                if (obj.parent is IIGUClipping cli && cli.IsClipping) return obj.myRect;
+                IGURect res = obj.myRect;
+                return res.SetScaleFactor(Vector2.one)
+                    .SetPosition(res.Position + GetLocalPosition(obj.parent).ModifiedPosition);
+            }
+            return obj.myRect;
         }
     }
 }

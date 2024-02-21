@@ -1,9 +1,10 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using Cobilas.Unity.Graphics.IGU.Events;
 using Cobilas.Unity.Graphics.IGU.Interfaces;
 
 namespace Cobilas.Unity.Graphics.IGU.Elements {
-    public class IGUWindow : IGUTextObject, IIGUSerializationCallbackReceiver {
+    public class IGUWindow : IGUTextObject, IIGUClipping, IIGUSerializationCallbackReceiver {
         public event GUI.WindowFunction windowFunction;
         public const string DefaultIGUWindow = "IGU Window";
 
@@ -17,7 +18,17 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
         public Rect DragFlap { get => dragFlap; set => dragFlap = value; }
         public IGUStyle WindowStyle { get => windowStyle; set => windowStyle = value; }
 
-        protected override void Awake() {
+        Rect IIGUClipping.RectView { 
+            get => throw new NotImplementedException(); 
+            set => throw new NotImplementedException(); 
+        }
+
+        public bool IsClipping => throw new NotImplementedException();
+
+        public Vector2 ScrollView { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+
+        protected override void Ignition() {
+            base.Ignition();
             myConfg = IGUConfig.Default;
             myRect = IGURect.DefaultWindow;
             myColor = IGUColor.DefaultBoxColor;
@@ -62,9 +73,7 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
         void IIGUSerializationCallbackReceiver.Reserialization() {
             internalIndowFunction = (id) => {
                 GUI.DragWindow(dragFlap);
-                doNots = DoNotModifyRect.True;
                 windowFunction?.Invoke(id);
-                doNots = DoNotModifyRect.False;
             };
         }
     }

@@ -12,7 +12,8 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
         public IGUStyle LabelStyle { get => labelStyle; set => labelStyle = value; }
         public bool RichText { get => labelStyle.RichText; set => labelStyle.RichText = value; }
 
-        protected override void Awake() {
+        protected override void Ignition() {
+            base.Ignition();
             myConfg = IGUConfig.Default;
             myRect = IGURect.DefaultButton;
             myColor = IGUColor.DefaultLabelColor;
