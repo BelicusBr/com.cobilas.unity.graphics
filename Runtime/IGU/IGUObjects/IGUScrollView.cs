@@ -21,16 +21,16 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
         [SerializeField] protected IGUVerticalScrollbar verticalScrollbar;
         [SerializeField] protected IGUHorizontalScrollbar horizontalScrollbar;
 
+        public bool IsClipping => rectClip.IsClipping;
         public Vector2 RectClipSize => rectClip.MyRect.Size;
         public IGUScrollViewEvent OnScrollView => onScrollView;
-        public bool IsClipping => ((IIGUClipping)rectClip).IsClipping;
         public bool VerticalScrollbarIsVisible => verticalScrollbar.MyConfg.IsVisible;
         public bool HorizontalScrollbarIsVisible => horizontalScrollbar.MyConfg.IsVisible;
         public Rect RectView { get => rectClip.RectView; set => rectClip.RectView = value; }
+        public Vector2 ScrollView { get => rectClip.ScrollView; set => rectClip.ScrollView = value; }
         public bool AlwaysShowVertical { get => alwaysShowVertical; set => alwaysShowVertical = value; }
         public Vector2 ScrollPosition { get => rectClip.ScrollView; set => rectClip.ScrollView = value; }
         public bool AlwaysShowHorizontal { get => alwaysShowHorizontal; set => alwaysShowHorizontal = value; }
-        public Vector2 ScrollView { get => ((IIGUClipping)rectClip).ScrollView; set => ((IIGUClipping)rectClip).ScrollView = value; }
         public IGUStyle VerticalScrollbarStyle { get => verticalScrollbar.SliderObjectStyle; set => verticalScrollbar.SliderObjectStyle = value; }
         public IGUStyle HorizontalScrollbarStyle { get => horizontalScrollbar.SliderObjectStyle; set => horizontalScrollbar.SliderObjectStyle = value; }
         public IGUStyle VerticalScrollbarThumbStyle { get => verticalScrollbar.SliderObjectThumbStyle; set => verticalScrollbar.SliderObjectThumbStyle = value; }
@@ -93,18 +93,18 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
                 if (horizontalScrollbar.MyConfg.IsVisible)
                     horizontalScrollbar.MyConfg = horizontalScrollbar.MyConfg.SetVisible(false);
             }
-
-            Vector2 scrollView = Vector2.zero;
-            Vector2 scrollPositiontemp = rectClip.ScrollView;
-            scrollView.x = horizontalScrollbar.Value;
-            scrollView.y = verticalScrollbar.Value;
-            rectClip.ScrollView = scrollView;
             
             verticalScrollbar.OnIGU();
             horizontalScrollbar.OnIGU();
+
+            Vector2 scrollView = Vector2.zero;
+            Vector2 scrollPositiontemp = -rectClip.ScrollView;
+            scrollView.x = horizontalScrollbar.Value;
+            scrollView.y = verticalScrollbar.Value;
+            rectClip.ScrollView = scrollView;
             rectClip.OnIGU();
 
-            if (scrollPositiontemp != scrollView)
+            if (-scrollPositiontemp != scrollView)
                 if (IGUDrawer.Drawer.GetMouseButton(myConfg.MouseType)) 
                     onScrollView.Invoke(scrollView);
         }

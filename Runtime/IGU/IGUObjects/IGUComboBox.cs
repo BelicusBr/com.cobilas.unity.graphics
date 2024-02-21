@@ -1,237 +1,227 @@
 ﻿using System;
 using UnityEngine;
-using Cobilas.Collections;
 using Cobilas.Unity.Graphics.IGU.Events;
+using Cobilas.Unity.Graphics.IGU.Layouts;
 using Cobilas.Unity.Graphics.IGU.Interfaces;
 
 namespace Cobilas.Unity.Graphics.IGU.Elements {
-    public class IGUComboBox : IGUObject, IIGUClipping, IIGUSerializationCallbackReceiver {
+    public class IGUComboBox : IGUObject, IIGUClipping {
 
-        private HashCodeCompare compare;
-        private bool _onActivatedComboBox;
+        [SerializeField] private int index;
+        [SerializeField] protected IGUButton cbx_button;
+        [SerializeField] private IGUOnClickEvent onClick;
+        [SerializeField] private float comboBoxButtonHeight;
+        [SerializeField] protected IGUScrollView cbx_scrollview;
+        [SerializeField] private IGUOnClickEvent onActivatedComboBox;
+        [SerializeField] private IGUComboBoxClickEvent onSelectedIndex;
+        [SerializeField] protected IGUVerticalLayout cbx_verticalLayout;
+        [SerializeField] private bool adjustComboBoxViewAccordingToTheButtonsPresent;
 
-        [SerializeField] protected int index;
-        [SerializeField] protected bool activatedComboBox;
-        [SerializeField] protected float scrollViewHeight;
-        [SerializeField] protected IGUOnClickEvent onClick;
-        [SerializeField] protected IGUButton comboBoxButton;
-        [SerializeField] protected float comboBoxButtonHeight;
-        [SerializeField] protected IGUComboBoxButton[] boxButtons;
-        [SerializeField] protected IGUScrollView comboBoxScrollView;
-        [SerializeField] protected IGUStyle scrollViewBackgroundStyle;
-        [SerializeField] protected bool closeOnClickComboBoxViewButton;
-        [SerializeField] protected IGUOnClickEvent onActivatedComboBox;
-        [SerializeField] protected IGUComboBoxClickEvent onSelectedIndex;
-        [SerializeField] protected bool adjustComboBoxViewAccordingToTheButtonsPresent;
-#if UNITY_EDITOR
-        [SerializeField] protected IGUContent[] copyList;
-        [SerializeField] protected IGUComboBoxButton[] destroyList;
-#endif
-        protected event Action<float> IGUComboBoxButtonChangeWidth;
-        protected event Action<float> IGUComboBoxButtonChangeHeight;
-        protected event Action<IGUColor> IGUComboBoxButtonChangeIGUColor;
-        protected event Action<IGUConfig> IGUComboBoxButtonChangeIGUConfig;
-        protected event Action<IGUStyle, IGUScrollView> IGUComboBoxButtonOnIGU;
-
+        public string Text => cbx_button.Text;
+        public Texture Image => cbx_button.Image;
         public IGUOnClickEvent OnClick => onClick;
-        public IGUComboBoxButton[] BoxButtons => boxButtons;
+        public int ButtonCount => cbx_verticalLayout.Count;
+        public bool IsClipping => cbx_scrollview.IsClipping;
+        public int Index { get => index; set => SetIndex(value); }
         public IGUComboBoxClickEvent OnSelectedIndex => onSelectedIndex;
         public IGUOnClickEvent OnActivatedComboBox => onActivatedComboBox;
-        public int Index { get => index; set => SetDisplayText(index = value); }
-        /// <summary>A altura do scrollView.(130f padrão)</summary>
-        public string Tooltip { get => comboBoxButton.ToolTip; set => comboBoxButton.ToolTip = value; }
-        public float ScrollViewHeight { get => scrollViewHeight; set => scrollViewHeight = value; }
-        public bool UseTooltip { get => comboBoxButton.UseTooltip; set => comboBoxButton.UseTooltip = value; }
-        /// <summary>A altura dos botões.(25f padrão)</summary>
-        public float ComboBoxButtonHeight { get => comboBoxButtonHeight; set => comboBoxButtonHeight = value; }
-        public IGUContent MyContent { get => comboBoxButton.MyContent; set => comboBoxButton.MyContent = value; }
-        public IGUStyle TooltipStyle { get => comboBoxButton.TooltipStyle; set => comboBoxButton.TooltipStyle = value; }
-        public IGUStyle ComboBoxButtonStyle { get => comboBoxButton.ButtonStyle; set => comboBoxButton.ButtonStyle = value; }
-        /// <summary>A propriedade permite o <see cref="IGUComboBox"/> a fechar janela de exibição de botões automaticamente.</summary>
-        public bool CloseComboBoxView { get => closeOnClickComboBoxViewButton; set => closeOnClickComboBoxViewButton = value; }
-        public IGUStyle ScrollViewBackgroundStyle { get => scrollViewBackgroundStyle; set => scrollViewBackgroundStyle = value; }
-        public IGUStyle VerticalScrollbarStyle { get => comboBoxScrollView.VerticalScrollbarStyle; set => comboBoxScrollView.VerticalScrollbarStyle = value; }
-        public bool AdjustComboBoxView { get => adjustComboBoxViewAccordingToTheButtonsPresent; set => adjustComboBoxViewAccordingToTheButtonsPresent = value; }
-        public IGUStyle HorizontalScrollbarStyle { get => comboBoxScrollView.HorizontalScrollbarStyle; set => comboBoxScrollView.HorizontalScrollbarStyle = value; }
-        public IGUStyle VerticalScrollbarThumbStyle { get => comboBoxScrollView.VerticalScrollbarThumbStyle; set => comboBoxScrollView.VerticalScrollbarThumbStyle = value; }
-        public IGUStyle HorizontalScrollbarThumbStyle { get => comboBoxScrollView.HorizontalScrollbarThumbStyle; set => comboBoxScrollView.HorizontalScrollbarThumbStyle = value; }
-        
-        Rect IIGUClipping.RectView { 
-            get => throw new NotImplementedException(); 
-            set => throw new NotImplementedException(); 
+        public string ToolTip { get => cbx_button.ToolTip; set => cbx_button.ToolTip = value; }
+        public Rect RectView { get => cbx_scrollview.RectView; set => cbx_scrollview.RectView = value; }
+        public Vector2 ScrollView { get => cbx_scrollview.ScrollView; set => cbx_scrollview.ScrollView = value; }
+        public float ComboBoxButtonHeight { 
+            get => comboBoxButtonHeight;
+            set {
+                AdjustComboBoxView = adjustComboBoxViewAccordingToTheButtonsPresent;
+                if (comboBoxButtonHeight != value) {
+                    comboBoxButtonHeight = value;
+                    ChangeVisibility(-ScrollView);
+                }
+            }
+        }
+        public IGUStyle TooltipStyle {
+            get => cbx_button.TooltipStyle;
+            set {
+                cbx_button.TooltipStyle = value;
+                if (ButtonCount != 0)
+                    RecursiveList((c, i) => {
+                        c.TooltipStyle = value;
+                    }, 0, cbx_verticalLayout);
+            }
+        }
+        public bool UseTooltip { 
+            get => cbx_button.UseTooltip; 
+            set { cbx_button.UseTooltip = value;
+                if (cbx_verticalLayout.Count != 0)
+                    RecursiveList((c, i) => {
+                        c.UseTooltip = value;
+                    }, 0, cbx_verticalLayout);
+            }
+        }
+        public bool AdjustComboBoxView { 
+            get => adjustComboBoxViewAccordingToTheButtonsPresent; 
+            set {
+                if (adjustComboBoxViewAccordingToTheButtonsPresent = value)
+                    RectView = new Rect(
+                        Vector2.zero, 
+                        Vector2.right * myRect.Width + comboBoxButtonHeight * cbx_verticalLayout.Count * Vector2.up
+                    );
+            }
+        }
+        public float ScrollViewHeight { 
+            get => cbx_scrollview.MyRect.Height; 
+            set => cbx_scrollview.MyRect = cbx_scrollview.MyRect.SetSize(myRect.Width, value);
+        }
+        public bool CloseComboBoxView { 
+            get => cbx_scrollview.MyConfg.IsVisible;
+            set => cbx_scrollview.MyConfg = cbx_scrollview.MyConfg.SetVisible(value);
+        }
+        public IGUStyle ComboBoxButtonStyle { 
+            get => cbx_button.ButtonStyle;
+            set => SetComboBoxStyle(value);
+        }
+        public IGUStyle VerticalScrollbarStyle { 
+            get => cbx_scrollview.VerticalScrollbarStyle;
+            set => cbx_scrollview.VerticalScrollbarStyle = value;
+        }
+        public IGUStyle HorizontalScrollbarStyle { 
+            get => cbx_scrollview.HorizontalScrollbarStyle;
+            set => cbx_scrollview.HorizontalScrollbarStyle = value;
+        }
+        public IGUStyle VerticalScrollbarThumbStyle { 
+            get => cbx_scrollview.VerticalScrollbarThumbStyle;
+            set => cbx_scrollview.VerticalScrollbarThumbStyle = value;
+        }
+        public IGUStyle HorizontalScrollbarThumbStyle { 
+            get => cbx_scrollview.HorizontalScrollbarThumbStyle;
+            set => cbx_scrollview.HorizontalScrollbarThumbStyle = value;
         }
 
-        public bool IsClipping => throw new NotImplementedException();
+        public IGUComboBoxButton this[int index] 
+            => cbx_verticalLayout[index] as IGUComboBoxButton;
 
-        public Vector2 ScrollView { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-
-        protected override void Ignition() {
-            base.Ignition();
-            compare = new HashCodeCompare(4);
+        protected override void Start() {
+            base.Start();
+            cbx_button = IGUObject.CreateIGUInstance<IGUButton>($"[{name}]--{nameof(IGUButton)}");
+            cbx_scrollview = IGUObject.CreateIGUInstance<IGUScrollView>($"[{name}]--{nameof(IGUScrollView)}");
+            cbx_verticalLayout = IGUObject.CreateIGUInstance<IGUVerticalLayout>($"[{name}]--{nameof(IGUVerticalLayout)}");
+            ScrollViewHeight = 150f;
+            AdjustComboBoxView = true;
+            CloseComboBoxView = false;
             myConfg = IGUConfig.Default;
             myRect = IGURect.DefaultButton;
-            myColor = IGUColor.DefaultBoxColor;
-            boxButtons = new IGUComboBoxButton[0];
-            activatedComboBox = false;
-            _onActivatedComboBox = true;
-            scrollViewHeight = 130f;
-            comboBoxButtonHeight = 25f;
-            closeOnClickComboBoxViewButton =
-            adjustComboBoxViewAccordingToTheButtonsPresent = true;
             onClick = new IGUOnClickEvent();
-            scrollViewBackgroundStyle = IGUSkins.GetIGUStyle("Black box border");
+            cbx_verticalLayout.Spacing = 0f;
+            myColor = IGUColor.DefaultBoxColor;
+            comboBoxButtonHeight = myRect.Height;
+            cbx_verticalLayout.UseCellSize = true;
             onActivatedComboBox = new IGUOnClickEvent();
             onSelectedIndex = new IGUComboBoxClickEvent();
-            comboBoxButton = CreateIGUInstance<IGUButton>($"--[{name}]ComboBoxButton");
-            comboBoxScrollView = CreateIGUInstance<IGUScrollView>($"--[{name}]ComboBoxScrollView");
-            comboBoxButton.Parent = comboBoxScrollView.Parent = this;
-            InitScrollViewAction();
-            SetIGUComboBoxButtonList("Item1", "Item2", "Item3");
-            Index = 0;
+            cbx_button.Parent = cbx_scrollview.Parent = this;
+            cbx_verticalLayout.Parent = cbx_scrollview;
+
+            for (int I = 0; I < 10; I++)
+                Add($"Item[{I}]");
+            SetIndex(0);
         }
+
+        protected override void IgnitionEnable() {
+            base.IgnitionEnable();
+            cbx_scrollview.ScrollViewAction += (scv)=>{
+                cbx_verticalLayout.OnIGU();
+            };
+            cbx_scrollview.OnScrollView.AddListener(ChangeVisibility);
+            cbx_button.OnClick.AddListener(ChangeCbxScrollviewVisibility);
+            for (int I = 0; I < ButtonCount; I++) {
+                IGUComboBoxButton boxButton = cbx_verticalLayout[I] as IGUComboBoxButton;
+                boxButton.OnClick.AddListener(() => {
+                    SetIndex(boxButton.Index);
+                    OnSelectedIndex.Invoke(boxButton);
+                    CloseComboBoxView = false;
+                });
+            }
+        }
+
+        public void Add(string text, Texture image, string toolTip) {
+            IGUComboBoxButton button = 
+                IGUObject.CreateIGUInstance<IGUComboBoxButton>($"Item[{ButtonCount}]");
+            button.Text = text;
+            button.Image = image;
+            button.ToolTip = toolTip;
+            button.Index = ButtonCount;
+            button.UseTooltip = UseTooltip;
+            button.Style = ComboBoxButtonStyle;
+            button.TooltipStyle = TooltipStyle;
+            cbx_verticalLayout.Add(button);
+            ComboBoxButtonHeight = comboBoxButtonHeight;
+        }
+
+        public void Add(string text, Texture image)
+            => Add(text, image, string.Empty);
+
+        public void Add(Texture image, string toolTip)
+            => Add(string.Empty, image, toolTip);
+
+        public void Add(string text, string toolTip)
+            => Add(text, (Texture)null, toolTip);
+
+        public void Add(string text)
+            => Add(text, string.Empty);
+
+        public void Remove(int index) {
+            if (cbx_verticalLayout.Remove(index, true))
+                RecursiveList((c, i) => { c.Index = i; }, 0, cbx_verticalLayout);
+        }
+
+        public void Clear() => cbx_verticalLayout.Clear(true);
+
         //LowCallOnIGU
         protected override void LowCallOnIGU() {
+            cbx_button.MyRect = cbx_button.MyRect.SetPosition(Vector2.zero).SetSize(myRect.Size);
+            cbx_scrollview.MyRect = cbx_scrollview.MyRect.SetPosition(Vector2.up * myRect.Height).SetSize(myRect.Width, ScrollViewHeight);
+            float num1 = cbx_scrollview.VerticalScrollbarIsVisible ? cbx_scrollview.VerticalScrollbarStyle.FixedWidth : 0f;
+            cbx_verticalLayout.CellSize = Vector2.right * (myRect.Width - num1) + Vector2.up * ComboBoxButtonHeight;
 
-            comboBoxButton.MyRect = comboBoxButton.MyRect.SetSize(myRect.Size);
-            comboBoxButton.MyColor = myColor;
-
-            float rwWidth = myRect.Width;
-            float rwHeight = comboBoxButtonHeight * ArrayManipulation.ArrayLength(boxButtons);
-            if (rwHeight > scrollViewHeight)
-                rwWidth -= comboBoxScrollView.VerticalScrollbarStyle.FixedWidth + 1f;
-
-            float newScrollViewHeight = adjustComboBoxViewAccordingToTheButtonsPresent ?
-                rwHeight > scrollViewHeight ? scrollViewHeight : rwHeight :
-                scrollViewHeight;
-
-            Rect rectView = new Rect(0, 0, rwWidth, rwHeight);
-            Rect rectTemp = GetRect();
-            rectTemp.width = myRect.Width;
-            rectTemp.height = scrollViewHeight + myRect.Height;
-
-            comboBoxScrollView.MyRect = comboBoxScrollView.MyRect.SetPosition(0, comboBoxButton.MyRect.Height);
-            comboBoxScrollView.MyRect = comboBoxScrollView.MyRect.SetSize(myRect.Width, newScrollViewHeight);
-            comboBoxScrollView.MyColor = myColor;
-            comboBoxScrollView.RectView = rectView;
-
-            comboBoxButton.OnIGU();
-            rectTemp.position = GetRect(true).position;
-            if (!rectTemp.Contains(IGUDrawer.Drawer.GetMousePosition()))
-                if (IGUDrawer.Drawer.GetMouseButtonUp(myConfg.MouseType))
-                    activatedComboBox = false;
-
-            if (activatedComboBox) {
-                if (_onActivatedComboBox) {
-                    _onActivatedComboBox = false;
-                    onActivatedComboBox.Invoke();
-                }
-                if (!compare.HashCodeEqual(3, rwWidth.GetHashCode()))
-                    IGUComboBoxButtonChangeWidth?.Invoke(rwWidth);
-
-                GUI.Box(new Rect(rectTemp.position + Vector2.up * comboBoxButton.MyRect.Height, comboBoxScrollView.MyRect.Size),
-                    IGUTextObject.GetGUIContentTemp(""), IGUStyle.GetGUIStyleTemp(scrollViewBackgroundStyle));
-
-                comboBoxScrollView.OnIGU();
-
-                if (!compare.HashCodeEqual(0, myConfg.GetHashCode()))
-                    IGUComboBoxButtonChangeIGUConfig?.Invoke(myConfg);
-
-                if (!compare.HashCodeEqual(1, myColor.GetHashCode()))
-                    IGUComboBoxButtonChangeIGUColor?.Invoke(myColor);
-
-                if (!compare.HashCodeEqual(2, comboBoxButtonHeight.GetHashCode()))
-                    IGUComboBoxButtonChangeHeight?.Invoke(comboBoxButtonHeight);
-            } else _onActivatedComboBox = true;
+            cbx_button.OnIGU();
+            cbx_scrollview.OnIGU();
         }
 
-        public void SetIGUComboBoxButtonList(params string[] contents) {
-            if (!ArrayManipulation.EmpytArray(contents))
-                SetIGUComboBoxButtonList(Array.ConvertAll<string, IGUContent>(contents, (s) => new IGUContent(s)));
+        private void ChangeVisibility(Vector2 vector) {
+            Rect rect = new Rect(vector, cbx_scrollview.MyRect.Size);
+            if (cbx_verticalLayout.Count != 0)
+                RecursiveList((c, i) => {
+                    Vector2 center = c.MyRect.Center;
+                    Vector2 up = .5f * c.MyRect.Width * Vector2.right + Vector2.up * c.MyRect.Up;
+                    Vector2 down = .5f * c.MyRect.Width * Vector2.right + Vector2.up * c.MyRect.Donw;
+                    bool visible = rect.Contains(center) || rect.Contains(up) || rect.Contains(down);
+                    c.MyConfg = c.MyConfg.SetVisible(visible);
+                }, 0, cbx_verticalLayout);
         }
 
-        public void SetIGUComboBoxButtonList(params IGUContent[] contents) {
-            DestroyList(ref boxButtons);
-            PopulateEvents(boxButtons = CreateIGUComboBoxButtonList(contents));
+        private void ChangeCbxScrollviewVisibility() {
+            OnClick.Invoke();
+            CloseComboBoxView = !CloseComboBoxView;
+            if (CloseComboBoxView)
+                OnActivatedComboBox.Invoke();
         }
 
-        private void SetDisplayText(int index) {
-            if (MyContent == null) MyContent = new IGUContent();
-            if (index < 0 || index >= ArrayManipulation.ArrayLength(boxButtons)) {
-                MyContent.Text = "";
-                return;
-            }
-            MyContent.Text = boxButtons[index].Content.Text;
-            MyContent.Image = boxButtons[index].Content.Image;
+        private void SetComboBoxStyle(IGUStyle style) {
+            cbx_button.ButtonStyle = style;
+            if (cbx_verticalLayout.Count != 0)
+                RecursiveList((c, i) => { c.Style = style; }, 0, cbx_verticalLayout);
         }
 
-        private void ChangeSelectedIndex(IGUComboBoxButton selectedIndex) {
-            if (closeOnClickComboBoxViewButton)
-                activatedComboBox = false;
-            SetDisplayText(index = selectedIndex.Index);
-            onSelectedIndex.Invoke(selectedIndex);
+        private void SetIndex(int index) {
+            this.index = index;
+            if (cbx_verticalLayout.Count == 0) return;
+            IGUComboBoxButton bt = cbx_verticalLayout[index] as IGUComboBoxButton;
+            cbx_button.Text = bt.Text;
+            cbx_button.Image = bt.Image;
         }
 
-        private void OnClickEvent()
-            => onClick.Invoke();
-
-        private IGUComboBoxButton[] CreateIGUComboBoxButtonList(params IGUContent[] contents) {
-#if UNITY_EDITOR
-            if (ArrayManipulation.EmpytArray(contents)) copyList = (IGUContent[])null;
-            else contents = (IGUContent[])(copyList = contents).Clone();
-#endif
-            IGUComboBoxButton[] Res = new IGUComboBoxButton[0];
-            for (int I = 0; I < ArrayManipulation.ArrayLength(contents); I++)
-                ArrayManipulation.Add(new IGUComboBoxButton(I, GetInstanceID(), contents[I]), ref Res);
-            return Res;
-        }
-
-        private void PopulateEvents(IGUComboBoxButton[] boxButtons) {
-            this.IGUComboBoxButtonChangeWidth = (Action<float>)null;
-            this.IGUComboBoxButtonChangeHeight = (Action<float>)null;
-            this.IGUComboBoxButtonChangeIGUColor = (Action<IGUColor>)null;
-            this.IGUComboBoxButtonChangeIGUConfig = (Action<IGUConfig>)null;
-            this.IGUComboBoxButtonOnIGU = (Action<IGUStyle, IGUScrollView>)null;
-            for (int I = 0; I < ArrayManipulation.ArrayLength(boxButtons); I++) {
-                this.IGUComboBoxButtonOnIGU += boxButtons[I].OnIGU;
-                this.IGUComboBoxButtonChangeWidth += boxButtons[I].ChangeWidth;
-                this.IGUComboBoxButtonChangeHeight += boxButtons[I].ChangeHeight;
-                this.IGUComboBoxButtonChangeIGUColor += boxButtons[I].ChangeIGUColor;
-                this.IGUComboBoxButtonChangeIGUConfig += boxButtons[I].ChangeIGUConfig;
-                boxButtons[I].AddOnClick(OnClickEvent);
-                boxButtons[I].AddSelectedIndex(ChangeSelectedIndex);
-            }
-        }
-
-        private void DestroyList(ref IGUComboBoxButton[] boxButtons) {
-            if (!ArrayManipulation.EmpytArray(boxButtons)) {
-                for (int I = 0; I < boxButtons.Length; I++)
-                    boxButtons[I].OnDestroy();
-                ArrayManipulation.ClearArraySafe(ref boxButtons);
-            }
-        }
-
-        private void InitScrollViewAction() {
-            comboBoxButton.OnClick.AddListener(() => {
-                activatedComboBox = !activatedComboBox;
-            });
-            comboBoxScrollView.ScrollViewAction += (sv) => {
-                IGUComboBoxButtonOnIGU?.Invoke(comboBoxButton.ButtonStyle, sv);
-            };
-        }
-
-        protected override void DestroyIgnition() {
-            base.DestroyIgnition();
-            DestroyList(ref boxButtons);
-        }
-
-        void IIGUSerializationCallbackReceiver.Reserialization() {
-#if UNITY_EDITOR
-            compare = new HashCodeCompare(4);
-            destroyList = boxButtons;
-            DestroyList(ref destroyList);
-            InitScrollViewAction();
-            PopulateEvents(boxButtons = CreateIGUComboBoxButtonList(copyList));
-#endif
+        private static void RecursiveList(Action<IGUComboBoxButton, int> action, int index, IGUVerticalLayout verticalLayout) {
+            action(verticalLayout[index] as IGUComboBoxButton, index++);
+            if (index < verticalLayout.Count)
+                RecursiveList(action, index, verticalLayout);
         }
 
         [Serializable]

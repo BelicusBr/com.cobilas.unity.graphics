@@ -8,21 +8,26 @@ using UnityEngine.SceneManagement;
 
 public class IGU_TDS : MonoBehaviour {
 
-    [SerializeField]
-    private TDS_IGUComboBox comboBox;
-    [SerializeField]
-    private IGUBox button;
+    [SerializeField] private float scrollViewHeight;
+    [SerializeField] private bool adjustComboBoxView;
+    [SerializeField] private float comboBoxButtonHeight;
+    [SerializeField] private TDS_IGUComboBox comboBox;
     // Start is called before the first frame update
     void Start() {
         comboBox = IGUObject.CreateIGUInstance<TDS_IGUComboBox>("TDS1");
-        button = IGUObject.CreateIGUInstance<IGUBox>("TDS2");
-        button.Text = string.Empty;
-        IGUContainer container = comboBox.ApplyToGenericContainer();
-        button.ApplyToContainer(container);
-        button.MyConfg = button.MyConfg.SetDepth(-1);
+        _ = comboBox.ApplyToGenericContainer();
+        scrollViewHeight = comboBox.ScrollViewHeight;
+        adjustComboBoxView = comboBox.AdjustComboBoxView;
+        comboBoxButtonHeight = comboBox.ComboBoxButtonHeight;
 
-        comboBox.MyRect = comboBox.MyRect.SetPosition(Vector2.one * 250f);
-        button.MyRect = button.MyRect.SetSize(130f, comboBox.ScrollViewHeight)
-            .SetPosition(Vector2.up * 275f + Vector2.right * 250f);
+        comboBox.OnClick.AddListener(()=>{ Debug.Log("OnClick"); });
+        comboBox.OnSelectedIndex.AddListener((e) => { Debug.Log(e.Index); });
+        comboBox.OnActivatedComboBox.AddListener(() => { Debug.Log("OnActivatedComboBox"); });
+    }
+
+    private void Update() {
+        comboBox.ScrollViewHeight = scrollViewHeight;
+        comboBox.AdjustComboBoxView = adjustComboBoxView;
+        comboBox.ComboBoxButtonHeight = comboBoxButtonHeight;
     }
 }

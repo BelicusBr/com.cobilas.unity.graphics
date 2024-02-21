@@ -3,7 +3,8 @@
     "references": [
         "Cobilas.Core.Net4x",
         "Cobilas.Unity.Utility",
-        "Cobilas.Unity.Graphics"
+        "Cobilas.Unity.Graphics",
+        "Cobilas.Unity.DebugConsole"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
@@ -16,19 +17,9 @@
     ],
     "versionDefines": [
         {
-            "name": "com.cobilas.unity.graphics",
-            "expression": "[2.3]",
-            "define": "IGU230"
-        },
-        {
-            "name": "com.cobilas.unity.graphics",
-            "expression": "[2.2.1]",
-            "define": "IGU220"
-        },
-        {
-            "name": "com.cobilas.unity.graphics",
-            "expression": "[2.1,2.2)",
-            "define": "IGU210"
+            "name": "com.cobilas.unity.debugconsole",
+            "expression": "1",
+            "define": "CBL_DEBUG"
         }
     ],
     "noEngineReferences": false

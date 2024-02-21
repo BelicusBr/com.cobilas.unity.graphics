@@ -1,4 +1,4 @@
-//===4.0.0-rc1
+//===4.0.0-rc1(18/02/2024)
 IGUSelectionGrid precissa de uma atualização
 IGUComboBox precissa de uma atualização
 Remover classe HashCodeCompare
@@ -22,7 +22,7 @@ IGUObject.OnEnable() >> IGUObject.IgnitionEnable()
 IGUObject.OnDisable() >> IGUObject.IgnitionDisable()
 IGUObject.OnIGUDestroy() >> IGUObject.DestroyIgnition()
 
-//===4.1.1
+//===4.1.1(19/02/2024)
 #Fixed
 A atualização da classe 'IGUComboBox' solucionou problemas que avia que tornava a classe inviavel.
 
@@ -33,3 +33,15 @@ A classe 'IGUScrollView' recebeu novas propriedades como 'IGUScrollView.Vertical
 'IGUScrollView.HorizontalScrollbarIsVisible'.
 
 //===Testar a classe 'IGUScrollView' e 'TDS_IGUComboBox'
+
+//===4.2.1(20/02/2024)
+#Fixed
+O evento 'IGUScrollView.OnScrollView' possuia um mal funcionamento pelo fato de que a função 'IGUObject.OnIGU'
+dos objetos 'IGUVerticalScrollbar' e 'IGUHorizontalScrollbar' era chamadas depois de obter o valor da propriedade
+'IGUSliderObject.Value' o que fazia o evento 'IGUScrollView.OnScrollView' a ser encerrado bruscamente.
+
+#Added
+A propriedade 'IGURectClip.AutoInvert' foi adicionando para fazer a inversão automatica da propriedade 'IGURectClip.ScrollView'.
+
+$Removed
+A Classe 'IGUComboBox' não herda mas da interface 'IIGUSerializationCallbackReceiver'.
