@@ -1,11 +1,13 @@
 ﻿using System;
 using UnityEngine;
+using System.Collections;
+using System.Collections.Generic;
 using Cobilas.Unity.Graphics.IGU.Events;
 using Cobilas.Unity.Graphics.IGU.Layouts;
 using Cobilas.Unity.Graphics.IGU.Interfaces;
 
 namespace Cobilas.Unity.Graphics.IGU.Elements {
-    public class IGUComboBox : IGUObject, IIGUClipping {
+    public class IGUComboBox : IGUObject, IEnumerable<IGUComboBoxButton>, IIGUClipping {
 
         [SerializeField] private int index;
         [SerializeField] protected IGUButton cbx_button;
@@ -169,12 +171,17 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
 
         public void Remove(int index) {
             if (cbx_verticalLayout.Remove(index, true))
-                RecursiveList((c, i) => { c.Index = i; }, 0, cbx_verticalLayout);
+                if (ButtonCount != 0)
+                    RecursiveList((c, i) => { c.Index = i; }, 0, cbx_verticalLayout);
         }
 
         public void Clear() => cbx_verticalLayout.Clear(true);
 
-        //LowCallOnIGU
+        public IEnumerator<IGUComboBoxButton> GetEnumerator() {
+            for (int I = 0; I < ButtonCount; I++)
+                yield return cbx_verticalLayout[I] as IGUComboBoxButton;
+        }
+
         protected override void LowCallOnIGU() {
             cbx_button.MyRect = cbx_button.MyRect.SetPosition(Vector2.zero).SetSize(myRect.Size);
             cbx_scrollview.MyRect = cbx_scrollview.MyRect.SetPosition(Vector2.up * myRect.Height).SetSize(myRect.Width, ScrollViewHeight);
@@ -216,6 +223,11 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
             IGUComboBoxButton bt = cbx_verticalLayout[index] as IGUComboBoxButton;
             cbx_button.Text = bt.Text;
             cbx_button.Image = bt.Image;
+        }
+        
+        IEnumerator IEnumerable.GetEnumerator() {
+            for (int I = 0; I < ButtonCount; I++)
+                yield return cbx_verticalLayout[I] as IGUComboBoxButton;
         }
 
         private static void RecursiveList(Action<IGUComboBoxButton, int> action, int index, IGUVerticalLayout verticalLayout) {

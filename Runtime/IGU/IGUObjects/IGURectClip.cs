@@ -13,9 +13,12 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
 
         public bool IsClipping => isClipping;
         //remover
-        public Rect RectView { get => rectView; set => rectView = value; }
         public bool AutoInvert { get => autoInvert; set => autoInvert = value; }
-        public Vector2 ScrollView { get => scrollView; set => scrollView = value.Invert(autoInvert, autoInvert); }
+        public Rect RectView { get => rectView; set => ScrollView = (rectView = value).position; }
+        public Vector2 ScrollView { 
+            get => rectView.position = scrollView; 
+            set => rectView.position = scrollView = value.Invert(autoInvert, autoInvert); 
+        }
 
         protected override void Ignition() {
             base.Ignition();

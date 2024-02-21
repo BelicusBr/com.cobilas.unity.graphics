@@ -66,6 +66,8 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
             
             vsize.x = rectClip.RectView.width < myRect.Width ? rectClip.RectView.width : vsize.x;
             vsize.y = rectClip.RectView.height < myRect.Height ? rectClip.RectView.height : vsize.y;
+            verticalScrollbar.MaxMinValue = verticalScrollbar.MaxMinValue.Set(0f, rectClip.RectView.height);
+            horizontalScrollbar.MaxMinValue = horizontalScrollbar.MaxMinValue.Set(0f, rectClip.RectView.width);
 
             if (vfix.x != 0f || alwaysShowHorizontal) {
                 if (!verticalScrollbar.MyConfg.IsVisible)
@@ -73,7 +75,6 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
 
                 verticalScrollbar.MyRect = verticalScrollbar.MyRect.SetSize(vfix.x, rectClip.MyRect.Height)
                     .SetPosition(rectClip.MyRect.Width, 0f);
-                verticalScrollbar.MaxMinValue = verticalScrollbar.MaxMinValue.Set(0f, rectClip.RectView.height);
                 verticalScrollbar.ScrollbarThumbSize = vsize.y;
                 if (alwaysShowVertical)
                     verticalScrollbar.MyConfg = verticalScrollbar.MyConfg.SetEnabled(rectClip.RectView.height > myRect.Height);
@@ -85,7 +86,6 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
             if (vfix.y != 0f || alwaysShowVertical) {
                 horizontalScrollbar.MyRect = horizontalScrollbar.MyRect.SetSize(rectClip.MyRect.Width, vfix.y)
                     .SetPosition(0f, rectClip.MyRect.Height);
-                horizontalScrollbar.MaxMinValue = horizontalScrollbar.MaxMinValue.Set(0f, rectClip.RectView.width);
                 horizontalScrollbar.ScrollbarThumbSize = vsize.x;
                 if (alwaysShowHorizontal)
                     horizontalScrollbar.MyConfg = horizontalScrollbar.MyConfg.SetEnabled(rectClip.RectView.width > myRect.Width);
