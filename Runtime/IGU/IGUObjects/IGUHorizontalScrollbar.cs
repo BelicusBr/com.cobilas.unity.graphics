@@ -30,7 +30,7 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
             GUIStyle style2 = IGUStyle.GetGUIStyleTemp(sliderObjectThumbStyle, 1);
 
             MaxMinSlider temp = isInt ? maxMinSlider.ToMaxMinSliderInt() : maxMinSlider;
-            value = Mathf.Clamp(value, temp.Min, temp.Max);
+            value = Mathf.Clamp(value, temp.Min, temp.Max - scrollbarThumbSize);
 
             Rect rect = GetRect();
 

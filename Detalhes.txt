@@ -49,3 +49,13 @@ A Classe 'IGUComboBox' não herda mas da interface 'IIGUSerializationCallbackRec
 //===4.2.2(21/02/2024)
 #Fixed
 Correção na classe de desenho 'IGUComboBoxDrawer' devido a atualização feita na classe 'IGUComboBox'.
+
+//===4.2.3(21/02/2024)
+#Fixed
+- Nas classes 'IGUVerticalScrollbar' e 'IGUHorizontalScrollbar' dentro do método 'IGUObject.LowCallOnIGU()'
+a propriedade 'IGUSliderObject.Value' era passada por um 'Mathf.Clamp(float, float, float)' mas sem levar
+em consideração a propriedade 'ScrollbarThumbSize' das classes 'IGUVerticalScrollbar' e 'IGUHorizontalScrollbar'.
+- Na classe 'IGUScrollView' antes de passar o valor da propriedade 'IGUSliderObject.Value' das classes
+'IGUVerticalScrollbar' e 'IGUHorizontalScrollbar' para o RectClip é verificado se os objetos do tipo
+'IGUVerticalScrollbar' e 'IGUHorizontalScrollbar' se são visiveis para que o RectClip não sejá 
+posicionado incorretamente.

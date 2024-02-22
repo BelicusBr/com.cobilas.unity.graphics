@@ -17,6 +17,7 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
             base.Ignition();
             myConfg = IGUConfig.Default;
             myColor = IGUColor.DefaultBoxColor;
+            myRect = myRect.SetSize(25f, 130f);
             sliderObjectStyle = IGUSkins.GetIGUStyle("Black vertical scrollbar border");
             sliderObjectThumbStyle = IGUSkins.GetIGUStyle("Black vertical scrollbar border thumb");
             onModifiedScrollbar = new IGUOnSliderValueEvent();
@@ -30,7 +31,7 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
             GUIStyle style2 = IGUStyle.GetGUIStyleTemp(sliderObjectThumbStyle, 1);
 
             MaxMinSlider temp = isInt ? maxMinSlider.ToMaxMinSliderInt() : maxMinSlider;
-            value = Mathf.Clamp(value, temp.Min, temp.Max);
+            value = Mathf.Clamp(value, temp.Min, temp.Max - scrollbarThumbSize);
 
             Rect rect = GetRect();
 

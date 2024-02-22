@@ -7,17 +7,17 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
 
         public event Action<Rect> RectClipAction;
         [SerializeField] protected Rect rectView;
-        [SerializeField] private bool isClipping;
-        [SerializeField] private bool autoInvert;
+        [SerializeField] protected bool isClipping;
+        [SerializeField] protected bool autoInvert;
         [SerializeField] protected Vector2 scrollView;
 
         public bool IsClipping => isClipping;
         //remover
         public bool AutoInvert { get => autoInvert; set => autoInvert = value; }
-        public Rect RectView { get => rectView; set => ScrollView = (rectView = value).position; }
+        public Rect RectView { get => rectView; set => rectView = value; }
         public Vector2 ScrollView { 
-            get => rectView.position = scrollView; 
-            set => rectView.position = scrollView = value.Invert(autoInvert, autoInvert); 
+            get => rectView.position = scrollView.Invert(autoInvert, autoInvert);
+            set => rectView.position = scrollView = value.Invert(autoInvert, autoInvert);
         }
 
         protected override void Ignition() {

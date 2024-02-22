@@ -107,7 +107,7 @@ namespace Cobilas.Unity.Editor.Graphics.IGU {
                 SerializedProperty prop_onClick = serialized.FindProperty("onClick");
                 SerializedProperty prop_onSelectedIndex = serialized.FindProperty("onSelectedIndex");
                 SerializedProperty prop_onActivatedComboBox = serialized.FindProperty("onActivatedComboBox");
-                SerializedProperty prop_content = GetIGUContent(serialized.FindProperty("comboBoxButton"));
+                SerializedProperty prop_content = GetIGUContent(serialized.FindProperty("cbx_button"));
                 if (prop_foldout.boolValue)
                     return SingleRowHeightWithBlankSpace * 10f +
                         EditorGUI.GetPropertyHeight(prop_myRect) +
