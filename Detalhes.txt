@@ -59,3 +59,8 @@ em consideração a propriedade 'ScrollbarThumbSize' das classes 'IGUVerticalScr
 'IGUVerticalScrollbar' e 'IGUHorizontalScrollbar' para o RectClip é verificado se os objetos do tipo
 'IGUVerticalScrollbar' e 'IGUHorizontalScrollbar' se são visiveis para que o RectClip não sejá 
 posicionado incorretamente.
+
+//===4.2.4(22/02/2024)
+#Fixed
+No método estatico 'IGUContainer.CreatePermanentGenericIGUContainer()' o container gerado não se tornava objeto
+não destruivel da cena.

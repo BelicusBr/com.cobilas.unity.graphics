@@ -136,7 +136,7 @@ namespace Cobilas.Unity.Graphics.IGU {
 
         public static IGUContainer CreatePermanentGenericIGUContainer() {
             IGUContainer temp = GetOrCreateIGUContainer("Permanent generic container");
-            if (temp == null)
+            if (temp != null)
                 DontDestroyOnLoad(temp.gameObject);
             return temp;
         }
