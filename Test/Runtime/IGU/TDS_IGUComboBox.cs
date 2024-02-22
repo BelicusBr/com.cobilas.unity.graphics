@@ -1,12 +1,14 @@
 using System;
 using UnityEngine;
+using System.Collections;
+using System.Collections.Generic;
 using Cobilas.Unity.Graphics.IGU.Events;
 using Cobilas.Unity.Graphics.IGU.Layouts;
 using Cobilas.Unity.Graphics.IGU.Interfaces;
 using Cobilas.Unity.Graphics.IGU.Elements.Auxiliary;
 
 namespace Cobilas.Unity.Graphics.IGU.Elements {
-    public class TDS_IGUComboBox : IGUObject, IIGUClipping {
+    public class TDS_IGUComboBox : IGUObject, IEnumerable<TDS_IGUComboBoxButton>, IIGUClipping {
 
         [SerializeField] private int index;
         [SerializeField] protected IGUButton cbx_button;

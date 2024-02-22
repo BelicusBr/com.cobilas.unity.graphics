@@ -171,8 +171,17 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
 
         public void Remove(int index) {
             if (cbx_verticalLayout.Remove(index, true))
-                if (ButtonCount != 0)
-                    RecursiveList((c, i) => { c.Index = i; }, 0, cbx_verticalLayout);
+                if (ButtonCount != 0) {
+                    Rect rect = new Rect(ScrollView, cbx_scrollview.MyRect.Size);
+                    RecursiveList((c, i) => { 
+                        c.Index = i;
+                        Vector2 center = c.MyRect.Center;
+                        Vector2 up = .5f * c.MyRect.Width * Vector2.right + Vector2.up * c.MyRect.Up;
+                        Vector2 down = .5f * c.MyRect.Width * Vector2.right + Vector2.up * c.MyRect.Donw;
+                        bool visible = rect.Contains(center) || rect.Contains(up) || rect.Contains(down);
+                        c.MyConfg = c.MyConfg.SetVisible(visible);
+                    }, 0, cbx_verticalLayout);
+                }
         }
 
         public void Clear() => cbx_verticalLayout.Clear(true);

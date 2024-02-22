@@ -1,5 +1,20 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+# [4.2.3] (21/02/2024)
+## Fixed
+### Fixed#1
+Problem in the `IGUVerticalScrollbar` and `IGUHorizontalScrollbar` classes.
+#### Details
+The `IGUObject.LowCallOnIGU()` method in the `IGUVerticalScrollbar` and `IGUHorizontalScrollbar` classes passed the `IGUSliderObject.Value` property through a `Mathf.Clamp(float, float, float)`.
+However, this function did not take into account the `ScrollbarThumbSize` property of the `IGUVerticalScrollbar` and `IGUHorizontalScrollbar` classes.
+The fix involved modifying the `IGUObject.LowCallOnIGU()` method to take the `ScrollbarThumbSize` property into account.
+### Fixed#2
+Problem in the `IGUScrollView` class.
+#### Details
+The `IGUScrollView` class previously passed the value of the `IGUSliderObject.Value` property of the `IGUVerticalScrollbar` and `IGUHorizontalScrollbar` classes to the RectClip without checking whether objects of type `IGUVerticalScrollbar` and `IGUHorizontalScrollbar` were visible.
+This could cause the RectClip to be positioned incorrectly.
+The fix involved adding a check to the `IGUScrollView` class code to ensure that objects of type `IGUVerticalScrollbar` and `IGUHorizontalScrollbar` are visible before passing the value of the `IGUSliderObject.Value` property to the RectClip.
+
 # [4.2.2] (21/02/2024)
 ## Fixed
 Problem in the `IGUComboBoxDrawer` drawing class.

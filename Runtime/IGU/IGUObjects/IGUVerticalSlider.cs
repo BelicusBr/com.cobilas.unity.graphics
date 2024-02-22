@@ -15,6 +15,7 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
             base.Ignition();
             myConfg = IGUConfig.Default;
             myColor = IGUColor.DefaultBoxColor;
+            myRect = myRect.SetSize(25f, 130f);
             sliderObjectStyle = IGUSkins.GetIGUStyle("Black vertical slider border");
             verticalSliderThumb = IGUSkins.GetIGUStyle("Black vertical slider border thumb");
             onModifiedSlider = new IGUOnSliderValueEvent();

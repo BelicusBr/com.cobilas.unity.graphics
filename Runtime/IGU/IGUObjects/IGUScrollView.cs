@@ -55,7 +55,6 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
         protected override void LowCallOnIGU() {
 
             Vector2 vfix = Vector2.zero;
-            //horizontalScrollbar
             vfix.x = rectClip.RectView.height > myRect.Height || alwaysShowHorizontal ? 
                 horizontalScrollbar.SliderObjectStyle.FixedHeight : 0f;
             vfix.y = rectClip.RectView.width > myRect.Width || alwaysShowVertical ?
@@ -98,13 +97,15 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
             horizontalScrollbar.OnIGU();
 
             Vector2 scrollView = Vector2.zero;
-            Vector2 scrollPositiontemp = -rectClip.ScrollView;
-            scrollView.x = horizontalScrollbar.Value;
-            scrollView.y = verticalScrollbar.Value;
+            Vector2 scrollPositiontemp = rectClip.ScrollView;
+            if (horizontalScrollbar.MyConfg.IsVisible)
+                scrollView.x = horizontalScrollbar.Value;
+            if (verticalScrollbar.MyConfg.IsVisible)
+                scrollView.y = verticalScrollbar.Value;
             rectClip.ScrollView = scrollView;
             rectClip.OnIGU();
 
-            if (-scrollPositiontemp != scrollView)
+            if (scrollPositiontemp != scrollView)
                 if (IGUDrawer.Drawer.GetMouseButton(myConfg.MouseType)) 
                     onScrollView.Invoke(scrollView);
         }
