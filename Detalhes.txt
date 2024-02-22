@@ -64,7 +64,3 @@ posicionado incorretamente.
 #Fixed
 No método estatico 'IGUContainer.CreatePermanentGenericIGUContainer()' o container gerado não se tornava objeto
 não destruivel da cena.
-
-//===4.3.0(22/02/2024)
-#Removed
-A propriedade 'IGURectClip.RectView' foi removida por não ser mas utilizada.

@@ -30,6 +30,7 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
         public string ToolTip { get => cbx_button.ToolTip; set => cbx_button.ToolTip = value; }
         public Rect RectView { get => cbx_scrollview.RectView; set => cbx_scrollview.RectView = value; }
         public Vector2 ScrollView { get => cbx_scrollview.ScrollView; set => cbx_scrollview.ScrollView = value; }
+        
         public float ComboBoxButtonHeight { 
             get => comboBoxButtonHeight;
             set {

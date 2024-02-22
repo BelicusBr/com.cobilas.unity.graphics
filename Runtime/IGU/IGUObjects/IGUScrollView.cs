@@ -29,6 +29,7 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
         public Rect RectView { get => rectClip.RectView; set => rectClip.RectView = value; }
         public Vector2 ScrollView { get => rectClip.ScrollView; set => rectClip.ScrollView = value; }
         public bool AlwaysShowVertical { get => alwaysShowVertical; set => alwaysShowVertical = value; }
+        //Remover
         public Vector2 ScrollPosition { get => rectClip.ScrollView; set => rectClip.ScrollView = value; }
         public bool AlwaysShowHorizontal { get => alwaysShowHorizontal; set => alwaysShowHorizontal = value; }
         public IGUStyle VerticalScrollbarStyle { get => verticalScrollbar.SliderObjectStyle; set => verticalScrollbar.SliderObjectStyle = value; }
