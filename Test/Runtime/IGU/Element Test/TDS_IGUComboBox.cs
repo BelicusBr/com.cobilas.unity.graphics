@@ -191,6 +191,14 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
 
             cbx_button.OnIGU();
             cbx_scrollview.OnIGU();
+
+            Rect rect = IGURect.rectTemp;
+            IGURect rect_scv = cbx_scrollview.MyRect.SetScaleFactor(myRect.ScaleFactor);
+            rect.position = LocalRect.ModifiedPosition;
+            rect.size = LocalRect.ModifiedSize + Vector2.up * (CloseComboBoxView ?  rect_scv.ModifiedSize.y: 0f);
+            if (!rect.Contains(IGUDrawer.Drawer.GetMousePosition()))
+                if (IGUDrawer.Drawer.GetMouseButtonDown(myConfg.MouseType) && CloseComboBoxView)
+                    CloseComboBoxView = false;
         }
 
         private void ChangeVisibility(Vector2 vector) {

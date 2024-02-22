@@ -23,8 +23,11 @@ public class IGU_TDS : MonoBehaviour {
         _ = comboBox.ApplyToPermanentGenericContainer();
 
         comboBox.Clear();
+        comboBox.Add($"TDS/None");
         comboBox.Add($"TDS/{nameof(IGUComboBox)}");
         comboBox.Add($"TDS/{nameof(IGUScrollView)}");
+
+        comboBox.Index = 0;
 
         comboBox.OnSelectedIndex.AddListener(SceneChange);
 
@@ -35,14 +38,39 @@ public class IGU_TDS : MonoBehaviour {
         switch (button.Index) {
             case 0:
                 Scene scene = SceneManager.GetActiveScene();
-                Debug.Log(scene.name);
-                UnloadSceneOptions op = UnloadSceneOptions.UnloadAllEmbeddedSceneObjects;
-                SceneManager.UnloadSceneAsync(scene, op);
-                Scene sc = SceneManager.CreateScene(button.Text);
-                Debug.Log("Is loaded:" + SceneManager.SetActiveScene(sc));
-                GameObject gob = new GameObject(nameof(TDS_IGUCBX), typeof(TDS_IGUCBX));
+                SceneManager.UnloadSceneAsync(scene);
+
+                SceneManager.LoadScene(0);
+                break;
+            case 1:
+                scene = SceneManager.GetActiveScene();
+                AsyncOperation operation = SceneManager.UnloadSceneAsync(scene);
+
+                if (operation is null)
+                    Load(button, typeof(TDS_IGUCBX));
+                else
+                    operation.completed += (o) => {
+                        Load(button, typeof(TDS_IGUCBX));
+                    };
+                break;
+            case 2:
+                scene = SceneManager.GetActiveScene();
+                operation = SceneManager.UnloadSceneAsync(scene);
+
+                if (operation is null)
+                    Load(button, typeof(TDS_IGUSCV));
+                else
+                    operation.completed += (o) => {
+                        Load(button, typeof(TDS_IGUSCV));
+                    };
                 break;
         }
         
+    }
+
+    void Load(IGUComboBoxButton button, System.Type type) {
+        Scene sc = SceneManager.CreateScene(button.Text);
+        SceneManager.SetActiveScene(sc);
+        GameObject gob = new GameObject(type.Name, type);
     }
 }
