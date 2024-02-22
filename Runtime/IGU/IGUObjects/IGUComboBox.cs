@@ -153,6 +153,11 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
             button.UseTooltip = UseTooltip;
             button.Style = ComboBoxButtonStyle;
             button.TooltipStyle = TooltipStyle;
+            button.OnClick.AddListener(() => {
+                SetIndex(button.Index);
+                OnSelectedIndex.Invoke(button);
+                CloseComboBoxView = false;
+            });
             cbx_verticalLayout.Add(button);
             ComboBoxButtonHeight = comboBoxButtonHeight;
         }
