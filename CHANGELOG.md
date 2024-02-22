@@ -1,5 +1,12 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+# [4.2.2] (21/02/2024)
+## Fixed
+Problem in the `IGUComboBoxDrawer` drawing class.
+### Details
+The `IGUComboBoxDrawer` drawing class needed to be updated due to a change in the `IGUComboBox` class. \
+The fix ensures that the `IGUComboBoxDrawer` class works correctly with the updated version of the `IGUComboBox` class.
+
 # [3.5.5] (14/02/2024)
 ## Fixed
 Fixed an issue that caused `ScriptableObjects` that depended on the `IGUStyleCustom` and `SO_IGUTextSettings` classes to malfunction.
