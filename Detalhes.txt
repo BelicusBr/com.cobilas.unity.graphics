@@ -45,3 +45,7 @@ A propriedade 'IGURectClip.AutoInvert' foi adicionando para fazer a inversão au
 
 $Removed
 A Classe 'IGUComboBox' não herda mas da interface 'IIGUSerializationCallbackReceiver'.
+
+//===4.2.2(21/02/2024)
+#Fixed
+Correção na classe de desenho 'IGUComboBoxDrawer' devido a atualização feita na classe 'IGUComboBox'.
