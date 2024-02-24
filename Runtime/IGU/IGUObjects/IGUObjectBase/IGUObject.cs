@@ -132,11 +132,9 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
                 GUI.contentColor = myColor.TextColor;
                 GUI.backgroundColor = myColor.BackgroundColor;
 
-                Matrix4x4 oldMatrix = GUI.matrix;
-                GUIUtility.RotateAroundPivot(myRect.Rotation, LocalRect.ModifiedPosition);
-                GUIUtility.ScaleAroundPivot(myRect.ScaleFactor, LocalRect.ModifiedPosition);
+                //IGUUtilityDistortion.Begin(MyRect);
                 OnIGU();
-                GUI.matrix = oldMatrix;
+                //IGUUtilityDistortion.End();
 
                 GUI.color = oldColor;
                 GUI.contentColor = oldContentColor;
@@ -178,12 +176,17 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
             return instance;
         }
 
+        public static IGUObject GetParentRoot(IGUObject obj) {
+            if (obj.parent == null) return obj;
+            return GetParentRoot(obj.parent);
+        }
+
         public static IGURect GetLocalPosition(IGUObject obj) {
             if (obj.parent != null) {
                 if (obj.parent is IIGUClipping cli && cli.IsClipping) return obj.myRect;
                 IGURect res = obj.myRect;
-                return res.SetScaleFactor(Vector2.one)
-                    .SetPosition(res.Position + GetLocalPosition(obj.parent).ModifiedPosition);
+                return res.SetScaleFactor(GetLocalPosition(obj.parent).ScaleFactor)
+                    .SetPosition(res.Position + GetLocalPosition(obj.parent).Position);
             }
             return obj.myRect;
         }

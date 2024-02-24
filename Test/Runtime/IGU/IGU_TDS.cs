@@ -6,19 +6,21 @@ using Cobilas.Unity.Graphics.IGU.Elements;
 using Cobilas.Unity.Graphics.IGU;
 using UnityEngine.SceneManagement;
 using Cobilas.Collections;
+using Cobilas.Unity.Management.Runtime;
 
 public class IGU_TDS : MonoBehaviour {
 
+    [SerializeField] private IGUButton button;
     [SerializeField] private IGUComboBox comboBox;
 
-    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
+    [StartAfterSceneLoad]
     static void Init() {
         GameObject gob = new GameObject("SWITCH_IGU_TDS", typeof(IGU_TDS));
         gob.isStatic = true;
         gob.SetPosition(Vector3.zero);
     }
 
-    void Start() {
+    private void Awake() {
         comboBox = IGUObject.CreateIGUInstance<IGUComboBox>("#TDS1");
         _ = comboBox.ApplyToPermanentGenericContainer();
 
@@ -26,12 +28,18 @@ public class IGU_TDS : MonoBehaviour {
         comboBox.Add($"TDS/None");
         comboBox.Add($"TDS/{nameof(IGUComboBox)}");
         comboBox.Add($"TDS/{nameof(IGUScrollView)}");
+        comboBox.Add($"TDS/{nameof(IGUSelectionGrid)}");
 
         comboBox.Index = 0;
-
-        comboBox.OnSelectedIndex.AddListener(SceneChange);
+        button = IGUObject.CreateIGUInstance<IGUButton>("#TDS21574");
+        _ = button.ApplyToGenericContainer();
+        button.MyRect = button.MyRect.SetPosition(Vector2.right * 150f);
 
         DontDestroyOnLoad(gameObject);
+    }
+
+    private void OnEnable() {
+        comboBox.OnSelectedIndex.AddListener(SceneChange);
     }
 
     void SceneChange(IGUComboBoxButton button) {
@@ -62,6 +70,17 @@ public class IGU_TDS : MonoBehaviour {
                 else
                     operation.completed += (o) => {
                         Load(button, typeof(TDS_IGUSCV));
+                    };
+                break;
+            case 3:
+                scene = SceneManager.GetActiveScene();
+                operation = SceneManager.UnloadSceneAsync(scene);
+
+                if (operation is null)
+                    Load(button, typeof(TDS_SCG));
+                else
+                    operation.completed += (o) => {
+                        Load(button, typeof(TDS_SCG));
                     };
                 break;
         }

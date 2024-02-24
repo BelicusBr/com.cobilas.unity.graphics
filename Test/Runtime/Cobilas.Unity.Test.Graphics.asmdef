@@ -4,7 +4,8 @@
         "Cobilas.Core.Net4x",
         "Cobilas.Unity.Utility",
         "Cobilas.Unity.Graphics",
-        "Cobilas.Unity.DebugConsole"
+        "Cobilas.Unity.DebugConsole",
+        "Cobilas.Unity.Management.Runtime"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

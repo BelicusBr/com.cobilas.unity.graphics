@@ -29,13 +29,17 @@ namespace Cobilas.Unity.Graphics.IGU {
         public float ScaleFactorWidth => scaleFactorWidth;
         public float ScaleFactorHeight => scaleFactorHeight;
 
-        public Vector2 Position => new Vector2(x, y);
         public Vector2 Size => new Vector2(width, height);
         public Vector2 Pivot => new Vector2(pivotX, pivotY);
+        public Vector2 Position => GetPosition(this) - Size.Multiplication(Pivot);
         public Vector2 ScaleFactor => new Vector2(scaleFactorWidth, scaleFactorHeight);
 
         public Vector2 ModifiedSize => Size.Multiplication(ScaleFactor);
-        public Vector2 ModifiedPosition => Position.Multiplication(ScaleFactor) - ModifiedSize.Multiplication(Pivot);
+        public Vector2 ModifiedPosition => GetPosition(this).Multiplication(ScaleFactor) - ModifiedSize.Multiplication(Pivot);
+
+        public IGURect ModifiedRect => new IGURect(
+            ModifiedPosition, ModifiedSize, Pivot, Vector2.one
+        ) { rotation = this.rotation };
 
         public float Up => y;
         public float Donw => y + height;
@@ -175,7 +179,45 @@ namespace Cobilas.Unity.Graphics.IGU {
             => $"{{(x:{x} y:{y})(w:{width} h:{height})(sfw:{scaleFactorWidth} sfh:{scaleFactorHeight})" +
             $"(px:{pivotX} py:{pivotY})(r:{rotation})}}";
 
+        public bool Contains(Vector2 point) {
+            Rect rect = (Rect)this;
+            Quaternion quaternion = Quaternion.Euler(Vector3.forward * rotation);
+            Vector2 diry = quaternion.GenerateDirectionUp();
+            Vector2 dirx = quaternion.GenerateDirectionRight();
+            Vector2 px = rect.position + dirx * rect.width;
+            Vector2 py = rect.position + diry * rect.height;
+            Vector2 pxy = px.Multiplication(Vector2.right) + py.Multiplication(Vector2.up);
+
+            return Area(rect.position, px, py, point) || 
+                Area(pxy, px, py, point);
+        }
+
+        private static bool Area(Vector2 p1, Vector2 p2, Vector2 p3, Vector2 p) {
+            float d1, d2, d3;
+            bool has_neg, has_pos;
+
+            d1 = Sign(p, p1, p2);
+            d2 = Sign(p, p2, p3);
+            d3 = Sign(p, p3, p1);
+
+            has_neg = (d1 < 0) || (d2 < 0) || (d3 < 0);
+            has_pos = (d1 > 0) || (d2 > 0) || (d3 > 0);
+
+            return !(has_neg && has_pos);
+        }
+
+        private static float Sign(Vector2 p1, Vector2 p2, Vector2 p3)
+            => (p1.x - p3.x) * (p2.y - p3.y) - (p2.x - p3.x) * (p1.y - p3.y);
+
+        private static Vector2 GetPosition(IGURect rect) => new Vector2(rect.x, rect.y);
+
         public static bool operator ==(IGURect A, IGURect B) => A.Equals(B);
         public static bool operator !=(IGURect A, IGURect B) => !(A == B);
+        public static explicit operator Rect(IGURect rect) {
+            Rect res = rectTemp;
+            res.position = rect.ModifiedPosition;
+            res.size = rect.ModifiedSize;
+            return res;
+        }
     }
 }

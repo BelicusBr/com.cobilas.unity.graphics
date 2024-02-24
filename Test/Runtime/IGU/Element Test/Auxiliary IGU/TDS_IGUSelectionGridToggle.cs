@@ -4,11 +4,12 @@ using Cobilas.Unity.Graphics.IGU.Elements;
 
 namespace Cobilas.Unity.Graphics.IGU {
     public sealed class TDS_IGUSelectionGridToggle : IGUObject {
-        private bool oneClick;
         [SerializeField] private int index;
+        [SerializeField] private bool oneClick;
         [SerializeField] private bool _checked;
         [SerializeField] private IGUStyle style;
         [SerializeField] private bool useTooltip;
+        [SerializeField] private bool checkedtemp;
         [SerializeField] private IGUContent myContent;
         [SerializeField] private IGUStyle tooltipStyle;
         [SerializeField] private IGUOnClickEvent onClick;
@@ -23,15 +24,19 @@ namespace Cobilas.Unity.Graphics.IGU {
         public IGUOnClickEvent CheckBoxOff => checkBoxOff;
         public int Index { get => index; set => index = value; }
         public bool UseTooltip { get => useTooltip; set => useTooltip = value; }
-        public bool Checked { get => _checked; internal set => _checked = value; }
         public string Text { get => MyContent.Text; set => MyContent.Text = value; }
         public Texture Image { get => MyContent.Image; set => MyContent.Image = value; }
         public string ToolTip { get => MyContent.Tooltip; set => MyContent.Tooltip = value; }
         public IGUStyle Style { get => style; set => style = value ?? IGUSkins.GetIGUStyle("Black button border"); }
         public IGUStyle TooltipStyle { get => tooltipStyle; set => tooltipStyle = value ?? IGUSkins.GetIGUStyle("Black box border"); }
+        public bool Checked { 
+            get => _checked;
+            internal set => onChecked.Invoke(checkedtemp = _checked = value);
+        }
 
         protected override void Ignition() {
             base.Ignition();
+            oneClick = true;
             useTooltip = false;
             myRect = IGURect.DefaultButton;
             onClick = new IGUOnClickEvent();
@@ -46,29 +51,40 @@ namespace Cobilas.Unity.Graphics.IGU {
         protected override void LowCallOnIGU() {
             Rect rect = IGURect.rectTemp;
             rect.position = LocalRect.ModifiedPosition;
-            rect.size = LocalRect.Size;
+            rect.size = LocalRect.ModifiedSize;
 
-            bool checkedtemp = GUI.Toggle(rect, Checked, (GUIContent)myContent, (GUIStyle)style);
+            checkedtemp = GUI.Toggle(rect, checkedtemp, (GUIContent)myContent, (GUIStyle)style);
+            //rect.size = MyRect.SetScaleFactor(GetParentRoot(this).MyRect.ScaleFactor).ModifiedSize;
+            Debug.Log($"{Text}|{rect}");
 
-            if (checkedtemp) {
-                if (oneClick)
-                    ModChecked(checkedtemp, false);
-            } else {
-                if (!oneClick)
-                    ModChecked(checkedtemp, true);
+            bool isRect = rect.Contains(IGUDrawer.Drawer.GetMousePosition());
+            if (isRect && IGUDrawer.Drawer.GetMouseButton(myConfg.MouseType)) {
+                //Debug.Log($"TG|{checkedtemp}|{Text}");
+                _checked = checkedtemp;
+                onClick.Invoke();
+                onChecked.Invoke(checkedtemp);
             }
 
-            if (Checked) checkBoxOn.Invoke();
+            // if (checkedtemp) {
+            //     if (oneClick && rect.Contains(IGUDrawer.Drawer.GetMousePosition()))
+            //         ModChecked(checkedtemp, false);
+            // } else {
+            //     if (!oneClick && rect.Contains(IGUDrawer.Drawer.GetMousePosition()))
+            //         ModChecked(checkedtemp, true);
+            // }
+
+            if (_checked) checkBoxOn.Invoke();
             else checkBoxOff.Invoke();
 
-            if (useTooltip)
-                if (rect.Contains(IGUDrawer.Drawer.GetMousePosition()))
-                    DrawTooltip();
+            if (useTooltip && isRect)
+                DrawTooltip();
         }
+
+        public void Select(bool check) => oneClick = !(_checked = check);
 
         private void ModChecked(bool modChecked, bool modOneClick) {
             if (IGUDrawer.Drawer.GetMouseButton(myConfg.MouseType)) {
-                Checked = modChecked;
+                _checked = modChecked;
                 oneClick = modOneClick;
                 onClick.Invoke();
                 onChecked.Invoke(modChecked);

@@ -33,6 +33,6 @@
   "dependencies": {
     "com.cobilas.unity.utility": "2.10.4",
     "com.cobilas.unity.core.net4x": "1.4.2",
-    "com.cobilas.unity.management.runtime": "2.2.1"
+    "com.cobilas.unity.management.runtime": "2.2.2"
   }
 }

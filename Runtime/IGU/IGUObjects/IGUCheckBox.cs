@@ -7,6 +7,7 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
 
         private bool oneClick;
         [SerializeField] protected bool _checked;
+        [SerializeField] protected bool checkedtemp;
         [SerializeField] protected IGUStyle checkBoxStyle;
         [SerializeField] protected IGUOnClickEvent onClick;
         [SerializeField] protected IGUOnClickEvent checkBoxOn;
@@ -17,8 +18,11 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
         public IGUOnCheckedEvent OnChecked => onChecked;
         public IGUOnClickEvent CheckBoxOn => checkBoxOn;
         public IGUOnClickEvent CheckBoxOff => checkBoxOff;
-        public bool Checked { get => _checked; set => _checked = value; }
         public IGUStyle CheckBoxStyle { get => checkBoxStyle; set => checkBoxStyle = value; }
+        public bool Checked { 
+            get => _checked;
+            set => onChecked.Invoke(_checked = checkedtemp = value);
+        }
 
         protected override void Ignition() {
             base.Ignition();
@@ -36,7 +40,7 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
 
         protected override void LowCallOnIGU() {
 
-            bool checkedtemp = GUI.Toggle(GetRect(), _checked, GetGUIContent(DefaultContantIGUCheckBox),
+            checkedtemp = GUI.Toggle(GetRect(), checkedtemp, GetGUIContent(DefaultContantIGUCheckBox),
                 IGUStyle.GetGUIStyleTemp(checkBoxStyle));
 
             if (checkedtemp) {

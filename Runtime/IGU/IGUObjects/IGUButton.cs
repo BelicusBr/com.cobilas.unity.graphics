@@ -30,14 +30,14 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
 
         protected override void LowCallOnIGU() {
 
-            if (GUI.Button(GetRect(), GetGUIContent(DefaultContentIGUButton), IGUStyle.GetGUIStyleTemp(buttonStyle)))
+            if (BackEndIGU.Button(LocalRect, MyContent, buttonStyle))
                 if (IGUDrawer.Drawer.GetMouseButtonUp(myConfg.MouseType)) {
                     onClick.Invoke();
                     clicked[1] = true;
                 }
 
             if (useTooltip)
-                if (GetRect(true).Contains(IGUDrawer.Drawer.GetMousePosition()))
+                if (LocalRect.ModifiedRect.Contains(IGUDrawer.Drawer.GetMousePosition()))
                     DrawTooltip();
         }
 

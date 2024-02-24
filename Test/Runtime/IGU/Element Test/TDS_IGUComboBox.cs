@@ -1,6 +1,7 @@
 using System;
 using UnityEngine;
 using System.Collections;
+using Cobilas.Collections;
 using System.Collections.Generic;
 using Cobilas.Unity.Graphics.IGU.Events;
 using Cobilas.Unity.Graphics.IGU.Layouts;
@@ -18,6 +19,7 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
         [SerializeField] private IGUComboBoxClickEvent onSelectedIndex;
         [SerializeField] protected IGUVerticalLayout cbx_verticalLayout;
         [SerializeField] private bool adjustComboBoxViewAccordingToTheButtonsPresent;
+        private bool isIgnition;
 
         public string Text => cbx_button.Text;
         public Texture Image => cbx_button.Image;
@@ -101,8 +103,8 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
         public TDS_IGUComboBoxButton this[int index] 
             => cbx_verticalLayout[index] as TDS_IGUComboBoxButton;
 
-        protected override void Start() {
-            base.Start();
+        protected override void Ignition() {
+            base.Ignition();
             cbx_button = IGUObject.CreateIGUInstance<IGUButton>($"[{name}]--{nameof(IGUButton)}");
             cbx_scrollview = IGUObject.CreateIGUInstance<IGUScrollView>($"[{name}]--{nameof(IGUScrollView)}");
             cbx_verticalLayout = IGUObject.CreateIGUInstance<IGUVerticalLayout>($"[{name}]--{nameof(IGUVerticalLayout)}");
@@ -123,6 +125,7 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
 
             for (int I = 0; I < 10; I++)
                 Add($"Item[{I}]");
+            isIgnition = true;
             SetIndex(0);
         }
 
@@ -133,7 +136,7 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
             };
             cbx_scrollview.OnScrollView.AddListener(ChangeVisibility);
             cbx_button.OnClick.AddListener(ChangeCbxScrollviewVisibility);
-            for (int I = 0; I < ButtonCount; I++) {
+            for (int I = 0; I < ButtonCount && !isIgnition; I++) {
                 TDS_IGUComboBoxButton boxButton = cbx_verticalLayout[I] as TDS_IGUComboBoxButton;
                 boxButton.OnClick.AddListener(() => {
                     SetIndex(boxButton.Index);
@@ -141,6 +144,7 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
                     CloseComboBoxView = false;
                 });
             }
+            isIgnition = false;
         }
 
         public void Add(string text, Texture image, string toolTip) {
@@ -153,6 +157,11 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
             button.UseTooltip = UseTooltip;
             button.Style = ComboBoxButtonStyle;
             button.TooltipStyle = TooltipStyle;
+            button.OnClick.AddListener(() => {
+                SetIndex(button.Index);
+                OnSelectedIndex.Invoke(button);
+                CloseComboBoxView = false;
+            });
             cbx_verticalLayout.Add(button);
             ComboBoxButtonHeight = comboBoxButtonHeight;
         }
@@ -168,6 +177,11 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
 
         public void Add(string text)
             => Add(text, string.Empty);
+
+        public void Add(params ValueTuple<string, Texture, string>[] itens) {
+            for (int I = 0; I < ArrayManipulation.ArrayLength(itens); I++)
+                Add(itens[I].Item1, itens[I].Item2, itens[I].Item3);
+        }
 
         public void Remove(int index) {
             if (cbx_verticalLayout.Remove(index, true))

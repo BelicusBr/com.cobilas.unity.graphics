@@ -21,6 +21,9 @@ public class TDS_IGUSCV : MonoBehaviour {
         button2.MyRect = button2.MyRect.SetPosition(0f, button1.MyRect.Donw);
         button3.MyRect = button3.MyRect.SetPosition(0f, button2.MyRect.Donw);
 
+    }
+
+    private void OnEnable() {
         scrollView.ScrollViewAction += (svc) => {
             button1.OnIGU();
             button2.OnIGU();

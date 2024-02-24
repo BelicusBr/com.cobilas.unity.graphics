@@ -64,3 +64,12 @@ posicionado incorretamente.
 #Fixed
 No método estatico 'IGUContainer.CreatePermanentGenericIGUContainer()' o container gerado não se tornava objeto
 não destruivel da cena.
+
+//===4.2.5(23/02/2024)
+#Changed
+A dependencia 'com.cobilas.unity.management.runtime' foi atualizada para versão '2.2.2' por causa das 
+correções feitas na classe 'SceneContainerManager' que é usada pela classe 'IGUDrawer'.
+#[Revisar]Fixed
+Na classe 'IGUCheckBox' ao mudar o estatus 'Checked' possuia um mal funcionamento em que ao ser mudado 
+era verificado antes qual o gatilho do mouse era acionado mas isso fazia com que o estatus 'Checked' 
+não fosse alterado corretamente.
