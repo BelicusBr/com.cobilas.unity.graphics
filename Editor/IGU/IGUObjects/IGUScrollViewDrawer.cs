@@ -21,7 +21,7 @@ namespace Cobilas.Unity.Editor.Graphics.IGU {
                 SerializedProperty prop_container = serialized.FindProperty("container");
                 SerializedProperty prop_myRect = serialized.FindProperty("myRect");
                 SerializedProperty prop_myColor = serialized.FindProperty("myColor");
-                SerializedProperty prop_myConfg = serialized.FindProperty("myConfg");
+                SerializedProperty prop_myConfg = serialized.FindProperty("myConfig");
 
                 SerializedProperty prop_onScrollView = serialized.FindProperty("onScrollView");
                 SerializedProperty prop_alwaysShowVertical = serialized.FindProperty("alwaysShowVertical");
@@ -78,7 +78,7 @@ namespace Cobilas.Unity.Editor.Graphics.IGU {
                 SerializedObject serialized = new SerializedObject(temp);
                 SerializedProperty prop_myRect = serialized.FindProperty("myRect");
                 SerializedProperty prop_myColor = serialized.FindProperty("myColor");
-                SerializedProperty prop_myConfg = serialized.FindProperty("myConfg");
+                SerializedProperty prop_myConfg = serialized.FindProperty("myConfig");
                 SerializedProperty prop_foldout = serialized.FindProperty("foldout");
                 SerializedProperty prop_onScrollView = serialized.FindProperty("onScrollView");
                 if (prop_foldout.boolValue)

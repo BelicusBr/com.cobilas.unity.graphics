@@ -31,7 +31,7 @@ namespace Cobilas.Unity.Editor.Graphics.IGU {
                 SerializedProperty prop_container = serialized.FindProperty("container");
                 SerializedProperty prop_myRect = serialized.FindProperty("myRect");
                 SerializedProperty prop_myColor = serialized.FindProperty("myColor");
-                SerializedProperty prop_myConfg = serialized.FindProperty("myConfg");
+                SerializedProperty prop_myConfg = serialized.FindProperty("myConfig");
                 SerializedProperty prop_onClick = serialized.FindProperty("onClick");
                 SerializedProperty prop_onSelectedIndex = serialized.FindProperty("onSelectedIndex");
                 SerializedProperty prop_onActivatedComboBox = serialized.FindProperty("onActivatedComboBox");
@@ -102,7 +102,7 @@ namespace Cobilas.Unity.Editor.Graphics.IGU {
                 SerializedObject serialized = new SerializedObject(temp);
                 SerializedProperty prop_myRect = serialized.FindProperty("myRect");
                 SerializedProperty prop_myColor = serialized.FindProperty("myColor");
-                SerializedProperty prop_myConfg = serialized.FindProperty("myConfg");
+                SerializedProperty prop_myConfg = serialized.FindProperty("myConfig");
                 SerializedProperty prop_foldout = serialized.FindProperty("foldout");
                 SerializedProperty prop_onClick = serialized.FindProperty("onClick");
                 SerializedProperty prop_onSelectedIndex = serialized.FindProperty("onSelectedIndex");

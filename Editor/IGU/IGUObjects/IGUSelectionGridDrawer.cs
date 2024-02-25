@@ -31,7 +31,7 @@ namespace Cobilas.Unity.Editor.Graphics.IGU {
                 SerializedProperty prop_container = serialized.FindProperty("container");
                 SerializedProperty prop_myRect = serialized.FindProperty("myRect");
                 SerializedProperty prop_myColor = serialized.FindProperty("myColor");
-                SerializedProperty prop_myConfg = serialized.FindProperty("myConfg");
+                SerializedProperty prop_myConfg = serialized.FindProperty("myConfig");
 
                 SerializedProperty prop_spacing = serialized.FindProperty("spacing");
                 SerializedProperty prop_useTooltip = serialized.FindProperty("useTooltip");
@@ -92,7 +92,7 @@ namespace Cobilas.Unity.Editor.Graphics.IGU {
                 SerializedObject serialized = new SerializedObject(temp);
                 SerializedProperty prop_myRect = serialized.FindProperty("myRect");
                 SerializedProperty prop_myColor = serialized.FindProperty("myColor");
-                SerializedProperty prop_myConfg = serialized.FindProperty("myConfg");
+                SerializedProperty prop_myConfg = serialized.FindProperty("myConfig");
                 SerializedProperty prop_foldout = serialized.FindProperty("foldout");
                 SerializedProperty prop_spacing = serialized.FindProperty("spacing");
                 SerializedProperty prop_onSelectedIndex = serialized.FindProperty("onSelectedIndex");
@@ -112,7 +112,7 @@ namespace Cobilas.Unity.Editor.Graphics.IGU {
         private ReorderableList GetReorderableList(IGUSelectionGrid comboBox, Rect position)
         {
             ReorderableList reorderable = new ReorderableList(
-                    new List<IGUSelectionGridToggle>(comboBox.SelectionGridToggles), typeof(IGUSelectionGridToggle),
+                    new List<IGUSelectionGridToggle>(comboBox), typeof(IGUSelectionGridToggle),
                     false, true, true, true
                 );
 
@@ -121,7 +121,7 @@ namespace Cobilas.Unity.Editor.Graphics.IGU {
             if (!SelectIndex.ContainsKey(BoxID))
                 SelectIndex.Add(BoxID, -1);
 
-            int SecIndex = SelectIndex[BoxID];
+            int SecIndex = reorderable.index = SelectIndex[BoxID];
 
             reorderable.elementHeight = (SingleLineHeight * 3f) + BlankSpace;
             reorderable.drawHeaderCallback = (r) => EditorGUI.LabelField(r, EditorGUIUtility.TrTempContent("ComboBox buttons"));
@@ -130,32 +130,22 @@ namespace Cobilas.Unity.Editor.Graphics.IGU {
             reorderable.drawElementCallback = (r, i, a, f) => {
                 IGUSelectionGridToggle item = reorderable.list[i] as IGUSelectionGridToggle;
                 r.height = SingleLineHeight;
-                item.Content.Text = EditorGUI.TextField(r, EditorGUIUtility.TrTempContent("Text"), item.Content.Text);
-                item.Content.Image = (Texture)EditorGUI.ObjectField(r = MoveDown(r), EditorGUIUtility.TrTempContent("Image"), item.Content.Image, typeof(Texture), true);
-                item.Content.Tooltip = EditorGUI.TextField(MoveDown(r), EditorGUIUtility.TrTempContent("Tooltip"), item.Content.Tooltip);
+                item.Text = EditorGUI.TextField(r, EditorGUIUtility.TrTempContent("Text"), item.Text);
+                item.Image = (Texture)EditorGUI.ObjectField(r = MoveDown(r), EditorGUIUtility.TrTempContent("Image"), item.Image, typeof(Texture), true);
+                item.ToolTip = EditorGUI.TextField(MoveDown(r), EditorGUIUtility.TrTempContent("Tooltip"), item.ToolTip);
             };
 
             reorderable.onRemoveCallback = (r) => {
                 List<IGUSelectionGridToggle> temp = r.list as List<IGUSelectionGridToggle>;
                 temp.RemoveAt(r.index);
+                comboBox.Remove(r.index);
                 SelectIndex[BoxID] = SecIndex = r.index - 1;
-                if (temp.Count > 0)
-                {
-                    List<IGUContent> contents = new List<IGUContent>(
-                    Array.ConvertAll<IGUSelectionGridToggle, IGUContent>(temp.ToArray(), (t) => new IGUContent(t.Content))
-                    );
-                    comboBox.SetSelectionGridToggleList(contents.ToArray());
-                }
-                else comboBox.SetSelectionGridToggleList(new IGUContent[0]);
             };
 
             reorderable.onAddCallback = (r) => {
                 List<IGUSelectionGridToggle> temp = r.list as List<IGUSelectionGridToggle>;
-                List<IGUContent> contents = new List<IGUContent>(
-                Array.ConvertAll<IGUSelectionGridToggle, IGUContent>(temp.ToArray(), (t) => new IGUContent(t.Content))
-                );
-                contents.Add(new IGUContent($"Item {contents.Count}"));
-                comboBox.SetSelectionGridToggleList(contents.ToArray());
+                comboBox.Add($"Item[{comboBox.ToggleCount}]");
+                temp.Add(comboBox[comboBox.ToggleCount - 1]);
             };
             reorderable.DoList(position);
             SelectIndex[BoxID] = SecIndex;

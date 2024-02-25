@@ -4,25 +4,24 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
     public abstract class IGUTextFieldObject : IGUTextObject {
 
         [SerializeField] protected IGUTextSettings settings;
-        /// <summary>Configurações do cursor de inserção de texto.</summary>
+        
         public IGUTextSettings Settings { get => settings; set => settings = value; }
 
-        protected override void Ignition() {
-            base.Ignition();
+        protected override void IGUAwake() {
+            base.IGUAwake();
             settings = new IGUTextSettings();
         }
 
-
+        protected override void IGUStart() => base.IGUStart();
+        protected override void PreOnIGU() => base.PreOnIGU();
+        protected override void PostOnIGU() => base.PostOnIGU();
+        protected override void IGUOnEnable() => base.IGUOnEnable();
+        protected override void IGUOnDisable() => base.IGUOnDisable();
         protected override void LowCallOnIGU() => base.LowCallOnIGU();
-        protected override void IgnitionEnable() => base.IgnitionEnable();
-        protected override void IgnitionDisable() => base.IgnitionDisable();
-        protected override void DestroyIgnition() => base.DestroyIgnition();
+        protected override void IGUOnDestroy() => base.IGUOnDestroy();
 
         protected override void DrawTooltip()
             => base.DrawTooltip();
-
-        protected override GUIContent GetGUIContent(string defaultGUIContent)
-            => base.GetGUIContent(defaultGUIContent);
 
         protected virtual void SetGUISettings(GUISettings settings)
             => SetGUISettings(settings.cursorColor, settings.selectionColor, settings.cursorFlashSpeed,

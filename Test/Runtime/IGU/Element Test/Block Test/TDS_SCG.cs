@@ -5,33 +5,28 @@ using UnityEngine;
 public class TDS_SCG : MonoBehaviour {
 
     public int index;
-    [SerializeField] private IGUCheckBox checkBox;
-    [SerializeField] private TDS_IGUSelectionGrid selectionGrid;
+    public int xCount = 3;
+    public Vector2 spacing = Vector2.one * 3f;
+    [SerializeField] private IGUSelectionGrid selectionGrid;
 
     private void Awake() {
-        checkBox = IGUObject.CreateIGUInstance<IGUCheckBox>("#TDS5748");
-        selectionGrid = IGUObject.CreateIGUInstance<TDS_IGUSelectionGrid>("#TDS6534");
+        selectionGrid = IGUObject.CreateIGUInstance<IGUSelectionGrid>("#TDS6534");
         IGUContainer container = selectionGrid.ApplyToGenericContainer();
-        _ = checkBox.ApplyToContainer(container);
-        //_ = checkBox.ApplyToGenericContainer();
 
         selectionGrid.MyRect = selectionGrid.MyRect.SetPosition(Vector2.right * 150f);
-        checkBox.MyRect = checkBox.MyRect.SetPosition(Vector2.up * 150f);
-        //checkBox.MyRect = checkBox.MyRect.SetPosition(Vector2.up * 150f);
 
-    }
-
-    private void Start() {
-        
     }
 
     private void OnEnable() {
         selectionGrid.OnSelectedIndex.AddListener((i) => {
             Debug.Log($"Selec[{i}]");
         });
+        selectionGrid.SelectedIndex = 2;
     }
 
     private void Update() {
+        selectionGrid.Spacing = spacing;
         index = selectionGrid.SelectedIndex;
+        selectionGrid.xCount = xCount = xCount < 1 ? 1 : xCount;
     }
 }

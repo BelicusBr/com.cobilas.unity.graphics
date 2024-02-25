@@ -22,8 +22,8 @@ namespace Cobilas.Unity.Graphics.IGU {
         public IGUStyle Style { get => style; set => style = value ?? IGUSkins.GetIGUStyle("Black button border"); }
         public IGUStyle TooltipStyle { get => tooltipStyle; set => tooltipStyle = value ?? IGUSkins.GetIGUStyle("Black box border"); }
 
-        protected override void Start() {
-            base.Start();
+        protected override void IGUAwake() {
+            base.IGUAwake();
             useTooltip = false;
             myRect = IGURect.DefaultButton;
             onClick = new IGUOnClickEvent();
@@ -37,7 +37,7 @@ namespace Cobilas.Unity.Graphics.IGU {
             rect.size = LocalRect.Size;
             rect.position = LocalRect.ModifiedPosition;
             if (GUI.Button(rect, (GUIContent)MyContent, (GUIStyle)style))
-                if (IGUDrawer.Drawer.GetMouseButtonUp(myConfg.MouseType))
+                if (IGUDrawer.Drawer.GetMouseButtonUp(LocalConfig.MouseType))
                     onClick.Invoke();
 
             if (UseTooltip)

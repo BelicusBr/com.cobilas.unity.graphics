@@ -10,24 +10,23 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
         [SerializeField] protected IGUOnClickEvent onClick;
         [SerializeField] protected IGUStyle passwordFieldStyle;
 
-        /// <summary>Indica sé o <see cref="IGUPasswordField"/> está focado.</summary>
         public bool IsFocused => isFocused;
         public IGUOnClickEvent OnClick => onClick;
-        /// <summary>Caracter de ocultação.</summary>
         public char MaskChar { get => maskChar; set => maskChar = value; }
-        /// <summary>Número maximo de caracteres permitidos.(50000 padrão)</summary>
         public int MaxLength { get => maxLength; set => maxLength = value; }
-        public IGUStyle PasswordFieldStyle { get => passwordFieldStyle; set => passwordFieldStyle = value; }
+        public IGUStyle PasswordFieldStyle { 
+            get => passwordFieldStyle;
+            set => passwordFieldStyle = value ?? (IGUStyle)"Black text field border";
+        }
 
-        protected override void Ignition() {
-            base.Ignition();
+        protected override void IGUAwake() {
+            base.IGUAwake();
             maskChar = '*';
             maxLength = 50000;
-            onClick = new IGUOnClickEvent();
-            myConfg = IGUConfig.Default;
             myRect = IGURect.DefaultButton;
+            onClick = new IGUOnClickEvent();
             myColor = IGUColor.DefaultBoxColor;
-            passwordFieldStyle = IGUSkins.GetIGUStyle("Black text field border");
+            passwordFieldStyle = (IGUStyle)"Black text field border";
         }
 
         protected override void LowCallOnIGU() {
@@ -35,12 +34,12 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
             GUISettings oldSettings = GUI.skin.settings;
             SetGUISettings(settings);
 
-            Text = GUI.PasswordField(GetRect(), GetGUIContent("").text, maskChar, maxLength, IGUStyle.GetGUIStyleTemp(passwordFieldStyle));
+            Text = BackEndIGU.PasswordField(LocalRect, Text ?? string.Empty, maskChar, maxLength, passwordFieldStyle);
 
             SetGUISettings(oldSettings);
             Event current = Event.current;
 
-            if (GetRect(true).Contains(current.mousePosition)) {
+            if (LocalRect.ModifiedRect.Contains(current.mousePosition)) {
                 if (current.clickCount > 0 && GUI.GetNameOfFocusedControl() == name) {
                     isFocused = true;
                     onClick.Invoke();
@@ -55,9 +54,6 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
 
         protected override void DrawTooltip()
             => base.DrawTooltip();
-
-        protected override GUIContent GetGUIContent(string defaultGUIContent)
-            => base.GetGUIContent(defaultGUIContent);
 
         protected override void SetGUISettings(GUISettings settings)
             => base.SetGUISettings(settings);

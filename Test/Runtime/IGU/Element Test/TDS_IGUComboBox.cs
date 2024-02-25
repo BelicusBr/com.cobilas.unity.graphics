@@ -76,8 +76,8 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
             set => cbx_scrollview.MyRect = cbx_scrollview.MyRect.SetSize(myRect.Width, value);
         }
         public bool CloseComboBoxView { 
-            get => cbx_scrollview.MyConfg.IsVisible;
-            set => cbx_scrollview.MyConfg = cbx_scrollview.MyConfg.SetVisible(value);
+            get => cbx_scrollview.MyConfig.IsVisible;
+            set => cbx_scrollview.MyConfig = cbx_scrollview.MyConfig.SetVisible(value);
         }
         public IGUStyle ComboBoxButtonStyle { 
             get => cbx_button.ButtonStyle;
@@ -103,15 +103,14 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
         public TDS_IGUComboBoxButton this[int index] 
             => cbx_verticalLayout[index] as TDS_IGUComboBoxButton;
 
-        protected override void Ignition() {
-            base.Ignition();
+        protected override void IGUAwake() {
+            base.IGUAwake();
             cbx_button = IGUObject.CreateIGUInstance<IGUButton>($"[{name}]--{nameof(IGUButton)}");
             cbx_scrollview = IGUObject.CreateIGUInstance<IGUScrollView>($"[{name}]--{nameof(IGUScrollView)}");
             cbx_verticalLayout = IGUObject.CreateIGUInstance<IGUVerticalLayout>($"[{name}]--{nameof(IGUVerticalLayout)}");
             ScrollViewHeight = 150f;
             AdjustComboBoxView = true;
             CloseComboBoxView = false;
-            myConfg = IGUConfig.Default;
             myRect = IGURect.DefaultButton;
             onClick = new IGUOnClickEvent();
             cbx_verticalLayout.Spacing = 0f;
@@ -129,8 +128,8 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
             SetIndex(0);
         }
 
-        protected override void IgnitionEnable() {
-            base.IgnitionEnable();
+        protected override void IGUOnEnable() {
+            base.IGUOnEnable();
             cbx_scrollview.ScrollViewAction += (scv)=>{
                 cbx_verticalLayout.OnIGU();
             };
@@ -210,7 +209,7 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
             rect.position = LocalRect.ModifiedPosition;
             rect.size = LocalRect.ModifiedSize + Vector2.up * (CloseComboBoxView ?  rect_scv.ModifiedSize.y: 0f);
             if (!rect.Contains(IGUDrawer.Drawer.GetMousePosition()))
-                if (IGUDrawer.Drawer.GetMouseButtonDown(myConfg.MouseType) && CloseComboBoxView)
+                if (IGUDrawer.Drawer.GetMouseButtonDown(LocalConfig.MouseType) && CloseComboBoxView)
                     CloseComboBoxView = false;
         }
 
@@ -222,7 +221,7 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
                     Vector2 up = .5f * c.MyRect.Width * Vector2.right + Vector2.up * c.MyRect.Up;
                     Vector2 down = .5f * c.MyRect.Width * Vector2.right + Vector2.up * c.MyRect.Donw;
                     bool visible = rect.Contains(center) || rect.Contains(up) || rect.Contains(down);
-                    c.MyConfg = c.MyConfg.SetVisible(visible);
+                    c.MyConfig = c.MyConfig.SetVisible(visible);
                 }, 0, cbx_verticalLayout);
         }
 

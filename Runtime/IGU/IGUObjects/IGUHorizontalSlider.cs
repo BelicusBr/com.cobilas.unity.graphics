@@ -11,28 +11,27 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
         public IGUOnSliderIntValueEvent OnModifiedSliderInt => onModifiedSliderInt;
         public IGUStyle HorizontalSliderThumb { get => horizontalSliderThumb; set => horizontalSliderThumb = value; }
 
-        protected override void Ignition() {
-            base.Ignition();
-            myConfg = IGUConfig.Default;
+        protected override void IGUAwake() {
+            base.IGUAwake();
             myColor = IGUColor.DefaultBoxColor;
-            sliderObjectStyle = IGUSkins.GetIGUStyle("Black horizontal slider border");
-            horizontalSliderThumb = IGUSkins.GetIGUStyle("Black horizontal slider border thumb");
             onModifiedSlider = new IGUOnSliderValueEvent();
             onModifiedSliderInt = new IGUOnSliderIntValueEvent();
+            sliderObjectStyle = (IGUStyle)"Black horizontal slider border";
+            horizontalSliderThumb = (IGUStyle)"Black horizontal slider border thumb";
         }
 
         protected override void LowCallOnIGU() {
 
-            GUIStyle style = IGUStyle.GetGUIStyleTemp(sliderObjectStyle, 0);
-            GUIStyle style2 = IGUStyle.GetGUIStyleTemp(horizontalSliderThumb, 1);
+            sliderObjectStyle = sliderObjectStyle ?? (IGUStyle)"Black horizontal slider border";
 
             MaxMinSlider temp = isInt ? maxMinSlider.ToMaxMinSliderInt() : maxMinSlider;
             value = Mathf.Clamp(value, temp.Min, temp.Max);
 
-            float valuetemp = GUI.HorizontalSlider(GetRect(), isInt ? ValueToInt : value, temp.Min, temp.Max, style, style2);
+            float valuetemp = BackEndIGU.Slider(LocalRect, isInt ? ValueToInt : value, temp, true,
+                    sliderObjectStyle, horizontalSliderThumb);
 
             if (valuetemp != value)
-                if (IGUDrawer.Drawer.GetMouseButton(myConfg.MouseType)) {
+                if (IGUDrawer.Drawer.GetMouseButton(LocalConfig.MouseType)) {
                     value = valuetemp;
                     onModifiedSlider.Invoke(value);
                     onModifiedSliderInt.Invoke((int)value);

@@ -14,24 +14,26 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
 
         public IGUOnClickEvent OnClick => onClick;
         public virtual bool Clicked => GetClicked();
-        public IGUStyle ButtonStyle { get => buttonStyle; set => buttonStyle = value; }
+        public IGUStyle ButtonStyle { 
+            get => buttonStyle;
+            set => buttonStyle = value ?? (IGUStyle)"Black button border";
+        }
 
-        protected override void Ignition() {
-            base.Ignition();
-            myConfg = IGUConfig.Default;
-            myRect = IGURect.DefaultButton;
-            myColor = IGUColor.DefaultBoxColor;
-            buttonStyle = IGUSkins.GetIGUStyle("Black button border");
-            content = new IGUContent(DefaultContentIGUButton);
-            onClick = new IGUOnClickEvent();
+        protected override void IGUAwake() {
+            base.IGUAwake();
             clicked = new bool[2];
+            myRect = IGURect.DefaultButton;
+            onClick = new IGUOnClickEvent();
+            myColor = IGUColor.DefaultBoxColor;
+            buttonStyle = (IGUStyle)"Black button border";
+            content = new IGUContent(DefaultContentIGUButton);
             (this as IIGUSerializationCallbackReceiver).Reserialization();
         }
 
         protected override void LowCallOnIGU() {
-
+            buttonStyle.RichText = richText;
             if (BackEndIGU.Button(LocalRect, MyContent, buttonStyle))
-                if (IGUDrawer.Drawer.GetMouseButtonUp(myConfg.MouseType)) {
+                if (IGUDrawer.Drawer.GetMouseButtonUp(LocalConfig.MouseType)) {
                     onClick.Invoke();
                     clicked[1] = true;
                 }
@@ -40,9 +42,6 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
                 if (LocalRect.ModifiedRect.Contains(IGUDrawer.Drawer.GetMousePosition()))
                     DrawTooltip();
         }
-
-        protected override GUIContent GetGUIContent(string defaultGUIContent)
-            => base.GetGUIContent(defaultGUIContent);
 
         protected override void DrawTooltip()
             => base.DrawTooltip();

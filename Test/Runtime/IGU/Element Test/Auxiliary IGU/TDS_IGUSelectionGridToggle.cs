@@ -5,8 +5,8 @@ using Cobilas.Unity.Graphics.IGU.Elements;
 namespace Cobilas.Unity.Graphics.IGU {
     public sealed class TDS_IGUSelectionGridToggle : IGUObject {
         [SerializeField] private int index;
-        [SerializeField] private bool oneClick;
         [SerializeField] private bool _checked;
+        [SerializeField] private bool onclicked;
         [SerializeField] private IGUStyle style;
         [SerializeField] private bool useTooltip;
         [SerializeField] private bool checkedtemp;
@@ -34,10 +34,11 @@ namespace Cobilas.Unity.Graphics.IGU {
             internal set => onChecked.Invoke(checkedtemp = _checked = value);
         }
 
-        protected override void Ignition() {
-            base.Ignition();
-            oneClick = true;
-            useTooltip = false;
+        protected override void IGUAwake() {
+            base.IGUAwake();
+            useTooltip =
+                checkedtemp =
+                _checked = false;
             myRect = IGURect.DefaultButton;
             onClick = new IGUOnClickEvent();
             checkBoxOn = new IGUOnClickEvent();
@@ -49,46 +50,25 @@ namespace Cobilas.Unity.Graphics.IGU {
         }
 
         protected override void LowCallOnIGU() {
-            Rect rect = IGURect.rectTemp;
-            rect.position = LocalRect.ModifiedPosition;
-            rect.size = LocalRect.ModifiedSize;
 
-            checkedtemp = GUI.Toggle(rect, checkedtemp, (GUIContent)myContent, (GUIStyle)style);
-            //rect.size = MyRect.SetScaleFactor(GetParentRoot(this).MyRect.ScaleFactor).ModifiedSize;
-            Debug.Log($"{Text}|{rect}");
+            checkedtemp = BackEndIGU.Toggle(LocalRect, checkedtemp, myContent, style);
 
-            bool isRect = rect.Contains(IGUDrawer.Drawer.GetMousePosition());
-            if (isRect && IGUDrawer.Drawer.GetMouseButton(myConfg.MouseType)) {
-                //Debug.Log($"TG|{checkedtemp}|{Text}");
-                _checked = checkedtemp;
-                onClick.Invoke();
-                onChecked.Invoke(checkedtemp);
-            }
-
-            // if (checkedtemp) {
-            //     if (oneClick && rect.Contains(IGUDrawer.Drawer.GetMousePosition()))
-            //         ModChecked(checkedtemp, false);
-            // } else {
-            //     if (!oneClick && rect.Contains(IGUDrawer.Drawer.GetMousePosition()))
-            //         ModChecked(checkedtemp, true);
-            // }
+            bool isRect = LocalRect.ModifiedRect.Contains(IGUDrawer.Drawer.GetMousePosition());
+            if (IGUDrawer.Drawer.GetMouseButton(LocalConfig.MouseType))
+                onclicked = true;
+            if (Event.current.type == EventType.Repaint)
+                if (isRect && _checked != checkedtemp && onclicked) {
+                    onclicked = false;
+                    onClick.Invoke();
+                    Debug.Log($"{_checked}|{checkedtemp}|{Text}");
+                    onChecked.Invoke(_checked = checkedtemp);
+                }
 
             if (_checked) checkBoxOn.Invoke();
             else checkBoxOff.Invoke();
 
             if (useTooltip && isRect)
                 DrawTooltip();
-        }
-
-        public void Select(bool check) => oneClick = !(_checked = check);
-
-        private void ModChecked(bool modChecked, bool modOneClick) {
-            if (IGUDrawer.Drawer.GetMouseButton(myConfg.MouseType)) {
-                _checked = modChecked;
-                oneClick = modOneClick;
-                onClick.Invoke();
-                onChecked.Invoke(modChecked);
-            }
         }
 
         private void DrawTooltip() {

@@ -8,26 +8,26 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
         private bool onClicked;
 
         public override bool Clicked => clicked[0];
-        protected override void Ignition() {
-            base.Ignition();
+        protected override void IGUAwake() {
+            base.IGUAwake();
             content = new IGUContent(DefaultContentIGURepeatButton);
             onRepeatClick = new IGUOnClickEvent();
         }
 
         protected override void LowCallOnIGU() {
 
-            bool restemp = GUI.RepeatButton(GetRect(), GetGUIContent(DefaultContentIGURepeatButton),
-                IGUStyle.GetGUIStyleTemp(buttonStyle));
+            bool restemp = BackEndIGU.RepeatButton(LocalRect, MyContent, buttonStyle);
 
             if (restemp) {
-                if (IGUDrawer.Drawer.GetMouseButton(myConfg.MouseType)) RepeatButtonClick();
+                if (IGUDrawer.Drawer.GetMouseButton(LocalConfig.MouseType))
+                    RepeatButtonClick();
             } else {
                 clicked[0] = false;
                 onClicked = true;
             }
 
             if (useTooltip)
-                if (GetRect(true).Contains(IGUDrawer.Drawer.GetMousePosition()))
+                if (LocalRect.ModifiedRect.Contains(IGUDrawer.Drawer.GetMousePosition()))
                     DrawTooltip();
         }
 
@@ -42,8 +42,5 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
 
         protected override void DrawTooltip()
             => base.DrawTooltip();
-
-        protected override GUIContent GetGUIContent(string defaultGUIContent)
-            => base.GetGUIContent(defaultGUIContent);
     }
 }

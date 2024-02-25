@@ -11,35 +11,34 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
         public IGUOnSliderValueEvent OnModifiedScrollbar => onModifiedScrollbar;
         public IGUOnSliderIntValueEvent OnModifiedScrollbarInt => onModifiedScrollbarInt;
         public float ScrollbarThumbSize { get => scrollbarThumbSize; set => scrollbarThumbSize = value; }
-        public IGUStyle SliderObjectThumbStyle { get => sliderObjectThumbStyle; set => sliderObjectThumbStyle = value; }
+        public IGUStyle SliderObjectThumbStyle { 
+            get => sliderObjectThumbStyle;
+            set => sliderObjectThumbStyle = value ?? (IGUStyle)"Black vertical scrollbar border thumb";
+        }
 
-        protected override void Ignition() {
-            base.Ignition();
-            myConfg = IGUConfig.Default;
+        protected override void IGUAwake() {
+            base.IGUAwake();
+            scrollbarThumbSize = 0f;
             myColor = IGUColor.DefaultBoxColor;
             myRect = myRect.SetSize(25f, 130f);
-            sliderObjectStyle = IGUSkins.GetIGUStyle("Black vertical scrollbar border");
-            sliderObjectThumbStyle = IGUSkins.GetIGUStyle("Black vertical scrollbar border thumb");
             onModifiedScrollbar = new IGUOnSliderValueEvent();
             onModifiedScrollbarInt = new IGUOnSliderIntValueEvent();
-            scrollbarThumbSize = 0f;
+            sliderObjectStyle = (IGUStyle)"Black vertical scrollbar border";
+            sliderObjectThumbStyle = (IGUStyle)"Black vertical scrollbar border thumb";
         }
 
         protected override void LowCallOnIGU() {
 
-            GUIStyle style = IGUStyle.GetGUIStyleTemp(sliderObjectStyle, 0);
-            GUIStyle style2 = IGUStyle.GetGUIStyleTemp(sliderObjectThumbStyle, 1);
+            sliderObjectStyle = sliderObjectStyle ?? (IGUStyle)"Black vertical scrollbar border";
 
             MaxMinSlider temp = isInt ? maxMinSlider.ToMaxMinSliderInt() : maxMinSlider;
             value = Mathf.Clamp(value, temp.Min, temp.Max - scrollbarThumbSize);
 
-            Rect rect = GetRect();
-
-            float valuetemp = GUI.Slider(rect, isInt ? ValueToInt : value, scrollbarThumbSize,
-                temp.Min, temp.Max, style, style2, false, GUIUtility.GetControlID(FocusType.Passive, rect));
+            float valuetemp = BackEndIGU.Slider(LocalRect, isInt ? ValueToInt : value, scrollbarThumbSize, temp, false,
+                    sliderObjectStyle, sliderObjectThumbStyle);
 
             if (valuetemp != value)
-                if (IGUDrawer.Drawer.GetMouseButton(myConfg.MouseType)) {
+                if (IGUDrawer.Drawer.GetMouseButton(LocalConfig.MouseType)) {
                     value = valuetemp;
                     onModifiedScrollbar.Invoke(value);
                     onModifiedScrollbarInt.Invoke((int)value);

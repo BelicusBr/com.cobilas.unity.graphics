@@ -38,12 +38,12 @@ namespace Cobilas.Unity.Graphics.IGU {
         public void Add(IGUObject item) {
             if (!IsRegistered(item)) {
                 item.Container = this;
-                AddDeepAction(item.MyConfg.Depth).Add(item);
+                AddDeepAction(item.MyConfig.Depth).Add(item);
             }
         }
 
         public bool Remove(IGUObject item) {
-            DeepAction deep = GetDeepAction(item.MyConfg.Depth);
+            DeepAction deep = GetDeepAction(item.MyConfig.Depth);
             if (deep != null)
                 if (deep.Remove(item)) {
                     item.Container = null;

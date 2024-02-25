@@ -19,8 +19,8 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
             set => rectView.position = scrollView = value.Invert(autoInvert, autoInvert);
         }
 
-        protected override void Ignition() {
-            base.Ignition();
+        protected override void IGUAwake() {
+            base.IGUAwake();
             autoInvert = true;
             myRect = IGURect.DefaultBox;
             myColor = IGUColor.DefaultBoxColor;
@@ -28,36 +28,11 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
         }
 
         protected override void LowCallOnIGU() {
-            GUI.BeginClip(GetRect(), scrollView, Vector2.zero, false);
+            BackEndIGU.BeginClip(LocalRect, scrollView);
             isClipping = true;
             RectClipAction?.Invoke(RectView);
             isClipping = false;
-            GUI.EndClip();
+            BackEndIGU.EndClip();
         }
-
-        // private Rect AdjustRectview(Vector2 pos) {
-        //     Rect rect = rectView;
-        //     rect.position = pos;
-        //     return AdjustRectview(rect);
-        // }
-
-        // private Rect GetRectView() {
-        //     rectView.position = -rectView.position;
-        //     return rectView;
-        // }
-
-        // private Rect AdjustRectview(Rect rect) {
-        //     rect.position = -rect.position;
-        //     rect.x = rect.x > 0f ? 0f : rect.x;
-        //     rect.y = rect.y > 0f ? 0f : rect.y;
-        //     Rect rect2 = GetRect();
-        //     float resx = rect.width - rect2.width;
-        //     if (resx < 0) rect.x = 0f;
-        //     else rect.x = Mathf.Abs(rect.x) > resx ? -resx : rect.x;
-        //     float resy = rect.height - rect2.height;
-        //     if (resy < 0) rect.y = 0f;
-        //     else rect.y = Mathf.Abs(rect.y) > resy ? -resy : rect.y;
-        //     return rect;
-        // }
     }
 }

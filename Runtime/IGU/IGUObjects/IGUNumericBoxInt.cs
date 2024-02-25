@@ -17,9 +17,7 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
         public int Value { get => value; set => this.value = value; }
         public IGUOnClickEvent ButtonLeftOnClick => buttonLeft.OnClick;
         public IGUOnClickEvent ButtonRightOnClick => buttonRight.OnClick;
-        /// <summary>Valor de soma ou subtração.(1 valor padrão)</summary>
         public int AdditionValue { get => additionValue; set => additionValue = value; }
-        /// <summary>-130x130 pareão, <see cref="MaxMinSliderInt"/>.Zero para ser ilimitado.</summary>
         public MaxMinSliderInt MaxMin { get => maxMinSlider; set => maxMinSlider = value; }
         public string Tooltip { get => textField.ToolTip; set => textField.ToolTip = value; }
         public bool UseTooltip { get => textField.UseTooltip; set => textField.UseTooltip = value; }
@@ -28,11 +26,10 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
         public IGUStyle ButtonRightStyle { get => buttonRight.ButtonStyle; set => buttonRight.ButtonStyle = value; }
         public IGUStyle TextFieldStyle { get => textField.TextFieldStyle; set => textField.TextFieldStyle = value; }
 
-        protected override void Ignition() {
-            base.Ignition();
+        protected override void IGUAwake() {
+            base.IGUAwake();
             value = 0;
             additionValue = 1;
-            myConfg = IGUConfig.Default;
             myColor = IGUColor.DefaultBoxColor;
             maxMinSlider = new MaxMinSliderInt(-130, 130);
             myRect = IGURect.DefaultButton.SetSize(50f, 32f);

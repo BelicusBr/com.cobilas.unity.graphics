@@ -10,7 +10,6 @@ using Cobilas.Unity.Management.Runtime;
 
 public class IGU_TDS : MonoBehaviour {
 
-    [SerializeField] private IGUButton button;
     [SerializeField] private IGUComboBox comboBox;
 
     [StartAfterSceneLoad]
@@ -26,14 +25,12 @@ public class IGU_TDS : MonoBehaviour {
 
         comboBox.Clear();
         comboBox.Add($"TDS/None");
+        comboBox.Add($"TDS/Comun");
         comboBox.Add($"TDS/{nameof(IGUComboBox)}");
         comboBox.Add($"TDS/{nameof(IGUScrollView)}");
         comboBox.Add($"TDS/{nameof(IGUSelectionGrid)}");
 
         comboBox.Index = 0;
-        button = IGUObject.CreateIGUInstance<IGUButton>("#TDS21574");
-        _ = button.ApplyToGenericContainer();
-        button.MyRect = button.MyRect.SetPosition(Vector2.right * 150f);
 
         DontDestroyOnLoad(gameObject);
     }
@@ -55,13 +52,24 @@ public class IGU_TDS : MonoBehaviour {
                 AsyncOperation operation = SceneManager.UnloadSceneAsync(scene);
 
                 if (operation is null)
+                    Load(button, typeof(TDS_IGUComun));
+                else
+                    operation.completed += (o) => {
+                        Load(button, typeof(TDS_IGUComun));
+                    };
+                break;
+            case 2:
+                scene = SceneManager.GetActiveScene();
+                operation = SceneManager.UnloadSceneAsync(scene);
+
+                if (operation is null)
                     Load(button, typeof(TDS_IGUCBX));
                 else
                     operation.completed += (o) => {
                         Load(button, typeof(TDS_IGUCBX));
                     };
                 break;
-            case 2:
+            case 3:
                 scene = SceneManager.GetActiveScene();
                 operation = SceneManager.UnloadSceneAsync(scene);
 
@@ -72,7 +80,7 @@ public class IGU_TDS : MonoBehaviour {
                         Load(button, typeof(TDS_IGUSCV));
                     };
                 break;
-            case 3:
+            case 4:
                 scene = SceneManager.GetActiveScene();
                 operation = SceneManager.UnloadSceneAsync(scene);
 

@@ -9,34 +9,37 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
         [SerializeField] protected IGURect myRect;
         [SerializeField] protected IGUColor myColor;
         [SerializeField] protected IGUObject parent;
-        [SerializeField] protected IGUConfig myConfg;
+        [SerializeField] protected IGUConfig myConfig;
         [SerializeField] protected IGUContainer container;
 #if UNITY_EDITOR
         [SerializeField] private bool foldout;
 #endif
 
         public IGURect LocalRect => GetLocalPosition(this);
+        public IGUConfig LocalConfig => GetLocalConfig(this);
         public IGURect MyRect { get => myRect; set => myRect = value; }
         public IGUObject Parent { get => parent; set => parent = value; }
         public IGUColor MyColor { get => myColor; set => myColor = value; }
-        public IGUConfig MyConfg { get => myConfg; set => myConfg = value; }
+        public IGUConfig MyConfig { get => myConfig; set => myConfig = value; }
         public IGUContainer Container { get => container; set => container = value; }
-
-        protected virtual void Ignition() {
-            myConfg = IGUConfig.Default;
-            myColor = IGUColor.DefaultBoxColor;
-        }
-        protected virtual void Start() { }
-        protected virtual void IgnitionEnable() { }
-        protected virtual void IgnitionDisable() { }
-        protected virtual void DestroyIgnition() { }
 
         public void OnIGU() {
             GUI.SetNextControlName(name);
-            IGUConfig config = GetModIGUConfig();
+            IGUConfig config = LocalConfig;
             bool oldEnabled = GUI.enabled;
             GUI.enabled = config.IsEnabled;
             if (config.IsVisible) {
+                myRect.SetScaleFactor(IGUDrawer.ScaleFactor);
+                Vector2 pivot = myRect.Pivot;
+                pivot.x = Mathf.Clamp(pivot.x, 0f, 1f);
+                pivot.y = Mathf.Clamp(pivot.y, 0f, 1f);
+                myRect.SetPivot(pivot);
+
+                if (myRect.Rotation > 360f)
+                    myRect.SetRotation(0f);
+                if (myRect.Rotation < -360f)
+                    myRect.SetRotation(0f);
+
                 (this as IIGUObject).InternalPreOnIGU();
                 LowCallOnIGU();
                 (this as IIGUObject).InternalPostOnIGU();
@@ -63,30 +66,13 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
                 container.Remove(this);
         }
 
-        protected IGUConfig GetModIGUConfig() {
-            if (parent != null) {
-                return myConfg.SetDepth(parent.GetModIGUConfig().Depth)
-                    .SetEnabled(parent.GetModIGUConfig().IsEnabled && myConfg.IsEnabled)
-                    .SetVisible(parent.GetModIGUConfig().IsVisible && myConfg.IsVisible);
-            }
-            return myConfg;
-        }
-
+        protected virtual void IGUAwake() { }
+        protected virtual void IGUStart() { }
+        protected virtual void IGUOnEnable() { }
+        protected virtual void IGUOnDisable() { }
+        protected virtual void IGUOnDestroy() { }
         protected virtual void PreOnIGU() { }
         protected virtual void PostOnIGU() { }
-
-        [Obsolete]
-        protected Rect GetRect(bool iginoreNotMod) {
-            Rect res = IGURect.rectTemp;
-            IGURect rect = GetLocalPosition(this);
-            res.position = rect.ModifiedPosition;
-            res.size = rect.Size;
-            return res;
-        }
-
-        [Obsolete]
-        protected Rect GetRect() => GetRect(false);
-
         protected virtual void LowCallOnIGU() { }
 
         private void Awake() {
@@ -97,34 +83,23 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
             if (container != null)
                 if (container.Remove(this))
                     Debug.Log(string.Format("{0} removed from container", name));
-            DestroyIgnition();
+            IGUOnDestroy();
             IGUDrawer.RemoveReserialization(this);
         }
 
         private void OnEnable() {
             if (isBuild) return;
-            IgnitionEnable();
+            IGUOnEnable();
         }
 
-        private void OnDisable() => IgnitionDisable();
+        private void OnDisable() => IGUOnDisable();
 
         void IIGUObject.InternalOnIGU() {
 
-            myRect.SetScaleFactor(IGUDrawer.ScaleFactor);
-
-            Vector2 pivot = myRect.Pivot;
-            pivot.x = Mathf.Clamp(pivot.x, 0f, 1f);
-            pivot.y = Mathf.Clamp(pivot.y, 0f, 1f);
-            myRect.SetPivot(pivot);
-
-            if (myRect.Rotation > 360f)
-                myRect.SetRotation(0f);
-            if (myRect.Rotation < -360f)
-                myRect.SetRotation(0f);
-
-            IGUConfig config = GetModIGUConfig();
+            IGUConfig config = LocalConfig;
 
             if (config.IsVisible) {
+                // myRect.SetScaleFactor(IGUDrawer.ScaleFactor);
                 Color oldColor = GUI.color;
                 Color oldContentColor = GUI.contentColor;
                 Color oldBackgroundColor = GUI.backgroundColor;
@@ -132,9 +107,7 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
                 GUI.contentColor = myColor.TextColor;
                 GUI.backgroundColor = myColor.BackgroundColor;
 
-                //IGUUtilityDistortion.Begin(MyRect);
                 OnIGU();
-                //IGUUtilityDistortion.End();
 
                 GUI.color = oldColor;
                 GUI.contentColor = oldContentColor;
@@ -143,7 +116,7 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
         }
 
         void IIGUObject.AlteredDepth(List<IIGUObject> changed, int depth) {
-            if (myConfg.Depth != depth)
+            if (myConfig.Depth != depth)
                 changed.Add(this);
         }
 
@@ -167,23 +140,32 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
                 throw new IGUException("The target class cannot be abstract.");
             IGUObject instance = (IGUObject)CreateInstance(type.Name);
             instance.name = name;
-            instance.Ignition();
-            instance.Start();
-            instance.IgnitionEnable();
+            instance.myConfig = IGUConfig.Default;
+            instance.myColor = IGUColor.DefaultBoxColor;
+            instance.IGUAwake();
+            instance.IGUOnEnable();
+            instance.IGUStart();
             instance.isBuild = false;
             if (instance is IIGUSerializationCallbackReceiver)
                 IGUDrawer.AddReserialization(instance);
             return instance;
         }
 
-        public static IGUObject GetParentRoot(IGUObject obj) {
-            if (obj.parent == null) return obj;
-            return GetParentRoot(obj.parent);
+        public static IGUConfig GetLocalConfig(IGUObject obj) {
+            if (obj.parent != null) {
+                IGUConfig myConfig = obj.myConfig;
+                IGUConfig config = GetLocalConfig(obj.parent);
+                return myConfig.SetEnabled(myConfig.IsEnabled && config.IsEnabled)
+                    .SetVisible(myConfig.IsVisible && config.IsVisible)
+                    .SetMouseButtonType(config.MouseType);
+            }
+            return obj.myConfig;
         }
 
         public static IGURect GetLocalPosition(IGUObject obj) {
             if (obj.parent != null) {
-                if (obj.parent is IIGUClipping cli && cli.IsClipping) return obj.myRect;
+                if (obj.parent is IIGUClipping cli && cli.IsClipping) 
+                    return obj.myRect.SetScaleFactor(GetLocalPosition(obj.parent).ScaleFactor);
                 IGURect res = obj.myRect;
                 return res.SetScaleFactor(GetLocalPosition(obj.parent).ScaleFactor)
                     .SetPosition(res.Position + GetLocalPosition(obj.parent).Position);

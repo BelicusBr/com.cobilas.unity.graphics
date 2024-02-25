@@ -18,9 +18,8 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
         public float BorderWidth { get => borderWidths.Summation() / 4f; set => borderWidths = Vector4.one * value; }
         public float BorderRadius { get => borderRadiuses.Summation() / 4f; set => borderRadiuses = Vector4.one * value; }
 
-        protected override void Ignition() {
-            base.Ignition();
-            myConfg = IGUConfig.Default;
+        protected override void IGUAwake() {
+            base.IGUAwake();
             myRect = IGURect.DefaultBox;
             myColor = IGUColor.DefaultBoxColor;
             texture = Texture2D.whiteTexture;
@@ -33,7 +32,8 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
 
         protected override void LowCallOnIGU() {
             
-            GUI.DrawTexture(GetRect(), texture, scaleMode, alphaBlend, imageAspect, myColor.MyColor, borderWidths, borderRadiuses);
+            BackEndIGU.DrawTexture(LocalRect, texture, scaleMode, AlphaBlend, imageAspect, myColor.MyColor,
+                    borderWidths, borderRadiuses);
         }
     }
 }

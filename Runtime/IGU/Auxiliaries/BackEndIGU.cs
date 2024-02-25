@@ -1,4 +1,5 @@
 using UnityEngine;
+using Cobilas.Unity.Graphics.IGU.Elements;
 
 namespace Cobilas.Unity.Graphics.IGU {
     public static class BackEndIGU {
@@ -7,6 +8,7 @@ namespace Cobilas.Unity.Graphics.IGU {
             Rect rect = IGURect.rectTemp;
             rect.position = position.ModifiedPosition;
             rect.size = position.ModifiedSize;
+            Debug.Log($"{position}|{scrollOffset}");
             GUI.BeginClip(rect, scrollOffset, renderOffset, resetOffset);
         }
 
@@ -20,7 +22,7 @@ namespace Cobilas.Unity.Graphics.IGU {
             Rect recttemp = IGURect.rectTemp;
             recttemp.position = rect.ModifiedPosition;
             recttemp.size = rect.Size;
-            GUI.Box(recttemp, (GUIContent)content, (GUIStyle)style);
+            GUI.Box(recttemp, IGUTextObject.GetGUIContentTemp(content), (GUIStyle)style);
             IGUUtilityDistortion.End();
         }
 
@@ -59,7 +61,7 @@ namespace Cobilas.Unity.Graphics.IGU {
             Rect recttemp = IGURect.rectTemp;
             recttemp.position = clientRect.ModifiedPosition;
             recttemp.size = clientRect.Size;
-            recttemp = GUI.Window(id, recttemp, func, (GUIContent)content, (GUIStyle)style);
+            recttemp = GUI.Window(id, recttemp, func, IGUTextObject.GetGUIContentTemp(content), (GUIStyle)style);
             IGUUtilityDistortion.End();
             return clientRect.SetModifiedPosition(recttemp.position);
         }
@@ -79,7 +81,7 @@ namespace Cobilas.Unity.Graphics.IGU {
             Rect recttemp = IGURect.rectTemp;
             recttemp.position = rect.ModifiedPosition;
             recttemp.size = rect.Size;
-            GUI.Label(recttemp, (GUIContent)content, (GUIStyle)style);
+            GUI.Label(recttemp, IGUTextObject.GetGUIContentTemp(content), (GUIStyle)style);
             IGUUtilityDistortion.End();
         }
 
@@ -102,7 +104,7 @@ namespace Cobilas.Unity.Graphics.IGU {
             Rect recttemp = IGURect.rectTemp;
             recttemp.position = rect.ModifiedPosition;
             recttemp.size = rect.Size;
-            bool res = GUI.Button(recttemp, (GUIContent)content, (GUIStyle)style);
+            bool res = GUI.Button(recttemp, IGUTextObject.GetGUIContentTemp(content), (GUIStyle)style);
             IGUUtilityDistortion.End();
             return res;
         }
@@ -112,7 +114,7 @@ namespace Cobilas.Unity.Graphics.IGU {
             Rect recttemp = IGURect.rectTemp;
             recttemp.position = rect.ModifiedPosition;
             recttemp.size = rect.Size;
-            bool res = GUI.RepeatButton(recttemp, (GUIContent)content, (GUIStyle)style);
+            bool res = GUI.RepeatButton(recttemp, IGUTextObject.GetGUIContentTemp(content), (GUIStyle)style);
             IGUUtilityDistortion.End();
             return res;
         }
@@ -122,7 +124,7 @@ namespace Cobilas.Unity.Graphics.IGU {
             Rect recttemp = IGURect.rectTemp;
             recttemp.position = rect.ModifiedPosition;
             recttemp.size = rect.Size;
-            bool res = GUI.Toggle(recttemp, value, (GUIContent)content, (GUIStyle)style);
+            bool res = GUI.Toggle(recttemp, value, IGUTextObject.GetGUIContentTemp(content), (GUIStyle)style);
             IGUUtilityDistortion.End();
             return res;
         }
@@ -234,7 +236,7 @@ namespace Cobilas.Unity.Graphics.IGU {
                     break;
                 case EventType.Repaint:
                     if (GUIUtility.keyboardControl != ID)
-                        editor.style.Draw(editor.position, (GUIContent)content, ID);
+                        editor.style.Draw(editor.position, IGUTextObject.GetGUIContentTemp(content), ID);
                     else editor.DrawCursor(content.Text);
                     break;
             }

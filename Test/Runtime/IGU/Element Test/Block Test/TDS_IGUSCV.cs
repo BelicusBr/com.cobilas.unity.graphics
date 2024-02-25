@@ -8,7 +8,7 @@ public class TDS_IGUSCV : MonoBehaviour {
     [SerializeField, HideInInspector] private IGUButton button2;
     [SerializeField, HideInInspector] private IGUButton button3;
 
-    private void Start() {
+    private void Awake() {
         scrollView = IGUObject.CreateIGUInstance<IGUScrollView>("#TDS7321");
         _ = scrollView.ApplyToGenericContainer();
         scrollView.MyRect = scrollView.MyRect.SetPosition(150f, 0f);

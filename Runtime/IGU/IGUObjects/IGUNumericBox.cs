@@ -19,24 +19,20 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
         public float Value { get => value; set => this.value = value; }
         public IGUOnClickEvent ButtonLeftOnClick => buttonLeft.OnClick;
         public IGUOnClickEvent ButtonRightOnClick => buttonRight.OnClick;
-        /// <summary>-130x130 pareão, <see cref="MaxMinSlider"/>.Zero para ser ilimitado.</summary>
         public MaxMinSlider MaxMin { get => maxMinSlider; set => maxMinSlider = value; }
-        /// <summary>Valor de soma ou subtração.(.001f valor padrão)</summary>
         public float AdditionValue { get => additionValue; set => additionValue = value; }
         public string Tooltip { get => textField.ToolTip; set => textField.ToolTip = value; }
         public bool UseTooltip { get => textField.UseTooltip; set => textField.UseTooltip = value; }
         public IGUStyle TooltipStyle { get => textField.TooltipStyle; set => textField.TooltipStyle = value; }
         public IGUStyle ButtonLeftStyle { get => buttonLeft.ButtonStyle; set => buttonLeft.ButtonStyle = value; }
-        /// <summary>Quantas casas decimais para ser exibida.(N3 padrão)</summary>
         public string NumberOfDecimalPlaces { get => numberOfDecimalPlaces; set => numberOfDecimalPlaces = value; }
         public IGUStyle ButtonRightStyle { get => buttonRight.ButtonStyle; set => buttonRight.ButtonStyle = value; }
         public IGUStyle TextFieldStyle { get => textField.TextFieldStyle; set => textField.TextFieldStyle = value; }
 
-        protected override void Ignition() {
-            base.Ignition();
+        protected override void IGUAwake() {
+            base.IGUAwake();
             value = 0f;
             additionValue = .001f;
-            myConfg = IGUConfig.Default;
             numberOfDecimalPlaces = "N3";
             myColor = IGUColor.DefaultBoxColor;
             maxMinSlider = new MaxMinSlider(-130f, 130f);
