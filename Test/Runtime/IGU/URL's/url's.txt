@@ -1,0 +1,6 @@
+https://www.ronja-tutorials.com/post/021-plane-clipping/
+https://forum.unity.com/threads/shader-graph-how-to-make-a-simple-clipping-shader.583513/
+https://forum.unity.com/threads/clipping-shader.536783/
+https://forum.unity.com/threads/scissor-rectangle.37612/
+https://forum.unity.com/threads/2d-rect-mask-rotation-skewed-mask-shape.396847/
+https://forum.unity.com/threads/rectmask2d-shader-requirements.496333/
