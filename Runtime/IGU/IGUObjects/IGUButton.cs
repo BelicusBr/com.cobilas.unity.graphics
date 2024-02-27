@@ -5,7 +5,7 @@ using Cobilas.Unity.Graphics.IGU.Events;
 using Cobilas.Unity.Graphics.IGU.Interfaces;
 
 namespace Cobilas.Unity.Graphics.IGU.Elements {
-    public class IGUButton : IGUTextObject, IIGUSerializationCallbackReceiver {
+    public class IGUButton : IGUTextObject, IIGUEndOfFrame {
         public const string DefaultContentIGUButton = "IGU Button";
         private readonly List<string> stackTraceCount = new List<string>();
         [SerializeField] protected bool[] clicked;
@@ -14,38 +14,30 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
 
         public IGUOnClickEvent OnClick => onClick;
         public virtual bool Clicked => GetClicked();
-        public IGUStyle ButtonStyle { get => buttonStyle; set => buttonStyle = value; }
+        public IGUStyle ButtonStyle { 
+            get => buttonStyle;
+            set => buttonStyle = value ?? (IGUStyle)"Black button border";
+        }
 
-        protected override void Ignition() {
-            base.Ignition();
-            myConfg = IGUConfig.Default;
-            myRect = IGURect.DefaultButton;
-            myColor = IGUColor.DefaultBoxColor;
-            buttonStyle = IGUSkins.GetIGUStyle("Black button border");
-            content = new IGUContent(DefaultContentIGUButton);
-            onClick = new IGUOnClickEvent();
+        protected override void IGUAwake() {
+            base.IGUAwake();
             clicked = new bool[2];
+            myRect = IGURect.DefaultButton;
+            onClick = new IGUOnClickEvent();
+            myColor = IGUColor.DefaultBoxColor;
+            buttonStyle = (IGUStyle)"Black button border";
+            content = new IGUContent(DefaultContentIGUButton);
             (this as IIGUSerializationCallbackReceiver).Reserialization();
         }
 
         protected override void LowCallOnIGU() {
-
-            if (GUI.Button(GetRect(), GetGUIContent(DefaultContentIGUButton), IGUStyle.GetGUIStyleTemp(buttonStyle)))
-                if (IGUDrawer.Drawer.GetMouseButtonUp(myConfg.MouseType)) {
+            buttonStyle.RichText = richText;
+            if (BackEndIGU.Button(LocalRect, MyContent, buttonStyle))
+                if (IGUDrawer.Drawer.GetMouseButtonUp(LocalConfig.MouseType)) {
                     onClick.Invoke();
                     clicked[1] = true;
                 }
-
-            if (useTooltip)
-                if (GetRect(true).Contains(IGUDrawer.Drawer.GetMousePosition()))
-                    DrawTooltip();
         }
-
-        protected override GUIContent GetGUIContent(string defaultGUIContent)
-            => base.GetGUIContent(defaultGUIContent);
-
-        protected override void DrawTooltip()
-            => base.DrawTooltip();
 
         protected virtual void Reset() {
             clicked[0] = clicked[1];
@@ -63,10 +55,9 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
             return false;
         }
 
+        void IIGUEndOfFrame.EndOfFrame() => Reset();
+
         public static string PickUpWhereItWasCalled(int skipFrames = 1)
             => new StackTrace(skipFrames).GetFrame(0).GetMethod().Name;
-
-        void IIGUSerializationCallbackReceiver.Reserialization()
-            => IGUDrawer.EventEndOfFrame += Reset;
     }
 }

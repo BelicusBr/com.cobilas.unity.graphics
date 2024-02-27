@@ -6,32 +6,39 @@ using Cobilas.Unity.Graphics.IGU.Elements;
 using Cobilas.Unity.Graphics.IGU;
 using UnityEngine.SceneManagement;
 using Cobilas.Collections;
+using Cobilas.Unity.Management.Runtime;
+using System.Text;
 
 public class IGU_TDS : MonoBehaviour {
 
     [SerializeField] private IGUComboBox comboBox;
 
-    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
+    [StartAfterSceneLoad]
     static void Init() {
         GameObject gob = new GameObject("SWITCH_IGU_TDS", typeof(IGU_TDS));
         gob.isStatic = true;
         gob.SetPosition(Vector3.zero);
     }
 
-    void Start() {
-        comboBox = IGUObject.CreateIGUInstance<IGUComboBox>("#TDS1");
+    private void Awake() {
+        comboBox = IGUObject.Create<IGUComboBox>("#TDS1");
         _ = comboBox.ApplyToPermanentGenericContainer();
 
         comboBox.Clear();
         comboBox.Add($"TDS/None");
+        comboBox.Add($"TDS/Comun");
         comboBox.Add($"TDS/{nameof(IGUComboBox)}");
         comboBox.Add($"TDS/{nameof(IGUScrollView)}");
+        comboBox.Add($"TDS/{nameof(IGUSelectionGrid)}");
+        comboBox.Add($"TDS/{nameof(IGUNumericBox)}");
 
         comboBox.Index = 0;
 
-        comboBox.OnSelectedIndex.AddListener(SceneChange);
-
         DontDestroyOnLoad(gameObject);
+    }
+
+    private void OnEnable() {
+        comboBox.OnSelectedIndex.AddListener(SceneChange);
     }
 
     void SceneChange(IGUComboBoxButton button) {
@@ -47,13 +54,24 @@ public class IGU_TDS : MonoBehaviour {
                 AsyncOperation operation = SceneManager.UnloadSceneAsync(scene);
 
                 if (operation is null)
+                    Load(button, typeof(TDS_IGUComun));
+                else
+                    operation.completed += (o) => {
+                        Load(button, typeof(TDS_IGUComun));
+                    };
+                break;
+            case 2:
+                scene = SceneManager.GetActiveScene();
+                operation = SceneManager.UnloadSceneAsync(scene);
+
+                if (operation is null)
                     Load(button, typeof(TDS_IGUCBX));
                 else
                     operation.completed += (o) => {
                         Load(button, typeof(TDS_IGUCBX));
                     };
                 break;
-            case 2:
+            case 3:
                 scene = SceneManager.GetActiveScene();
                 operation = SceneManager.UnloadSceneAsync(scene);
 
@@ -62,6 +80,28 @@ public class IGU_TDS : MonoBehaviour {
                 else
                     operation.completed += (o) => {
                         Load(button, typeof(TDS_IGUSCV));
+                    };
+                break;
+            case 4:
+                scene = SceneManager.GetActiveScene();
+                operation = SceneManager.UnloadSceneAsync(scene);
+
+                if (operation is null)
+                    Load(button, typeof(TDS_SCG));
+                else
+                    operation.completed += (o) => {
+                        Load(button, typeof(TDS_SCG));
+                    };
+                break;
+            case 5:
+                scene = SceneManager.GetActiveScene();
+                operation = SceneManager.UnloadSceneAsync(scene);
+
+                if (operation is null)
+                    Load(button, typeof(TDS_NBlock));
+                else
+                    operation.completed += (o) => {
+                        Load(button, typeof(TDS_NBlock));
                     };
                 break;
         }

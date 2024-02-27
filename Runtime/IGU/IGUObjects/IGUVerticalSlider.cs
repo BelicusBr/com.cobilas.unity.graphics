@@ -9,31 +9,32 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
 
         public IGUOnSliderValueEvent OnModifiedSlider => onModifiedSlider;
         public IGUOnSliderIntValueEvent OnModifiedSliderInt => onModifiedSliderInt;
-        public IGUStyle VerticalSliderThumb { get => verticalSliderThumb; set => verticalSliderThumb = value; }
+        public IGUStyle VerticalSliderThumb { 
+            get => verticalSliderThumb;
+            set => verticalSliderThumb = value ?? (IGUStyle)"Black vertical slider border thumb";
+        }
 
-        protected override void Ignition() {
-            base.Ignition();
-            myConfg = IGUConfig.Default;
+        protected override void IGUAwake() {
+            base.IGUAwake();
             myColor = IGUColor.DefaultBoxColor;
             myRect = myRect.SetSize(25f, 130f);
-            sliderObjectStyle = IGUSkins.GetIGUStyle("Black vertical slider border");
-            verticalSliderThumb = IGUSkins.GetIGUStyle("Black vertical slider border thumb");
             onModifiedSlider = new IGUOnSliderValueEvent();
             onModifiedSliderInt = new IGUOnSliderIntValueEvent();
+            sliderObjectStyle = (IGUStyle)"Black vertical slider border";
+            verticalSliderThumb = (IGUStyle)"Black vertical slider border thumb";
         }
 
         protected override void LowCallOnIGU() {
-
-            GUIStyle style = IGUStyle.GetGUIStyleTemp(sliderObjectStyle, 0);
-            GUIStyle style2 = IGUStyle.GetGUIStyleTemp(verticalSliderThumb, 1);
+            sliderObjectStyle = sliderObjectStyle ?? (IGUStyle)"Black vertical slider border";
 
             MaxMinSlider temp = isInt? maxMinSlider.ToMaxMinSliderInt() : maxMinSlider;
             value = Mathf.Clamp(value, temp.Min, temp.Max);
 
-            float valuetemp = GUI.VerticalSlider(GetRect(), isInt ? ValueToInt : value, temp.Min, temp.Max, style, style2);
+            float valuetemp = BackEndIGU.Slider(LocalRect, isInt ? ValueToInt : value, temp, false,
+                    sliderObjectStyle, verticalSliderThumb);
 
             if (valuetemp != value)
-                if (IGUDrawer.Drawer.GetMouseButton(myConfg.MouseType)) {
+                if (IGUDrawer.Drawer.GetMouseButton(LocalConfig.MouseType)) {
                     value = valuetemp;
                     onModifiedSlider.Invoke(value);
                     onModifiedSliderInt.Invoke((int)value);

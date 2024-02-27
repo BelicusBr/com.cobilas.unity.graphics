@@ -24,11 +24,12 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
         public bool IsClipping => rectClip.IsClipping;
         public Vector2 RectClipSize => rectClip.MyRect.Size;
         public IGUScrollViewEvent OnScrollView => onScrollView;
-        public bool VerticalScrollbarIsVisible => verticalScrollbar.MyConfg.IsVisible;
-        public bool HorizontalScrollbarIsVisible => horizontalScrollbar.MyConfg.IsVisible;
+        public bool VerticalScrollbarIsVisible => verticalScrollbar.MyConfig.IsVisible;
+        public bool HorizontalScrollbarIsVisible => horizontalScrollbar.MyConfig.IsVisible;
         public Rect RectView { get => rectClip.RectView; set => rectClip.RectView = value; }
         public Vector2 ScrollView { get => rectClip.ScrollView; set => rectClip.ScrollView = value; }
         public bool AlwaysShowVertical { get => alwaysShowVertical; set => alwaysShowVertical = value; }
+        //Remover
         public Vector2 ScrollPosition { get => rectClip.ScrollView; set => rectClip.ScrollView = value; }
         public bool AlwaysShowHorizontal { get => alwaysShowHorizontal; set => alwaysShowHorizontal = value; }
         public IGUStyle VerticalScrollbarStyle { get => verticalScrollbar.SliderObjectStyle; set => verticalScrollbar.SliderObjectStyle = value; }
@@ -36,12 +37,11 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
         public IGUStyle VerticalScrollbarThumbStyle { get => verticalScrollbar.SliderObjectThumbStyle; set => verticalScrollbar.SliderObjectThumbStyle = value; }
         public IGUStyle HorizontalScrollbarThumbStyle { get => horizontalScrollbar.SliderObjectThumbStyle; set => horizontalScrollbar.SliderObjectThumbStyle = value; }
 
-        protected override void Ignition() {
-            base.Ignition();
-            rectClip = CreateIGUInstance<IGURectClip>($"--[{name}]RectClip");
-            verticalScrollbar = CreateIGUInstance<IGUVerticalScrollbar>($"--[{name}]VerticalScrollbar");
-            horizontalScrollbar = CreateIGUInstance<IGUHorizontalScrollbar>($"--[{name}]HorizontalScrollbar");
-            myConfg = IGUConfig.Default;
+        protected override void IGUAwake() {
+            base.IGUAwake();
+            rectClip = Create<IGURectClip>($"--[{name}]RectClip");
+            verticalScrollbar = Create<IGUVerticalScrollbar>($"--[{name}]VerticalScrollbar");
+            horizontalScrollbar = Create<IGUHorizontalScrollbar>($"--[{name}]HorizontalScrollbar");
             myRect = IGURect.DefaultTextArea;
             myColor = IGUColor.DefaultBoxColor;
             onScrollView = new IGUScrollViewEvent();
@@ -69,17 +69,17 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
             horizontalScrollbar.MaxMinValue = horizontalScrollbar.MaxMinValue.Set(0f, rectClip.RectView.width);
 
             if (vfix.x != 0f || alwaysShowHorizontal) {
-                if (!verticalScrollbar.MyConfg.IsVisible)
-                    verticalScrollbar.MyConfg = verticalScrollbar.MyConfg.SetVisible(true);
+                if (!verticalScrollbar.MyConfig.IsVisible)
+                    verticalScrollbar.MyConfig = verticalScrollbar.MyConfig.SetVisible(true);
 
                 verticalScrollbar.MyRect = verticalScrollbar.MyRect.SetSize(vfix.x, rectClip.MyRect.Height)
                     .SetPosition(rectClip.MyRect.Width, 0f);
                 verticalScrollbar.ScrollbarThumbSize = vsize.y;
                 if (alwaysShowVertical)
-                    verticalScrollbar.MyConfg = verticalScrollbar.MyConfg.SetEnabled(rectClip.RectView.height > myRect.Height);
+                    verticalScrollbar.MyConfig = verticalScrollbar.MyConfig.SetEnabled(rectClip.RectView.height > myRect.Height);
             } else {
-                if (verticalScrollbar.MyConfg.IsVisible)
-                    verticalScrollbar.MyConfg = verticalScrollbar.MyConfg.SetVisible(false);
+                if (verticalScrollbar.MyConfig.IsVisible)
+                    verticalScrollbar.MyConfig = verticalScrollbar.MyConfig.SetVisible(false);
             }
             
             if (vfix.y != 0f || alwaysShowVertical) {
@@ -87,10 +87,10 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
                     .SetPosition(0f, rectClip.MyRect.Height);
                 horizontalScrollbar.ScrollbarThumbSize = vsize.x;
                 if (alwaysShowHorizontal)
-                    horizontalScrollbar.MyConfg = horizontalScrollbar.MyConfg.SetEnabled(rectClip.RectView.width > myRect.Width);
+                    horizontalScrollbar.MyConfig = horizontalScrollbar.MyConfig.SetEnabled(rectClip.RectView.width > myRect.Width);
             } else {
-                if (horizontalScrollbar.MyConfg.IsVisible)
-                    horizontalScrollbar.MyConfg = horizontalScrollbar.MyConfg.SetVisible(false);
+                if (horizontalScrollbar.MyConfig.IsVisible)
+                    horizontalScrollbar.MyConfig = horizontalScrollbar.MyConfig.SetVisible(false);
             }
             
             verticalScrollbar.OnIGU();
@@ -98,15 +98,15 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
 
             Vector2 scrollView = Vector2.zero;
             Vector2 scrollPositiontemp = rectClip.ScrollView;
-            if (horizontalScrollbar.MyConfg.IsVisible)
+            if (horizontalScrollbar.MyConfig.IsVisible)
                 scrollView.x = horizontalScrollbar.Value;
-            if (verticalScrollbar.MyConfg.IsVisible)
+            if (verticalScrollbar.MyConfig.IsVisible)
                 scrollView.y = verticalScrollbar.Value;
             rectClip.ScrollView = scrollView;
             rectClip.OnIGU();
 
             if (scrollPositiontemp != scrollView)
-                if (IGUDrawer.Drawer.GetMouseButton(myConfg.MouseType)) 
+                if (IGUDrawer.Drawer.GetMouseButton(LocalConfig.MouseType)) 
                     onScrollView.Invoke(scrollView);
         }
 

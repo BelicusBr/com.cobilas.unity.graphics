@@ -6,10 +6,9 @@ using Cobilas.Unity.Graphics.IGU.Interfaces;
 
 namespace Cobilas.Unity.Graphics.IGU.Layouts {
     public sealed class IGUHorizontalLayout : IGULayout, IIGUSerializationCallbackReceiver {
-        [SerializeField]
-        private CellIGUObject[] objects;
-        private HorizontalLayoutCellCursor cursor;
         private event Action<CellCursor> sub_OnIGU;
+        [SerializeField] private CellIGUObject[] objects;
+        [SerializeField] private HorizontalLayoutCellCursor cursor;
 
         public Vector2 GridRect => cursor.GridRect;
         public override int Count => ArrayManipulation.ArrayLength(objects);
@@ -19,12 +18,11 @@ namespace Cobilas.Unity.Graphics.IGU.Layouts {
 
         public override IGUObject this[int index] => objects[index].@object;
 
-        protected override void Ignition() {
-            base.Ignition();
+        protected override void IGUAwake() {
+            base.IGUAwake();
             cursor = new HorizontalLayoutCellCursor();
             Spacing = 3f;
             UseCellSize = false;
-            myConfg = IGUConfig.Default;
             CellSize = Vector2.one * 100f;
             myRect = IGURect.DefaultButton;
             myColor = IGUColor.DefaultBoxColor;
@@ -114,7 +112,7 @@ namespace Cobilas.Unity.Graphics.IGU.Layouts {
             public override bool UseCellSize { get => useCellSize; set => useCellSize = value; }
 
             public override void MarkCount(IGUObject @object) {
-                @object.MyRect = @object.MyRect.SetPosition(posW, 0f);
+                @object.MyRect = @object.LocalRect.SetPosition(posW, 0f);
                 posW += spacing + @object.MyRect.Width;
                 gridRect.x = posW;
                 gridRect.y = @object.MyRect.Height > gridRect.y ? @object.MyRect.Height : gridRect.y;
