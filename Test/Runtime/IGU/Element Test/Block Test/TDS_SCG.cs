@@ -10,8 +10,8 @@ public class TDS_SCG : MonoBehaviour {
     [SerializeField] private IGUSelectionGrid selectionGrid;
 
     private void Awake() {
-        selectionGrid = IGUObject.CreateIGUInstance<IGUSelectionGrid>("#TDS6534");
-        IGUContainer container = selectionGrid.ApplyToGenericContainer();
+        selectionGrid = IGUObject.Create<IGUSelectionGrid>("#TDS6534");
+        IGUCanvas container = selectionGrid.ApplyToGenericContainer();
 
         selectionGrid.MyRect = selectionGrid.MyRect.SetPosition(Vector2.right * 150f);
 

@@ -28,13 +28,6 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
             myRect = myRect.SetSize(autoSize ? style.CalcSize(content) + Vector2.right * 2f : myRect.Size);
 
             BackEndIGU.Label(LocalRect, MyContent, labelStyle);
-
-            if (useTooltip)
-                if (LocalRect.ModifiedRect.Contains(Event.current.mousePosition))
-                    DrawTooltip();
         }
-
-        protected override void DrawTooltip()
-            => base.DrawTooltip();
     }
 }

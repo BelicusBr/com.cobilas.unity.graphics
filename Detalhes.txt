@@ -115,3 +115,27 @@ IGUTextObject.GetIGUContentTemp(string);
 ```
 A propriedade 'IGUTextObject.RichText' foi adicionada.
 O método 'IGUTextObject.SetMarkedText(params MarkedText[])' foi adicionando.
+
+//===4.4.1(26/02/2024)
+#Removed
+A classe 'IGUUtilityDistortion' foi removido.
+A estrutura 'DoNotModifyRect' foi removido.
+As propriedades 'IGURect.ModifiedSize', 'IGURect.ModifiedPosition ', 'IGURect.ModifiedUp', 'IGURect.ModifiedDonw', 
+'IGURect.ModifiedRight', 'IGURect.ModifiedLeft' e 'IGURect.ModifiedCenter' foram removidos e substituidos pela
+propriedade 'IGURect.ModifiedRect'.
+Os métodos 'IGURect.SetModifiedPosition(vector2)' e 'IGURect.SetModifiedSize(Vector2)' foram removidos.
+A classe 'HashCodeCompare' foi removido.
+O método 'IGUDrawer.GetMousePosition()' foi removido e substituido pela propriedade 'IGUDrawer.MousePosition'.
+O método 'IGUObject.CreateIGUInstance<T>(string)' e 'IGUObject.CreateIGUInstance(Type, string)' foram removidos e 
+substituidos por 'IGUObject.Create<T>(string)' e 'IGUObject.Create(Type, string)'.
+As classes 'DeepAction' e 'IGUContainer' foram removidos e substituidos por 'IGUCanvas', 'IGUCanvasContainer' e 
+'IGUDepthDictionary'.
+A classe 'IGUBehaviour' foi removido.
+A classe 'IGUToolTip' foi removido.
+#Changed
+Agora no método 'IGURect.SetPivot(float, float)' os valores de entrada passam por um 'Mathf.Clamp01(float)' e 
+no método 'IGURect.SetRotation(float)' o valor de entrada ao ultrapassar '+360f' ou '-360f' ele retorna a '0f'.
+#Added
+A propriedade 'IGURepeatButton.OnRepeatClick' foi adicionada para ser usado como evento.
+As classes 'IGUTextFieldStringEvent', 'IGUCanvas', 'IGUCanvasContainer', 'IGUDepthDictionary' e 
+interfaces 'IIGUToolTip' e IIGUEndOfFrame foram adicionados.

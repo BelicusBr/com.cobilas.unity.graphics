@@ -5,7 +5,7 @@ using Cobilas.Unity.Graphics.IGU.Events;
 using Cobilas.Unity.Graphics.IGU.Interfaces;
 
 namespace Cobilas.Unity.Graphics.IGU.Elements {
-    public class IGUButton : IGUTextObject, IIGUSerializationCallbackReceiver {
+    public class IGUButton : IGUTextObject, IIGUEndOfFrame {
         public const string DefaultContentIGUButton = "IGU Button";
         private readonly List<string> stackTraceCount = new List<string>();
         [SerializeField] protected bool[] clicked;
@@ -37,14 +37,7 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
                     onClick.Invoke();
                     clicked[1] = true;
                 }
-
-            if (useTooltip)
-                if (LocalRect.ModifiedRect.Contains(IGUDrawer.Drawer.GetMousePosition()))
-                    DrawTooltip();
         }
-
-        protected override void DrawTooltip()
-            => base.DrawTooltip();
 
         protected virtual void Reset() {
             clicked[0] = clicked[1];
@@ -62,10 +55,9 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
             return false;
         }
 
+        void IIGUEndOfFrame.EndOfFrame() => Reset();
+
         public static string PickUpWhereItWasCalled(int skipFrames = 1)
             => new StackTrace(skipFrames).GetFrame(0).GetMethod().Name;
-
-        void IIGUSerializationCallbackReceiver.Reserialization()
-            => IGUDrawer.EventEndOfFrame += Reset;
     }
 }

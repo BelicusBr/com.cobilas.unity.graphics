@@ -1,9 +1,10 @@
 ﻿using UnityEngine;
 using Cobilas.Unity.Graphics.IGU.Events;
 using Cobilas.Unity.Graphics.IGU.Elements;
+using Cobilas.Unity.Graphics.IGU.Interfaces;
 
 namespace Cobilas.Unity.Graphics.IGU {
-    public sealed class IGUSelectionGridToggle : IGUObject {
+    public sealed class IGUSelectionGridToggle : IGUObject, IIGUToolTip {
         [SerializeField] private int index;
         [SerializeField] private bool _checked;
         [SerializeField] private bool onclicked;
@@ -27,8 +28,8 @@ namespace Cobilas.Unity.Graphics.IGU {
         public string Text { get => MyContent.Text; set => MyContent.Text = value; }
         public Texture Image { get => MyContent.Image; set => MyContent.Image = value; }
         public string ToolTip { get => MyContent.Tooltip; set => MyContent.Tooltip = value; }
-        public IGUStyle Style { get => style; set => style = value ?? IGUSkins.GetIGUStyle("Black button border"); }
-        public IGUStyle TooltipStyle { get => tooltipStyle; set => tooltipStyle = value ?? IGUSkins.GetIGUStyle("Black box border"); }
+        public IGUStyle Style { get => style; set => style = value ?? (IGUStyle)"Black button border"; }
+        public IGUStyle TooltipStyle { get => tooltipStyle; set => tooltipStyle = value ?? (IGUStyle)"Black box border"; }
         public bool Checked { 
             get => _checked;
             internal set => onChecked.Invoke(checkedtemp = _checked = value);
@@ -44,8 +45,8 @@ namespace Cobilas.Unity.Graphics.IGU {
             checkBoxOn = new IGUOnClickEvent();
             checkBoxOff = new IGUOnClickEvent();
             onChecked = new IGUOnCheckedEvent();
-            style =  IGUSkins.GetIGUStyle("Black button border");
-            tooltipStyle = IGUSkins.GetIGUStyle("Black box border");
+            style = (IGUStyle)"Black button border";
+            tooltipStyle = (IGUStyle)"Black box border";
             myContent = new IGUContent(IGUCheckBox.DefaultContantIGUCheckBox);
         }
 
@@ -53,28 +54,23 @@ namespace Cobilas.Unity.Graphics.IGU {
 
             checkedtemp = BackEndIGU.Toggle(LocalRect, checkedtemp, myContent, style);
 
-            bool isRect = LocalRect.ModifiedRect.Contains(IGUDrawer.Drawer.GetMousePosition());
+            bool isRect = LocalRect.Contains(IGUDrawer.MousePosition);
             if (IGUDrawer.Drawer.GetMouseButton(LocalConfig.MouseType))
                 onclicked = true;
             if (Event.current.type == EventType.Repaint)
                 if (isRect && _checked != checkedtemp && onclicked) {
                     onclicked = false;
                     onClick.Invoke();
-                    Debug.Log($"{_checked}|{checkedtemp}|{Text}");
                     onChecked.Invoke(_checked = checkedtemp);
                 }
 
             if (_checked) checkBoxOn.Invoke();
             else checkBoxOff.Invoke();
-
-            if (useTooltip && isRect)
-                DrawTooltip();
         }
 
-        private void DrawTooltip() {
-            IGUDrawer.Drawer.SetTootipText(ToolTip);
-            IGUDrawer.Drawer.GUIStyleTootip((GUIStyle)TooltipStyle);
-            IGUDrawer.Drawer.OpenTooltip();
+        void IIGUToolTip.InternalDrawToolTip() {
+            if (LocalRect.Contains(IGUDrawer.MousePosition) && useTooltip)
+                IGUDrawer.DrawTooltip(ToolTip, tooltipStyle);
         }
     }
 }

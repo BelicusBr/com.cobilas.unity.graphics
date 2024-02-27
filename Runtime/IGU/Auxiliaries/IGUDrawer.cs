@@ -1,21 +1,20 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 using System.Collections;
 using Cobilas.Collections;
+using UnityEngine.SceneManagement;
 using Cobilas.Unity.Management.Container;
 using Cobilas.Unity.Graphics.IGU.Elements;
 using Cobilas.Unity.Graphics.IGU.Interfaces;
-using UnityEngine.SceneManagement;
 
 namespace Cobilas.Unity.Graphics.IGU {
     [AddSceneContainer]
-    public class IGUDrawer : IGUBehaviour, ISerializationCallbackReceiver, ISceneContainerItem {
-        private Action onIGU;
+    [RequireComponent(typeof(IGUCanvasContainer))]
+    public class IGUDrawer : MonoBehaviour, ISceneContainerItem {
+        private Vector2 mousePosition;
         private Coroutine EndOfFrameCoroutine = null;
-        private IGUToolTip toolTip = new IGUToolTip();
         [SerializeField] private IGUMouseInput[] mouses;
-        [SerializeField] private IGUContainer[] containers;
         [SerializeField] private IGUObject[] reserialization;
+        [SerializeField] private IGUCanvasContainer canvasContainer;
 #if UNITY_EDITOR
 #pragma warning disable IDE0052
         [SerializeField, HideInInspector] private Vector2 editor_ScaleFactor;
@@ -26,6 +25,8 @@ namespace Cobilas.Unity.Graphics.IGU {
         private static IGUDrawer drawer;
         private static Vector2Int baseCurrentResolution = new Vector2Int(1024, 768);
 
+        public static IGUDrawer Drawer => drawer;
+        public static Vector2 MousePosition => drawer.mousePosition;
         public static Vector2Int BaseResolution => new Vector2Int(1024, 768);
         public static Vector2Int BaseResolutionPlatform => GetBaseResolutionPlatform();
         public static Vector2Int MobileBaseResolution_Portrait => new Vector2Int(480, 800);
@@ -34,37 +35,36 @@ namespace Cobilas.Unity.Graphics.IGU {
         public static Vector2 ScaleFactor => ((Vector2)CurrentResolution).Division(baseCurrentResolution);
         public static Vector2Int BaseCurrentResolution { get => baseCurrentResolution; set => baseCurrentResolution = value; }
 
-        public static IGUDrawer Drawer => drawer;
-        public static event Action EventEndOfFrame = (Action)null;
-
-        protected override void Awake() {
-            drawer = this;
+        private void Awake() {
             mouses = new IGUMouseInput[3];
+            canvasContainer = GetComponent<IGUCanvasContainer>();
         }
 
         private void OnEnable() {
+            drawer = this;
+            if (EndOfFrameCoroutine == null)
+                EndOfFrameCoroutine = StartCoroutine(EndOfFrame());
             for (long I = 0; I < ArrayManipulation.ArrayLongLength(reserialization); I++)
                 (reserialization[I] as IIGUSerializationCallbackReceiver).Reserialization();
         }
 
-        private void LateUpdate() {
-            if (EndOfFrameCoroutine == null)
-                EndOfFrameCoroutine = StartCoroutine(EndOfFrame());
 #if UNITY_EDITOR
+        private void LateUpdate() {
             editor_CurrentResolution = CurrentResolution;
             editor_ScaleFactor = ScaleFactor;
-#endif
         }
+#endif
 
         private IEnumerator EndOfFrame() {
             while (true) {
                 yield return new WaitForEndOfFrame();
-                EventEndOfFrame?.Invoke();
+                canvasContainer.OnEndOfFrame?.Invoke();
             }
         }
 
-        protected override void OnGUI() {
-            Vector2 mousePosition = Event.current.mousePosition;
+        private void OnGUI() {
+            GUIUtility.ScaleAroundPivot(ScaleFactor, Vector2.zero);
+            mousePosition = Event.current.mousePosition;
 // #if PLATFORM_STANDALONE || UNITY_EDITOR
             mouses[0] = mouses[0].SetValues(
                 Input.GetKeyDown(KeyCode.Mouse0),
@@ -89,16 +89,9 @@ namespace Cobilas.Unity.Graphics.IGU {
 //                 mouses[1] = 
 //                 mouses[2] = mouses[0].SetValues(true, true, true, mousePosition);
 // #endif
-            toolTip.Close();
-            onIGU?.Invoke();
-            toolTip.Draw(mousePosition, ScaleFactor);
+            canvasContainer.OnIGU?.Invoke();
+            canvasContainer.OnToolTip?.Invoke();
         }
-
-        public void OpenTooltip() => toolTip.Open();
-
-        public void GUIStyleTootip(GUIStyle style) => toolTip.SetGuiStyle(style);
-
-        public void SetTootipText(string txt) => toolTip.SetMSM(txt);
 
         public bool GetMouseButton(MouseButtonType type) {
             if (type == MouseButtonType.All) return true;
@@ -115,39 +108,17 @@ namespace Cobilas.Unity.Graphics.IGU {
             return mouses[(int)type].Up;
         }
 
-        public Vector2 GetMousePosition() => mouses[0].MousePosition;
-
-        public bool Contains(IGUContainer container) {
-            for (int I = 0; I < ArrayManipulation.ArrayLength(containers); I++)
-                if (containers[I] == container)
-                    return true;
-            return false;
-        }
-
-        void ISerializationCallbackReceiver.OnBeforeSerialize() { }
-
-        void ISerializationCallbackReceiver.OnAfterDeserialize() {
-            drawer = this;
-            toolTip = new IGUToolTip();
-            onIGU = (Action)null;
-            for (int I = 0; I < ArrayManipulation.ArrayLength(containers); I++)
-                onIGU += (containers[I] as IIGUContainer).OnIGU;
-        }
-
         void ISceneContainerItem.sceneUnloaded(Scene scene) {}
 
         void ISceneContainerItem.sceneLoaded(Scene scene, LoadSceneMode mode) {}
 
-        internal void Add(IGUContainer container) {
-            if (Contains(container)) return;
-            onIGU += (container as IIGUContainer).OnIGU;
-            ArrayManipulation.Add(container, ref containers);
-        }
-
-        internal void Remove(IGUContainer container) {
-            if (!Contains(container)) return;
-            onIGU -= (container as IIGUContainer).OnIGU;
-            ArrayManipulation.Remove(container, ref containers);
+        public static void DrawTooltip(string text, IGUStyle style) {
+            GUIContent content = IGUTextObject.GetGUIContentTemp(text);
+            GUIStyle styleTemp = (GUIStyle)style;
+            Rect rect = IGURect.rectTemp;
+            rect.position = Vector2.one * 5f + MousePosition;
+            rect.size = styleTemp.CalcSize(content);
+            GUI.Box(rect, content, styleTemp);
         }
 
         public static Vector2Int GetBaseResolutionPlatform() {

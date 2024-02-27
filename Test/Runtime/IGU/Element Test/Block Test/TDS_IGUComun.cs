@@ -22,23 +22,23 @@ public class TDS_IGUComun : MonoBehaviour {
     [SerializeField] private IGUHorizontalScrollbar horizontalScrollbar;
 
     private void Awake() {
-        button = IGUObject.CreateIGUInstance<IGUButton>("#TDS6456");
-        repeatButton = IGUObject.CreateIGUInstance<IGURepeatButton>("#TDS7513");
-        checkBox = IGUObject.CreateIGUInstance<IGUCheckBox>("#TDS8564");
-        label1 = IGUObject.CreateIGUInstance<IGULabel>("#TDS9743");
-        label2 = IGUObject.CreateIGUInstance<IGULabel>("#TDS35897");
-        box = IGUObject.CreateIGUInstance<IGUBox>("#TDS2158");
-        pictureBox = IGUObject.CreateIGUInstance<IGUPictureBox>("#TDS4865");
-        passwordField = IGUObject.CreateIGUInstance<IGUPasswordField>("#TDS48566");
-        textArea = IGUObject.CreateIGUInstance<IGUTextField>("#TDS5455");
-        textField = IGUObject.CreateIGUInstance<IGUTextField>("#TDS9999");
-        verticalScrollbar = IGUObject.CreateIGUInstance<IGUVerticalScrollbar>("#TDS6562");
-        verticalSlider = IGUObject.CreateIGUInstance<IGUVerticalSlider>("#TDS23434");
-        horizontalSlider = IGUObject.CreateIGUInstance<IGUHorizontalSlider>("#TDS546332");
-        horizontalScrollbar = IGUObject.CreateIGUInstance<IGUHorizontalScrollbar>("#TDS4354");
-        window = IGUObject.CreateIGUInstance<IGUWindow>("#TDS35686");
+        button = IGUObject.Create<IGUButton>("#TDS6456");
+        repeatButton = IGUObject.Create<IGURepeatButton>("#TDS7513");
+        checkBox = IGUObject.Create<IGUCheckBox>("#TDS8564");
+        label1 = IGUObject.Create<IGULabel>("#TDS9743");
+        label2 = IGUObject.Create<IGULabel>("#TDS35897");
+        box = IGUObject.Create<IGUBox>("#TDS2158");
+        pictureBox = IGUObject.Create<IGUPictureBox>("#TDS4865");
+        passwordField = IGUObject.Create<IGUPasswordField>("#TDS48566");
+        textArea = IGUObject.Create<IGUTextField>("#TDS5455");
+        textField = IGUObject.Create<IGUTextField>("#TDS9999");
+        verticalScrollbar = IGUObject.Create<IGUVerticalScrollbar>("#TDS6562");
+        verticalSlider = IGUObject.Create<IGUVerticalSlider>("#TDS23434");
+        horizontalSlider = IGUObject.Create<IGUHorizontalSlider>("#TDS546332");
+        horizontalScrollbar = IGUObject.Create<IGUHorizontalScrollbar>("#TDS4354");
+        window = IGUObject.Create<IGUWindow>("#TDS35686");
 
-        IGUContainer container = button.ApplyToGenericContainer();
+        IGUCanvas container = button.ApplyToGenericContainer();
         container = repeatButton.ApplyToContainer(container);
         container = checkBox.ApplyToContainer(container);
         container = label1.ApplyToContainer(container);

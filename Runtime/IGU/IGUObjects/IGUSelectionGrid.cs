@@ -5,9 +5,11 @@ using Cobilas.Collections;
 using System.Collections.Generic;
 using Cobilas.Unity.Graphics.IGU.Events;
 using Cobilas.Unity.Graphics.IGU.Layouts;
+using Cobilas.Unity.Graphics.IGU.Interfaces;
 
 namespace Cobilas.Unity.Graphics.IGU.Elements {
-    public class IGUSelectionGrid : IGUObject, IEnumerable<IGUSelectionGridToggle> {
+    public class IGUSelectionGrid : IGUObject, IIGUToolTip, IEnumerable<IGUSelectionGridToggle> {
+        private Action onToolTip;
         [SerializeField] protected int _xCount;
         [SerializeField] protected bool useTooltip;
         [SerializeField] protected Vector2 spacing;
@@ -22,7 +24,7 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
         public IGUOnSliderIntValueEvent OnSelectedIndex => onSelectedIndex;
         public int xCount { get => _xCount; set => _xCount = value < 1 ? 1 : value; }
         public int SelectedIndex { get => selectedIndex; set => SelectedIndexFunc(value); }
-        public IGUStyle TooltipToggleStype { get => tooltipToggleStype; set => tooltipToggleStype = value; }
+        public IGUStyle TooltipStyle { get => tooltipToggleStype; set => tooltipToggleStype = value; }
         public IGUStyle SelectionGridToggleStyle { get => selectionGridToggleStyle; set => selectionGridToggleStyle = value; }
         public bool UseTooltip { 
             get => useTooltip;
@@ -32,18 +34,22 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
             }
         }
         public Rect RectView => new Rect(
-            myRect.ModifiedPosition,
+            myRect.Position,
             new Vector2(
                 (myRect.Width + spacing.x) * xCount,
                 (myRect.Height + spacing.y) * (gridLayout.Count / xCount)
                 )
             );
+        string IIGUToolTip.ToolTip { 
+            get => throw new NotImplementedException();
+            set => throw new NotImplementedException();
+        }
 
         public IGUSelectionGridToggle this[int index] => gridLayout[index] as IGUSelectionGridToggle;
 
         protected override void IGUAwake() {
             base.IGUAwake();
-            gridLayout = IGUObject.CreateIGUInstance<IGUGridLayout>($"[{name}]--{nameof(IGUGridLayout)}");
+            gridLayout = IGUObject.Create<IGUGridLayout>($"[{name}]--{nameof(IGUGridLayout)}");
             gridLayout.DirectionalBreak = DirectionalBreak.HorizontalBreak;
             gridLayout.Parent = this;
             _xCount = 3;
@@ -57,8 +63,10 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
         }
 
         protected override void IGUOnEnable() {
+            onToolTip = (Action)null;
             for (int I = 0; I < ToggleCount; I++) {
                 IGUSelectionGridToggle temp = gridLayout[I] as IGUSelectionGridToggle;
+                onToolTip += (temp as IIGUToolTip).InternalDrawToolTip;
                 temp.OnChecked.RemoveAllListeners();
                 temp.OnChecked.AddListener((b) => SetEvent(b, temp));
             }
@@ -77,7 +85,7 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
 
         public void Add(string text, Texture image, string toolTip) {
             IGUSelectionGridToggle button = 
-                IGUObject.CreateIGUInstance<IGUSelectionGridToggle>($"Item[{ToggleCount}]");
+                IGUObject.Create<IGUSelectionGridToggle>($"Item[{ToggleCount}]");
             button.Text = text;
             button.Image = image;
             button.ToolTip = toolTip;
@@ -85,6 +93,7 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
             button.Index = ToggleCount;
             button.Style = selectionGridToggleStyle;
             button.TooltipStyle = tooltipToggleStype;
+            onToolTip += (button as IIGUToolTip).InternalDrawToolTip;
             button.OnChecked.AddListener((b) => SetEvent(b, button));
             gridLayout.Add(button);
         }
@@ -109,8 +118,10 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
         public void Remove(int index) {
             if (gridLayout.Remove(index, true))
                 if (ToggleCount != 0) {
+                    onToolTip = (Action)null;
                     RecursiveList((c, i) => { 
                         c.Index = i;
+                        onToolTip += (c as IIGUToolTip).InternalDrawToolTip;
                     }, 0, gridLayout);
                 }
         }
@@ -141,6 +152,8 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
             for (int I = 0; I < ToggleCount; I++)
                 yield return this[I];
         }
+
+        void IIGUToolTip.InternalDrawToolTip() => onToolTip?.Invoke();
 
         private static void RecursiveList(Action<IGUSelectionGridToggle, int> action, int index, IGUGridLayout gridLayout) {
             action(gridLayout[index] as IGUSelectionGridToggle, index++);

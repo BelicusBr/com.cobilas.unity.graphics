@@ -10,18 +10,18 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
         [SerializeField] protected IGUColor myColor;
         [SerializeField] protected IGUObject parent;
         [SerializeField] protected IGUConfig myConfig;
-        [SerializeField] protected IGUContainer container;
+        [SerializeField] protected IGUCanvas container;
 #if UNITY_EDITOR
         [SerializeField] private bool foldout;
 #endif
 
+        public IGUCanvas Container => container;
         public IGURect LocalRect => GetLocalPosition(this);
         public IGUConfig LocalConfig => GetLocalConfig(this);
         public IGURect MyRect { get => myRect; set => myRect = value; }
         public IGUObject Parent { get => parent; set => parent = value; }
         public IGUColor MyColor { get => myColor; set => myColor = value; }
         public IGUConfig MyConfig { get => myConfig; set => myConfig = value; }
-        public IGUContainer Container { get => container; set => container = value; }
 
         public void OnIGU() {
             GUI.SetNextControlName(name);
@@ -30,15 +30,6 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
             GUI.enabled = config.IsEnabled;
             if (config.IsVisible) {
                 myRect.SetScaleFactor(IGUDrawer.ScaleFactor);
-                Vector2 pivot = myRect.Pivot;
-                pivot.x = Mathf.Clamp(pivot.x, 0f, 1f);
-                pivot.y = Mathf.Clamp(pivot.y, 0f, 1f);
-                myRect.SetPivot(pivot);
-
-                if (myRect.Rotation > 360f)
-                    myRect.SetRotation(0f);
-                if (myRect.Rotation < -360f)
-                    myRect.SetRotation(0f);
 
                 (this as IIGUObject).InternalPreOnIGU();
                 LowCallOnIGU();
@@ -47,23 +38,24 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
             GUI.enabled = oldEnabled;
         }
 
-        public IGUContainer ApplyToContainer(IGUContainer container) {
-            container.Add(this);
-            return container;
+        public IGUCanvas ApplyToContainer(IGUCanvas container) {
+            if (!container.Add(this))
+                Debug.Log($"The object '{name}' already exists in the container '{container.Name}'!");
+            return this.container = container;
         }
 
-        public IGUContainer ApplyToContainer(string name)
-            => ApplyToContainer(IGUContainer.GetOrCreateIGUContainer(name));
+        public IGUCanvas ApplyToContainer(string name)
+            => ApplyToContainer(IGUCanvasContainer.GetOrCreateIGUCanvas(name));
 
-        public IGUContainer ApplyToGenericContainer()
-            => ApplyToContainer(IGUContainer.CreateGenericIGUContainer());
+        public IGUCanvas ApplyToGenericContainer()
+            => ApplyToContainer(IGUCanvasContainer.GetGenericContainer());
 
-        public IGUContainer ApplyToPermanentGenericContainer()
-            => ApplyToContainer(IGUContainer.CreatePermanentGenericIGUContainer());
+        public IGUCanvas ApplyToPermanentGenericContainer()
+            => ApplyToContainer(IGUCanvasContainer.GetPermanentGenericContainer());
 
         public void RemoveFromContainer() {
-            if (container != null)
-                container.Remove(this);
+            container?.Remove(this);
+            container = null;
         }
 
         protected virtual void IGUAwake() { }
@@ -77,6 +69,12 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
 
         private void Awake() {
             isBuild = true;
+        }
+
+        private void SetIGUConfig(IGUConfig config) {
+            if (myConfig.Depth != config.Depth)
+                container.ChangeDepth(this, myConfig.Depth, config.Depth);
+            myConfig = config;
         }
 
         private void OnDestroy() {
@@ -99,7 +97,6 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
             IGUConfig config = LocalConfig;
 
             if (config.IsVisible) {
-                // myRect.SetScaleFactor(IGUDrawer.ScaleFactor);
                 Color oldColor = GUI.color;
                 Color oldContentColor = GUI.contentColor;
                 Color oldBackgroundColor = GUI.backgroundColor;
@@ -124,21 +121,35 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
 
         void IIGUObject.InternalPostOnIGU() => PostOnIGU();
 
-        public static T CreateIGUInstance<T>() where T : IGUObject
-            => (T)CreateIGUInstance(typeof(T));
+        public static T Create<T>() where T : IGUObject
+            => (T)Create(typeof(T));
 
-        public static T CreateIGUInstance<T>(string name) where T : IGUObject
-            => (T)CreateIGUInstance(typeof(T), name);
+        public static T Create<T>(string name) where T : IGUObject
+            => (T)Create(typeof(T), name, "none");
 
-        public static IGUObject CreateIGUInstance(Type type)
-            => CreateIGUInstance(type, nameof(IGUObject));
+        public static T Create<T>(string name, string applyToContainer) where T : IGUObject
+            => (T)Create(typeof(T), name, applyToContainer);
 
-        public static IGUObject CreateIGUInstance(Type type, string name) {
+        public static IGUObject Create(Type type)
+            => Create(type, nameof(IGUObject));
+
+        public static IGUObject Create(Type type, string name)
+            => Create(type, name, "none");
+
+        public static IGUObject Create(Type type, string name, string applyToContainer) {
             if (!type.IsSubclassOf(typeof(IGUObject)))
                 throw new IGUException($"Class {type.Name} does not inherit from class IGUObject.");
             else if (type.IsAbstract) 
                 throw new IGUException("The target class cannot be abstract.");
             IGUObject instance = (IGUObject)CreateInstance(type.Name);
+            if (!string.IsNullOrEmpty(applyToContainer) && 
+                applyToContainer.ToLower() != "none") {
+                    if (applyToContainer.ToLower() == "gc")
+                        _ = instance.ApplyToGenericContainer();
+                    else if (applyToContainer.ToLower() == "pgc")
+                        _ = instance.ApplyToPermanentGenericContainer();
+                    else _ = instance.ApplyToContainer(applyToContainer);
+            }
             instance.name = name;
             instance.myConfig = IGUConfig.Default;
             instance.myColor = IGUColor.DefaultBoxColor;
@@ -165,9 +176,9 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
         public static IGURect GetLocalPosition(IGUObject obj) {
             if (obj.parent != null) {
                 if (obj.parent is IIGUClipping cli && cli.IsClipping) 
-                    return obj.myRect.SetScaleFactor(GetLocalPosition(obj.parent).ScaleFactor);
+                    return obj.myRect.SetScaleFactor(IGUDrawer.ScaleFactor);
                 IGURect res = obj.myRect;
-                return res.SetScaleFactor(GetLocalPosition(obj.parent).ScaleFactor)
+                return res.SetScaleFactor(IGUDrawer.ScaleFactor)
                     .SetPosition(res.Position + GetLocalPosition(obj.parent).Position);
             }
             return obj.myRect;

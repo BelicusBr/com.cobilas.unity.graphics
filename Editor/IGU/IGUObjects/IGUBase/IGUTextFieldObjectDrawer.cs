@@ -35,7 +35,9 @@ namespace Cobilas.Unity.Editor.Graphics.IGU {
                     obj.name = EditorGUI.TextField(position, EditorGUIUtility.TrTempContent("Name"), obj.name);
                     EditorGUI.BeginDisabledGroup(true);
                     EditorGUI.ObjectField(position = MoveDownWithBlankSpace(position), prop_parent, EditorGUIUtility.TrTempContent("parent"));
-                    _ = EditorGUI.PropertyField(position = MoveDownWithBlankSpace(position), prop_container, EditorGUIUtility.TrTempContent("Container"));
+                                        EditorGUI.LabelField(position = MoveDownWithBlankSpace(position),
+                        EditorGUIUtility.TrTempContent($"Container: {prop_container.FindPropertyRelative("name").stringValue}"),
+                        EditorStyles.helpBox);
                     EditorGUI.EndDisabledGroup();
                     --EditorGUI.indentLevel;
 

@@ -51,16 +51,12 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
             if (myRectTemp != myRect)
                 if (IGUDrawer.Drawer.GetMouseButton(LocalConfig.MouseType))
                     onMovingWindow.Invoke((myRect = myRectTemp).Position);
-
-            if (useTooltip) {
-                myRectTemp = myRectTemp.SetSize(dragFlap.size);
-                if (myRectTemp.ModifiedRect.Contains(IGUDrawer.Drawer.GetMousePosition()))
-                    DrawTooltip();
-            }
         }
 
-        protected override void DrawTooltip()
-            => base.DrawTooltip();
+        protected override void DrawTooltip() {
+            if (useTooltip && LocalRect.SetSize(dragFlap.size).Contains(IGUDrawer.MousePosition))
+                IGUDrawer.DrawTooltip(ToolTip, tooltipStyle);
+        }
 
         void IIGUSerializationCallbackReceiver.Reserialization() {
             internalIndowFunction = (id) => {

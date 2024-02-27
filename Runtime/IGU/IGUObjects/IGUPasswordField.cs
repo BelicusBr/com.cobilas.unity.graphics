@@ -6,12 +6,14 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
 
         [SerializeField] protected int maxLength;
         [SerializeField] protected char maskChar;
-        [SerializeField, HideInInspector] protected bool isFocused;
         [SerializeField] protected IGUOnClickEvent onClick;
         [SerializeField] protected IGUStyle passwordFieldStyle;
+        [SerializeField, HideInInspector] protected bool isFocused;
+        [SerializeField] protected IGUTextFieldStringEvent onStringChanged;
 
         public bool IsFocused => isFocused;
         public IGUOnClickEvent OnClick => onClick;
+        public IGUTextFieldStringEvent OnStringChanged => onStringChanged;
         public char MaskChar { get => maskChar; set => maskChar = value; }
         public int MaxLength { get => maxLength; set => maxLength = value; }
         public IGUStyle PasswordFieldStyle { 
@@ -26,6 +28,7 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
             myRect = IGURect.DefaultButton;
             onClick = new IGUOnClickEvent();
             myColor = IGUColor.DefaultBoxColor;
+            onStringChanged = new IGUTextFieldStringEvent();
             passwordFieldStyle = (IGUStyle)"Black text field border";
         }
 
@@ -34,26 +37,24 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
             GUISettings oldSettings = GUI.skin.settings;
             SetGUISettings(settings);
 
-            Text = BackEndIGU.PasswordField(LocalRect, Text ?? string.Empty, maskChar, maxLength, passwordFieldStyle);
+            string textTemp = BackEndIGU.PasswordField(LocalRect, Text ?? string.Empty, maskChar, maxLength, passwordFieldStyle);
 
             SetGUISettings(oldSettings);
             Event current = Event.current;
 
-            if (LocalRect.ModifiedRect.Contains(current.mousePosition)) {
+            if (LocalRect.Contains(current.mousePosition)) {
                 if (current.clickCount > 0 && GUI.GetNameOfFocusedControl() == name) {
                     isFocused = true;
                     onClick.Invoke();
                 }
-                if (useTooltip)
-                    DrawTooltip();
             } else {
                 if (current.clickCount > 0)
                     isFocused = false;
             }
-        }
 
-        protected override void DrawTooltip()
-            => base.DrawTooltip();
+            if (textTemp != Text && isFocused)
+                onStringChanged.Invoke(Text = textTemp);
+        }
 
         protected override void SetGUISettings(GUISettings settings)
             => base.SetGUISettings(settings);

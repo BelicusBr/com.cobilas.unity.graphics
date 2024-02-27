@@ -8,8 +8,9 @@ using Cobilas.Unity.Graphics.IGU.Layouts;
 using Cobilas.Unity.Graphics.IGU.Interfaces;
 
 namespace Cobilas.Unity.Graphics.IGU.Elements {
-    public class IGUComboBox : IGUObject, IEnumerable<IGUComboBoxButton>, IIGUClipping {
+    public class IGUComboBox : IGUObject, IEnumerable<IGUComboBoxButton>, IIGUClipping, IIGUToolTip, IIGUEndOfFrame {
 
+        private Action onToolTip;
         [SerializeField] private int index;
         [SerializeField] protected IGUButton cbx_button;
         [SerializeField] private IGUOnClickEvent onClick;
@@ -106,9 +107,9 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
 
         protected override void IGUAwake() {
             base.IGUAwake();
-            cbx_button = IGUObject.CreateIGUInstance<IGUButton>($"[{name}]--{nameof(IGUButton)}");
-            cbx_scrollview = IGUObject.CreateIGUInstance<IGUScrollView>($"[{name}]--{nameof(IGUScrollView)}");
-            cbx_verticalLayout = IGUObject.CreateIGUInstance<IGUVerticalLayout>($"[{name}]--{nameof(IGUVerticalLayout)}");
+            cbx_button = IGUObject.Create<IGUButton>($"[{name}]--{nameof(IGUButton)}");
+            cbx_scrollview = IGUObject.Create<IGUScrollView>($"[{name}]--{nameof(IGUScrollView)}");
+            cbx_verticalLayout = IGUObject.Create<IGUVerticalLayout>($"[{name}]--{nameof(IGUVerticalLayout)}");
             ScrollViewHeight = 150f;
             AdjustComboBoxView = true;
             CloseComboBoxView = false;
@@ -136,8 +137,13 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
             };
             cbx_scrollview.OnScrollView.AddListener(ChangeVisibility);
             cbx_button.OnClick.AddListener(ChangeCbxScrollviewVisibility);
+            #if UNITY_EDITOR
+            onToolTip = (Action)null;
+            #endif
+            onToolTip += (cbx_button as IIGUToolTip).InternalDrawToolTip;
             for (int I = 0; I < ButtonCount && !isIgnition; I++) {
                 IGUComboBoxButton boxButton = cbx_verticalLayout[I] as IGUComboBoxButton;
+                onToolTip += (boxButton as IIGUToolTip).InternalDrawToolTip;
                 boxButton.OnClick.AddListener(() => {
                     boxButton.OnClick.RemoveAllListeners();
                     SetIndex(boxButton.Index);
@@ -150,7 +156,7 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
 
         public void Add(string text, Texture image, string toolTip) {
             IGUComboBoxButton button = 
-                IGUObject.CreateIGUInstance<IGUComboBoxButton>($"Item[{ButtonCount}]");
+                IGUObject.Create<IGUComboBoxButton>($"Item[{ButtonCount}]");
             button.Text = text;
             button.Image = image;
             button.ToolTip = toolTip;
@@ -158,6 +164,7 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
             button.UseTooltip = UseTooltip;
             button.Style = ComboBoxButtonStyle;
             button.TooltipStyle = TooltipStyle;
+            onToolTip += (button as IIGUToolTip).InternalDrawToolTip;
             button.OnClick.AddListener(() => {
                 SetIndex(button.Index);
                 OnSelectedIndex.Invoke(button);
@@ -188,8 +195,10 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
             if (cbx_verticalLayout.Remove(index, true))
                 if (ButtonCount != 0) {
                     Rect rect = new Rect(ScrollView, cbx_scrollview.MyRect.Size);
+                    onToolTip = (Action)null;
                     RecursiveList((c, i) => { 
                         c.Index = i;
+                        onToolTip += (c as IIGUToolTip).InternalDrawToolTip;
                         Vector2 center = c.MyRect.Center;
                         Vector2 up = .5f * c.MyRect.Width * Vector2.right + Vector2.up * c.MyRect.Up;
                         Vector2 down = .5f * c.MyRect.Width * Vector2.right + Vector2.up * c.MyRect.Donw;
@@ -210,15 +219,14 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
             cbx_button.MyRect = cbx_button.MyRect.SetPosition(Vector2.zero).SetSize(myRect.Size);
             cbx_scrollview.MyRect = cbx_scrollview.MyRect.SetPosition(Vector2.up * myRect.Height).SetSize(myRect.Width, ScrollViewHeight);
             float num1 = cbx_scrollview.VerticalScrollbarIsVisible ? cbx_scrollview.VerticalScrollbarStyle.FixedWidth : 0f;
-            cbx_verticalLayout.CellSize = Vector2.right * MyRect.SetSize(myRect.Width - num1, 0f).ModifiedRect.Width
-                     + Vector2.up * ComboBoxButtonHeight;
+            cbx_verticalLayout.CellSize = Vector2.right * (myRect.Width - num1) + Vector2.up * ComboBoxButtonHeight;
 
             cbx_button.OnIGU();
             cbx_scrollview.OnIGU();
 
             IGURect rect_scv = myRect;
             rect_scv = rect_scv.SetSize(rect_scv.Size + Vector2.up * (CloseComboBoxView ? cbx_scrollview.MyRect.Height: 0f));
-            if (!rect_scv.ModifiedRect.Contains(IGUDrawer.Drawer.GetMousePosition()))
+            if (!rect_scv.Contains(IGUDrawer.MousePosition))
                 if (IGUDrawer.Drawer.GetMouseButtonDown(LocalConfig.MouseType) && CloseComboBoxView)
                     CloseComboBoxView = false;
         }
@@ -242,6 +250,8 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
                 OnActivatedComboBox.Invoke();
         }
 
+        void IIGUToolTip.InternalDrawToolTip() => onToolTip?.Invoke();
+
         private void SetComboBoxStyle(IGUStyle style) {
             cbx_button.ButtonStyle = style;
             if (cbx_verticalLayout.Count != 0)
@@ -260,6 +270,8 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
             for (int I = 0; I < ButtonCount; I++)
                 yield return cbx_verticalLayout[I] as IGUComboBoxButton;
         }
+
+        void IIGUEndOfFrame.EndOfFrame() => ((IIGUEndOfFrame)cbx_button).EndOfFrame();
 
         private static void RecursiveList(Action<IGUComboBoxButton, int> action, int index, IGUVerticalLayout verticalLayout) {
             action(verticalLayout[index] as IGUComboBoxButton, index++);

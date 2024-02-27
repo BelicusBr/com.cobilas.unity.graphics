@@ -37,7 +37,9 @@ namespace Cobilas.Unity.Editor.Graphics.IGU {
                     obj.name = EditorGUI.TextField(position, EditorGUIUtility.TrTempContent("Name"), obj.name);
                     EditorGUI.BeginDisabledGroup(true);
                     EditorGUI.ObjectField(position = MoveDownWithBlankSpace(position), prop_parent, EditorGUIUtility.TrTempContent("parent"));
-                    _ = EditorGUI.PropertyField(position = MoveDownWithBlankSpace(position), prop_container, EditorGUIUtility.TrTempContent("Container"));
+                    EditorGUI.LabelField(position = MoveDownWithBlankSpace(position),
+                        EditorGUIUtility.TrTempContent($"Container: {prop_container.FindPropertyRelative("name").stringValue}"),
+                        EditorStyles.helpBox);
                     EditorGUI.EndDisabledGroup();
                     --EditorGUI.indentLevel;
 
@@ -64,7 +66,7 @@ namespace Cobilas.Unity.Editor.Graphics.IGU {
                     Rect recttemp;
                     obj.UseTooltip = EditorGUI.Toggle(position, EditorGUIUtility.TrTempContent("Use Tooltip"), obj.UseTooltip);
                     EditorGUI.BeginDisabledGroup(!obj.UseTooltip);
-                    obj.Tooltip = EditorGUI.TextField(recttemp = MoveDownWithBlankSpace(position), EditorGUIUtility.TrTempContent("Tooltip"), obj.Tooltip);
+                    obj.ToolTip = EditorGUI.TextField(recttemp = MoveDownWithBlankSpace(position), EditorGUIUtility.TrTempContent("Tooltip"), obj.ToolTip);
                     EditorGUI.EndDisabledGroup();
                     _ = EditorGUI.PropertyField(recttemp = MoveDownWithBlankSpace(recttemp), prop_value, EditorGUIUtility.TrTempContent("Value"));
                     _ = EditorGUI.PropertyField(recttemp = MoveDownWithBlankSpace(recttemp), prop_additionValue, EditorGUIUtility.TrTempContent("Addition Value"));

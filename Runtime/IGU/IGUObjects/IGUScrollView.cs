@@ -39,9 +39,9 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
 
         protected override void IGUAwake() {
             base.IGUAwake();
-            rectClip = CreateIGUInstance<IGURectClip>($"--[{name}]RectClip");
-            verticalScrollbar = CreateIGUInstance<IGUVerticalScrollbar>($"--[{name}]VerticalScrollbar");
-            horizontalScrollbar = CreateIGUInstance<IGUHorizontalScrollbar>($"--[{name}]HorizontalScrollbar");
+            rectClip = Create<IGURectClip>($"--[{name}]RectClip");
+            verticalScrollbar = Create<IGUVerticalScrollbar>($"--[{name}]VerticalScrollbar");
+            horizontalScrollbar = Create<IGUHorizontalScrollbar>($"--[{name}]HorizontalScrollbar");
             myRect = IGURect.DefaultTextArea;
             myColor = IGUColor.DefaultBoxColor;
             onScrollView = new IGUScrollViewEvent();

@@ -1,7 +1,8 @@
 ﻿using UnityEngine;
+using Cobilas.Unity.Graphics.IGU.Interfaces;
 
 namespace Cobilas.Unity.Graphics.IGU.Elements {
-    public abstract class IGUTextObject : IGUObject {
+    public abstract class IGUTextObject : IGUObject, IIGUToolTip {
         [SerializeField] protected bool richText;
         [SerializeField] protected bool useTooltip;
         [SerializeField] protected IGUContent content;
@@ -37,10 +38,11 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
         public void SetMarkedText(params MarkedText[] markeds)
             => content.SetMarkedText(markeds);
 
+        void IIGUToolTip.InternalDrawToolTip() => DrawTooltip();
+
         protected virtual void DrawTooltip() {
-            IGUDrawer.Drawer.SetTootipText(ToolTip);
-            IGUDrawer.Drawer.GUIStyleTootip((GUIStyle)tooltipStyle);
-            IGUDrawer.Drawer.OpenTooltip();
+            if (LocalRect.Contains(IGUDrawer.MousePosition) && useTooltip)
+                IGUDrawer.DrawTooltip(ToolTip, tooltipStyle);
         }
 
         public static GUIContent GetGUIContentTemp(string text, string tooltip, Texture image) {

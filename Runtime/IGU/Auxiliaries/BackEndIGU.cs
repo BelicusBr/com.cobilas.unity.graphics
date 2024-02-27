@@ -1,98 +1,92 @@
+using System;
 using UnityEngine;
 using Cobilas.Unity.Graphics.IGU.Elements;
 
 namespace Cobilas.Unity.Graphics.IGU {
     public static class BackEndIGU {
 
-        public static void BeginClip(IGURect position, Vector2 scrollOffset, Vector2 renderOffset, bool resetOffset) {
-            Rect rect = IGURect.rectTemp;
-            rect.position = position.ModifiedPosition;
-            rect.size = position.ModifiedSize;
-            Debug.Log($"{position}|{scrollOffset}");
-            GUI.BeginClip(rect, scrollOffset, renderOffset, resetOffset);
+        public static void BeginClip(IGURect position, Vector2 scrollOffset,
+             Vector2 renderOffset, bool resetOffset, Action<Vector2, Vector2> clipFunc) {
+            Rect recttemp = (Rect)position;
+            Matrix4x4 oldMatrix = GUI.matrix;
+            GUIUtility.RotateAroundPivot(position.Rotation, position.ModifiedRect.Position);
+            GUI.BeginClip(recttemp, scrollOffset, renderOffset, resetOffset);
+            clipFunc(scrollOffset, renderOffset);
+            GUI.EndClip();
+            GUI.matrix = oldMatrix;
         }
 
-        public static void BeginClip(IGURect position, Vector2 scrollOffset)
-            => BeginClip(position, scrollOffset, Vector2.zero, false);
-
-        public static void EndClip() => GUI.EndClip();
+        public static void BeginClip(IGURect position, Vector2 scrollOffset, Action<Vector2, Vector2> clipFunc)
+            => BeginClip(position, scrollOffset, Vector2.zero, false, clipFunc);
 
         public static void Box(IGURect rect, IGUContent content, IGUStyle style) {
-            IGUUtilityDistortion.Begin(rect);
-            Rect recttemp = IGURect.rectTemp;
-            recttemp.position = rect.ModifiedPosition;
-            recttemp.size = rect.Size;
+            Rect recttemp = (Rect)rect;
+            Matrix4x4 oldMatrix = GUI.matrix;
+            GUIUtility.RotateAroundPivot(rect.Rotation, rect.ModifiedRect.Position);
             GUI.Box(recttemp, IGUTextObject.GetGUIContentTemp(content), (GUIStyle)style);
-            IGUUtilityDistortion.End();
+            GUI.matrix = oldMatrix;
         }
 
         public static string PasswordField(IGURect rect, string password, char maskChar, int maxLength, IGUStyle style) {
-            IGUUtilityDistortion.Begin(rect);
-            Rect recttemp = IGURect.rectTemp;
-            recttemp.position = rect.ModifiedPosition;
-            recttemp.size = rect.Size;
+            Rect recttemp = (Rect)rect;
+            Matrix4x4 oldMatrix = GUI.matrix;
+            GUIUtility.RotateAroundPivot(rect.Rotation, rect.ModifiedRect.Position);
             string res = GUI.PasswordField(recttemp, password, maskChar, maxLength, (GUIStyle)style);
-            IGUUtilityDistortion.End();
+            GUI.matrix = oldMatrix;
             return res;
         }
 
         public static string TextField(IGURect rect, string password, int maxLength, IGUStyle style) {
-            IGUUtilityDistortion.Begin(rect);
-            Rect recttemp = IGURect.rectTemp;
-            recttemp.position = rect.ModifiedPosition;
-            recttemp.size = rect.Size;
+            Rect recttemp = (Rect)rect;
+            Matrix4x4 oldMatrix = GUI.matrix;
+            GUIUtility.RotateAroundPivot(rect.Rotation, rect.ModifiedRect.Position);
             string res = GUI.TextField(recttemp, password, maxLength, (GUIStyle)style);
-            IGUUtilityDistortion.End();
+            GUI.matrix = oldMatrix;
             return res;
         }
 
         public static string TextArea(IGURect rect, string password, int maxLength, IGUStyle style) {
-            IGUUtilityDistortion.Begin(rect);
-            Rect recttemp = IGURect.rectTemp;
-            recttemp.position = rect.ModifiedPosition;
-            recttemp.size = rect.Size;
+            Rect recttemp = (Rect)rect;
+            Matrix4x4 oldMatrix = GUI.matrix;
+            GUIUtility.RotateAroundPivot(rect.Rotation, rect.ModifiedRect.Position);
             string res = GUI.TextArea(recttemp, password, maxLength, (GUIStyle)style);
-            IGUUtilityDistortion.End();
+            GUI.matrix = oldMatrix;
             return res;
         }
         
         public static IGURect Window(int id, IGURect clientRect, GUI.WindowFunction func, IGUContent content, IGUStyle style) {
-            IGUUtilityDistortion.Begin(clientRect);
-            Rect recttemp = IGURect.rectTemp;
-            recttemp.position = clientRect.ModifiedPosition;
-            recttemp.size = clientRect.Size;
+            Rect recttemp = (Rect)clientRect;
+            Matrix4x4 oldMatrix = GUI.matrix;
+            GUIUtility.RotateAroundPivot(clientRect.Rotation, clientRect.ModifiedRect.Position);
             recttemp = GUI.Window(id, recttemp, func, IGUTextObject.GetGUIContentTemp(content), (GUIStyle)style);
-            IGUUtilityDistortion.End();
-            return clientRect.SetModifiedPosition(recttemp.position);
+            GUI.matrix = oldMatrix;
+            return clientRect.SetPosition(recttemp.position);
         }
         
         public static void DrawTexture(IGURect rect, Texture image, ScaleMode scaleMode, bool alphaBlend, 
             float imageAspect, Color color, Vector4 borderWidths, Vector4 borderRadiuses) {
-            IGUUtilityDistortion.Begin(rect);
-            Rect recttemp = IGURect.rectTemp;
-            recttemp.position = rect.ModifiedPosition;
-            recttemp.size = rect.Size;
+            Rect recttemp = (Rect)rect;
+            Matrix4x4 oldMatrix = GUI.matrix;
+            GUIUtility.RotateAroundPivot(rect.Rotation, rect.ModifiedRect.Position);
             GUI.DrawTexture(recttemp, image, scaleMode, alphaBlend, imageAspect, color, borderWidths, borderRadiuses);
-            IGUUtilityDistortion.End();
+            GUI.matrix = oldMatrix;
         }
 
         public static void Label(IGURect rect, IGUContent content, IGUStyle style) {
-            IGUUtilityDistortion.Begin(rect);
-            Rect recttemp = IGURect.rectTemp;
-            recttemp.position = rect.ModifiedPosition;
-            recttemp.size = rect.Size;
+            Rect recttemp = (Rect)rect;
+            Matrix4x4 oldMatrix = GUI.matrix;
+            GUIUtility.RotateAroundPivot(rect.Rotation, rect.ModifiedRect.Position);
             GUI.Label(recttemp, IGUTextObject.GetGUIContentTemp(content), (GUIStyle)style);
-            IGUUtilityDistortion.End();
+            GUI.matrix = oldMatrix;
         }
 
         public static float Slider(IGURect rect, float value, float size, MaxMinSlider length, bool horiz, IGUStyle slider, IGUStyle thumb) {
-            IGUUtilityDistortion.Begin(rect);
-            Rect recttemp = IGURect.rectTemp;
-            recttemp.position = rect.ModifiedPosition;
-            recttemp.size = rect.Size;
+            Rect recttemp = (Rect)rect;
+            Matrix4x4 oldMatrix = GUI.matrix;
+            GUIUtility.RotateAroundPivot(rect.Rotation, rect.ModifiedRect.Position);
             float res = GUI.Slider(recttemp, value, size, length.Min, length.Max, 
                 (GUIStyle)slider, (GUIStyle)thumb, horiz, GUIUtility.GetControlID(FocusType.Passive, recttemp));
-            IGUUtilityDistortion.End();
+            GUI.matrix = oldMatrix;
             return res;
         }
 
@@ -100,40 +94,36 @@ namespace Cobilas.Unity.Graphics.IGU {
             => Slider(rect, value, 0f, length, horiz, slider, thumb);
         
         public static bool Button(IGURect rect, IGUContent content, IGUStyle style) {
-            IGUUtilityDistortion.Begin(rect);
-            Rect recttemp = IGURect.rectTemp;
-            recttemp.position = rect.ModifiedPosition;
-            recttemp.size = rect.Size;
+            Rect recttemp = (Rect)rect;
+            Matrix4x4 oldMatrix = GUI.matrix;
+            GUIUtility.RotateAroundPivot(rect.Rotation, rect.ModifiedRect.Position);
             bool res = GUI.Button(recttemp, IGUTextObject.GetGUIContentTemp(content), (GUIStyle)style);
-            IGUUtilityDistortion.End();
+            GUI.matrix = oldMatrix;
             return res;
         }
 
         public static bool RepeatButton(IGURect rect, IGUContent content, IGUStyle style) {
-            IGUUtilityDistortion.Begin(rect);
-            Rect recttemp = IGURect.rectTemp;
-            recttemp.position = rect.ModifiedPosition;
-            recttemp.size = rect.Size;
+            Rect recttemp = (Rect)rect;
+            Matrix4x4 oldMatrix = GUI.matrix;
+            GUIUtility.RotateAroundPivot(rect.Rotation, rect.ModifiedRect.Position);
             bool res = GUI.RepeatButton(recttemp, IGUTextObject.GetGUIContentTemp(content), (GUIStyle)style);
-            IGUUtilityDistortion.End();
+            GUI.matrix = oldMatrix;
             return res;
         }
 
         public static bool Toggle(IGURect rect, bool value, IGUContent content, IGUStyle style) {
-            IGUUtilityDistortion.Begin(rect);
-            Rect recttemp = IGURect.rectTemp;
-            recttemp.position = rect.ModifiedPosition;
-            recttemp.size = rect.Size;
+            Rect recttemp = (Rect)rect;
+            Matrix4x4 oldMatrix = GUI.matrix;
+            GUIUtility.RotateAroundPivot(rect.Rotation, rect.ModifiedRect.Position);
             bool res = GUI.Toggle(recttemp, value, IGUTextObject.GetGUIContentTemp(content), (GUIStyle)style);
-            IGUUtilityDistortion.End();
+            GUI.matrix = oldMatrix;
             return res;
         }
 
         public static void SelectableText(IGURect rect, IGUContent content, IGUStyle style, ref bool isFocused) {
-            IGUUtilityDistortion.Begin(rect);
-            Rect recttemp = IGURect.rectTemp;
-            recttemp.position = rect.ModifiedPosition;
-            recttemp.size = rect.Size;
+            Rect recttemp = (Rect)rect;
+            Matrix4x4 oldMatrix = GUI.matrix;
+            GUIUtility.RotateAroundPivot(rect.Rotation, rect.ModifiedRect.Position);
             Event current = Event.current;
             int ID = GUIUtility.GetControlID(FocusType.Keyboard, recttemp);
             TextEditor editor = (TextEditor)GUIUtility.GetStateObject(typeof(TextEditor), ID);
@@ -241,7 +231,7 @@ namespace Cobilas.Unity.Graphics.IGU {
                     break;
             }
             editor.UpdateScrollOffsetIfNeeded(current);
-            IGUUtilityDistortion.End();
+            GUI.matrix = oldMatrix;
         }
     }
 }

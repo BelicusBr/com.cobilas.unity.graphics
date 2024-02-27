@@ -34,11 +34,8 @@ namespace Cobilas.Unity.Graphics.IGU {
         public Vector2 Position => GetPosition(this) - Size.Multiplication(Pivot);
         public Vector2 ScaleFactor => new Vector2(scaleFactorWidth, scaleFactorHeight);
 
-        public Vector2 ModifiedSize => Size.Multiplication(ScaleFactor);
-        public Vector2 ModifiedPosition => GetPosition(this).Multiplication(ScaleFactor) - ModifiedSize.Multiplication(Pivot);
-
         public IGURect ModifiedRect => new IGURect(
-            ModifiedPosition, ModifiedSize, Pivot, Vector2.one
+            Position.Multiplication(ScaleFactor), Size.Multiplication(ScaleFactor), Pivot, ScaleFactor
         ) { rotation = this.rotation };
 
         public float Up => y;
@@ -46,15 +43,6 @@ namespace Cobilas.Unity.Graphics.IGU {
         public float Right => x;
         public float Left => x + width;
         public Vector2 Center => new Vector2(x + width * .5f, y + height * .5f);
-
-        public float ModifiedUp => (y * scaleFactorHeight) - height * pivotY;
-        public float ModifiedDonw => ((y * scaleFactorHeight) + height) - height * pivotY;
-        public float ModifiedRight => (x * scaleFactorWidth) - width * pivotX;
-        public float ModifiedLeft => ((x * scaleFactorWidth) + width) - width * pivotX;
-        public Vector2 ModifiedCenter => new Vector2(
-            ((x * scaleFactorWidth) + width * .5f) - width * pivotX,
-            ((y * scaleFactorHeight) + height * .5f) - height * pivotY
-            );
 
         public static IGURect Zero => new IGURect(Vector2.zero, Vector2.zero, Vector2.zero, Vector2.zero);
         public static IGURect DefaultBox => new IGURect(Vector2.zero, new Vector2(50f, 50f), Vector2.zero, Vector2.one);
@@ -110,16 +98,13 @@ namespace Cobilas.Unity.Graphics.IGU {
         }
 #endif
         public IGURect SetPosition(float x, float y) {
-            this.x = x;
-            this.y = y;
+            this.x = x + width * pivotX;
+            this.y = y + height * pivotY;
             return this;
         }
 
         public IGURect SetPosition(Vector2 position)
             => SetPosition(position.x, position.y);
-
-        public IGURect SetModifiedPosition(Vector2 position)
-            => SetPosition((position + Size.Multiplication(Pivot)).Division(ScaleFactor));
 
         public IGURect SetSize(float width, float height) {
             this.width = width;
@@ -129,9 +114,6 @@ namespace Cobilas.Unity.Graphics.IGU {
 
         public IGURect SetSize(Vector2 size)
             => SetSize(size.x, size.y);
-
-        public IGURect SetModifiedSize(Vector2 size)
-            => SetSize(size.Division(ScaleFactor));
 
         public IGURect SetScaleFactor(float sfWidth, float sfHeight) {
             this.scaleFactorWidth = sfWidth;
@@ -146,8 +128,8 @@ namespace Cobilas.Unity.Graphics.IGU {
         }
 
         public IGURect SetPivot(float pivotX, float pivotY) {
-            this.pivotX = pivotX;
-            this.pivotY = pivotY;
+            this.pivotX = Mathf.Clamp01(pivotX);
+            this.pivotY = Mathf.Clamp01(pivotY);
             return this;
         }
 
@@ -155,7 +137,7 @@ namespace Cobilas.Unity.Graphics.IGU {
             => SetPivot(pivot.x, pivot.y);
 
         public IGURect SetRotation(float rotation) {
-            this.rotation = rotation;
+            this.rotation = rotation > 360f || rotation < -360f ? 0f : rotation;
             return this;
         }
 
@@ -215,8 +197,8 @@ namespace Cobilas.Unity.Graphics.IGU {
         public static bool operator !=(IGURect A, IGURect B) => !(A == B);
         public static explicit operator Rect(IGURect rect) {
             Rect res = rectTemp;
-            res.position = rect.ModifiedPosition;
-            res.size = rect.ModifiedSize;
+            res.position = rect.Position;
+            res.size = rect.Size;
             return res;
         }
     }

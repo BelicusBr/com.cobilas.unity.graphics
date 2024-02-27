@@ -4,10 +4,13 @@ using Cobilas.Unity.Graphics.IGU.Events;
 namespace Cobilas.Unity.Graphics.IGU.Elements {
     public class IGURepeatButton : IGUButton {
         public const string DefaultContentIGURepeatButton = "IGURepeatButton";
-        [SerializeField] protected IGUOnClickEvent onRepeatClick;
+        
         private bool onClicked;
+        [SerializeField] protected IGUOnClickEvent onRepeatClick;
 
         public override bool Clicked => clicked[0];
+        public IGUOnClickEvent OnRepeatClick => onRepeatClick;
+        
         protected override void IGUAwake() {
             base.IGUAwake();
             content = new IGUContent(DefaultContentIGURepeatButton);
@@ -25,10 +28,6 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
                 clicked[0] = false;
                 onClicked = true;
             }
-
-            if (useTooltip)
-                if (LocalRect.ModifiedRect.Contains(IGUDrawer.Drawer.GetMousePosition()))
-                    DrawTooltip();
         }
 
         private void RepeatButtonClick() {

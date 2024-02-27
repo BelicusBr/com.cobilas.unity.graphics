@@ -28,11 +28,13 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
         }
 
         protected override void LowCallOnIGU() {
-            BackEndIGU.BeginClip(LocalRect, scrollView);
+            BackEndIGU.BeginClip(LocalRect, scrollView, ClipFunc);
+        }
+
+        private void ClipFunc(Vector2 scrollOffset, Vector2 renderOffset) {
             isClipping = true;
             RectClipAction?.Invoke(RectView);
             isClipping = false;
-            BackEndIGU.EndClip();
         }
     }
 }

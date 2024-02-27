@@ -32,14 +32,7 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
 
             BackEndIGU.SelectableText(LocalRect, MyContent, selectableTextStyle, ref isFocused);
             SetGUISettings(oldSettings);
-
-            if (useTooltip)
-                if (LocalRect.ModifiedRect.Contains(current.mousePosition))
-                    DrawTooltip();
         }
-
-        protected override void DrawTooltip()
-            => base.DrawTooltip();
 
         protected override void SetGUISettings(GUISettings settings)
             => base.SetGUISettings(settings);

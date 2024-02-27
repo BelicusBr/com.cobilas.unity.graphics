@@ -43,7 +43,7 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
             checkBoxStyle.RichText = richText;
             checkedtemp = BackEndIGU.Toggle(LocalRect, checkedtemp, MyContent, checkBoxStyle);
 
-            bool isRect = LocalRect.ModifiedRect.Contains(IGUDrawer.Drawer.GetMousePosition());
+            bool isRect = LocalRect.Contains(IGUDrawer.MousePosition);
             if (IGUDrawer.Drawer.GetMouseButton(LocalConfig.MouseType))
                 onclicked = true;
             if (Event.current.type == EventType.Repaint)
@@ -55,12 +55,6 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
 
             if (_checked) checkBoxOn.Invoke();
             else checkBoxOff.Invoke();
-
-            if (useTooltip && isRect)
-                DrawTooltip();
         }
-
-        protected override void DrawTooltip()
-            => base.DrawTooltip();
     }
 }

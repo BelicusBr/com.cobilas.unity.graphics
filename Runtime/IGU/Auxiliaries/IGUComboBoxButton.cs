@@ -1,9 +1,10 @@
 ﻿using UnityEngine;
 using Cobilas.Unity.Graphics.IGU.Events;
 using Cobilas.Unity.Graphics.IGU.Elements;
+using Cobilas.Unity.Graphics.IGU.Interfaces;
 
 namespace Cobilas.Unity.Graphics.IGU {
-    public sealed class IGUComboBoxButton : IGUObject {
+    public sealed class IGUComboBoxButton : IGUObject, IIGUToolTip {
 
         [SerializeField] private int index;
         [SerializeField] private IGUStyle style;
@@ -19,36 +20,28 @@ namespace Cobilas.Unity.Graphics.IGU {
         public string Text { get => MyContent.Text; set => MyContent.Text = value; }
         public Texture Image { get => MyContent.Image; set => MyContent.Image = value; }
         public string ToolTip { get => MyContent.Tooltip; set => MyContent.Tooltip = value; }
-        public IGUStyle Style { get => style; set => style = value ?? IGUSkins.GetIGUStyle("Black button border"); }
-        public IGUStyle TooltipStyle { get => tooltipStyle; set => tooltipStyle = value ?? IGUSkins.GetIGUStyle("Black box border"); }
+        public IGUStyle Style { get => style; set => style = value ?? (IGUStyle)"Black button border"; }
+        public IGUStyle TooltipStyle { get => tooltipStyle; set => tooltipStyle = value ?? (IGUStyle)"Black box border"; }
 
         protected override void IGUAwake() {
             base.IGUAwake();
             useTooltip = false;
             myRect = IGURect.DefaultButton;
             onClick = new IGUOnClickEvent();
-            style = IGUSkins.GetIGUStyle("Black button border");
-            tooltipStyle = IGUSkins.GetIGUStyle("Black box border");
+            style = (IGUStyle)"Black button border";
+            tooltipStyle = (IGUStyle)"Black box border";
             myContent = new IGUContent(IGUButton.DefaultContentIGUButton);
         }
 
         protected override void LowCallOnIGU() {
-            Rect rect = IGURect.rectTemp;
-            rect.size = LocalRect.Size;
-            rect.position = LocalRect.ModifiedPosition;
-            if (GUI.Button(rect, (GUIContent)MyContent, (GUIStyle)style))
+            if (BackEndIGU.Button(LocalRect, MyContent, style))
                 if (IGUDrawer.Drawer.GetMouseButtonUp(LocalConfig.MouseType))
                     onClick.Invoke();
-
-            if (UseTooltip)
-                if (rect.Contains(IGUDrawer.Drawer.GetMousePosition()))
-                    DrawTooltip();
         }
 
-        private void DrawTooltip() {
-            IGUDrawer.Drawer.SetTootipText(ToolTip);
-            IGUDrawer.Drawer.GUIStyleTootip((GUIStyle)TooltipStyle);
-            IGUDrawer.Drawer.OpenTooltip();
+        void IIGUToolTip.InternalDrawToolTip() {
+            if (LocalRect.Contains(IGUDrawer.MousePosition) && UseTooltip)
+                    IGUDrawer.DrawTooltip(ToolTip, tooltipStyle);
         }
     }
 }
