@@ -31,13 +31,13 @@ namespace Cobilas.Unity.Editor.Graphics.IGU {
                 SerializedProperty prop_container = serialized.FindProperty("container");
                 SerializedProperty prop_myRect = serialized.FindProperty("myRect");
                 SerializedProperty prop_myColor = serialized.FindProperty("myColor");
-                SerializedProperty prop_myConfg = serialized.FindProperty("myConfg");
+                SerializedProperty prop_myConfg = serialized.FindProperty("myConfig");
                 SerializedProperty prop_onClick = serialized.FindProperty("onClick");
                 SerializedProperty prop_onSelectedIndex = serialized.FindProperty("onSelectedIndex");
                 SerializedProperty prop_onActivatedComboBox = serialized.FindProperty("onActivatedComboBox");
-                SerializedProperty prop_scrollViewHeight = serialized.FindProperty("scrollViewHeight");
+                //SerializedProperty prop_scrollViewHeight = serialized.FindProperty("scrollViewHeight");
                 SerializedProperty prop_comboBoxButtonHeight = serialized.FindProperty("comboBoxButtonHeight");
-                SerializedProperty prop_content = GetIGUContent(serialized.FindProperty("comboBoxButton"));
+                SerializedProperty prop_content = GetIGUContent(serialized.FindProperty("cbx_button"));
 
                 prop_foldout.boolValue = EditorGUI.Foldout(position, prop_foldout.boolValue,
                     EditorGUIUtility.TrTempContent($"[{temp.GetType().Name}]{temp.name}"));
@@ -48,7 +48,9 @@ namespace Cobilas.Unity.Editor.Graphics.IGU {
                     obj.name = EditorGUI.TextField(position, EditorGUIUtility.TrTempContent("Name"), obj.name);
                     EditorGUI.BeginDisabledGroup(true);
                     EditorGUI.ObjectField(position = MoveDownWithBlankSpace(position), prop_parent, EditorGUIUtility.TrTempContent("parent"));
-                    _ = EditorGUI.PropertyField(position = MoveDownWithBlankSpace(position), prop_container, EditorGUIUtility.TrTempContent("Container"));
+                    EditorGUI.LabelField(position = MoveDownWithBlankSpace(position),
+                        EditorGUIUtility.TrTempContent($"Container: {prop_container.FindPropertyRelative("name").stringValue}"),
+                        EditorStyles.helpBox);
                     EditorGUI.EndDisabledGroup();
                     --EditorGUI.indentLevel;
 
@@ -77,10 +79,10 @@ namespace Cobilas.Unity.Editor.Graphics.IGU {
                     obj.Index = EditorGUI.IntField(position, EditorGUIUtility.TrTempContent("Index"), obj.Index);
                     obj.UseTooltip = EditorGUI.Toggle(recttemp = MoveDownWithBlankSpace(position), EditorGUIUtility.TrTempContent("Use Tooltip"), obj.UseTooltip);
                     EditorGUI.BeginDisabledGroup(!obj.UseTooltip);
-                    obj.Tooltip = EditorGUI.TextField(recttemp = MoveDownWithBlankSpace(recttemp), EditorGUIUtility.TrTempContent("Tooltip"), obj.Tooltip);
+                    obj.ToolTip = EditorGUI.TextField(recttemp = MoveDownWithBlankSpace(recttemp), EditorGUIUtility.TrTempContent("Tooltip"), obj.ToolTip);
                     EditorGUI.EndDisabledGroup();
                     obj.AdjustComboBoxView = EditorGUI.Toggle(recttemp = MoveDownWithBlankSpace(recttemp), EditorGUIUtility.TrTempContent("Adjust ComboBoxView"), obj.AdjustComboBoxView);
-                    _ = EditorGUI.PropertyField(recttemp = MoveDownWithBlankSpace(recttemp), prop_scrollViewHeight, EditorGUIUtility.TrTempContent("ScrollView height"));
+                    obj.ScrollViewHeight = EditorGUI.FloatField(recttemp = MoveDownWithBlankSpace(recttemp), EditorGUIUtility.TrTempContent("ScrollView height"), obj.ScrollViewHeight);
                     _ = EditorGUI.PropertyField(recttemp = MoveDownWithBlankSpace(recttemp), prop_comboBoxButtonHeight, EditorGUIUtility.TrTempContent("ComboBoxButton height"));
                     _ = EditorGUI.PropertyField(MoveDownWithBlankSpace(recttemp), prop_content, EditorGUIUtility.TrTempContent("Content"));
                     _ = prop_content.serializedObject.ApplyModifiedProperties();
@@ -102,12 +104,12 @@ namespace Cobilas.Unity.Editor.Graphics.IGU {
                 SerializedObject serialized = new SerializedObject(temp);
                 SerializedProperty prop_myRect = serialized.FindProperty("myRect");
                 SerializedProperty prop_myColor = serialized.FindProperty("myColor");
-                SerializedProperty prop_myConfg = serialized.FindProperty("myConfg");
+                SerializedProperty prop_myConfg = serialized.FindProperty("myConfig");
                 SerializedProperty prop_foldout = serialized.FindProperty("foldout");
                 SerializedProperty prop_onClick = serialized.FindProperty("onClick");
                 SerializedProperty prop_onSelectedIndex = serialized.FindProperty("onSelectedIndex");
                 SerializedProperty prop_onActivatedComboBox = serialized.FindProperty("onActivatedComboBox");
-                SerializedProperty prop_content = GetIGUContent(serialized.FindProperty("comboBoxButton"));
+                SerializedProperty prop_content = GetIGUContent(serialized.FindProperty("cbx_button"));
                 if (prop_foldout.boolValue)
                     return SingleRowHeightWithBlankSpace * 10f +
                         EditorGUI.GetPropertyHeight(prop_myRect) +
@@ -125,7 +127,7 @@ namespace Cobilas.Unity.Editor.Graphics.IGU {
 
         private ReorderableList GetReorderableList(IGUComboBox comboBox, Rect position) {
             ReorderableList reorderable = new ReorderableList(
-                    new List<IGUComboBoxButton>(comboBox.BoxButtons), typeof(IGUComboBoxButton),
+                    new List<IGUComboBoxButton>(comboBox), typeof(IGUComboBoxButton),
                     false, true, true, true
                 );
 
@@ -134,7 +136,7 @@ namespace Cobilas.Unity.Editor.Graphics.IGU {
             if (!SelectIndex.ContainsKey(BoxID))
                 SelectIndex.Add(BoxID, -1);
 
-            int SecIndex = SelectIndex[BoxID];
+            int SecIndex = reorderable.index = SelectIndex[BoxID];
 
             reorderable.elementHeight = (SingleLineHeight * 3f) + BlankSpace;
             reorderable.drawHeaderCallback = (r) => EditorGUI.LabelField(r, EditorGUIUtility.TrTempContent("ComboBox buttons"));
@@ -143,31 +145,23 @@ namespace Cobilas.Unity.Editor.Graphics.IGU {
             reorderable.drawElementCallback = (r, i, a, f) => {
                 IGUComboBoxButton item = reorderable.list[i] as IGUComboBoxButton;
                 r.height = SingleLineHeight;
-                item.Content.Text = EditorGUI.TextField(r, EditorGUIUtility.TrTempContent("Text"), item.Content.Text);
-                item.Content.Image = (Texture)EditorGUI.ObjectField(r = MoveDown(r), EditorGUIUtility.TrTempContent("Image"), item.Content.Image, typeof(Texture), true);
-                item.Content.Tooltip = EditorGUI.TextField(MoveDown(r), EditorGUIUtility.TrTempContent("Tooltip"), item.Content.Tooltip);
+                item.Text = EditorGUI.TextField(r, EditorGUIUtility.TrTempContent("Text"), item.Text);
+                item.Image = (Texture)EditorGUI.ObjectField(r = MoveDown(r), EditorGUIUtility.TrTempContent("Image"), item.Image, typeof(Texture), true);
+                item.ToolTip = EditorGUI.TextField(MoveDown(r), EditorGUIUtility.TrTempContent("Tooltip"), item.ToolTip);
             };
 
             reorderable.onRemoveCallback = (r) => {
                 List<IGUComboBoxButton> temp = r.list as List<IGUComboBoxButton>;
                 temp.RemoveAt(r.index);
+                comboBox.Remove(r.index);
                 SelectIndex[BoxID] = SecIndex = r.index - 1;
-                if (temp.Count > 0) {
-                    List<IGUContent> contents = new List<IGUContent>(
-                    Array.ConvertAll<IGUComboBoxButton, IGUContent>(temp.ToArray(), (t) => new IGUContent(t.Content))
-                    );
-                    comboBox.SetIGUComboBoxButtonList(contents.ToArray());
-                }
-                else comboBox.SetIGUComboBoxButtonList(new IGUContent[0]);
             };
 
             reorderable.onAddCallback = (r) => {
                 List<IGUComboBoxButton> temp = r.list as List<IGUComboBoxButton>;
-                List<IGUContent> contents = new List<IGUContent>(
-                Array.ConvertAll<IGUComboBoxButton, IGUContent>(temp.ToArray(), (t) => new IGUContent(t.Content))
-                );
-                contents.Add(new IGUContent($"Item {contents.Count}"));
-                comboBox.SetIGUComboBoxButtonList(contents.ToArray());
+                comboBox.Add($"Item[{comboBox.ButtonCount}]");
+                temp.Add(comboBox[comboBox.ButtonCount - 1]);
+                r.index = comboBox.ButtonCount - 1;
             };
             reorderable.DoList(position);
             SelectIndex[BoxID] = SecIndex;

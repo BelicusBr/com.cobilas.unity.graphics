@@ -1,0 +1,141 @@
+//===4.0.0-rc1(18/02/2024)
+IGUSelectionGrid precissa de uma atualização
+IGUComboBox precissa de uma atualização
+Remover classe HashCodeCompare
+Remover o método IGUObject.GetRect()
+Remover o método IGUObject.GetRect(bool)
+* Remover a propriedade IGUObject.GlobalRect
+* Remover o campo IGUObject.doNots
+* Remover a propriedade IGUScrollView.ViewRect
+
+//===============================================================
+Os métodos foram adicionandos
+IGUObject.Ignition()
+IGUObject.Start()
+IGUObject.IgnitionEnable()
+IGUObject.IgnitionDisable()
+IGUObject.DestroyIgnition()
+
+Os métodos foram substituidos
+IGUObject.Awake() >> IGUObject.Ignition()
+IGUObject.OnEnable() >> IGUObject.IgnitionEnable()
+IGUObject.OnDisable() >> IGUObject.IgnitionDisable()
+IGUObject.OnIGUDestroy() >> IGUObject.DestroyIgnition()
+
+//===4.1.1(19/02/2024)
+#Fixed
+A atualização da classe 'IGUComboBox' solucionou problemas que avia que tornava a classe inviavel.
+
+#Added
+A classe abstrata 'IGULayout' recebeu novos métodos abstratos como 'IGULayout.Remove(int)', 
+'IGULayout.Remove(int, bool)' e 'IGULayout.Remove(IGUObject, bool)'.
+A classe 'IGUScrollView' recebeu novas propriedades como 'IGUScrollView.VerticalScrollbarIsVisible' e
+'IGUScrollView.HorizontalScrollbarIsVisible'.
+
+//===Testar a classe 'IGUScrollView' e 'TDS_IGUComboBox'
+
+//===4.2.1(20/02/2024)
+#Fixed
+O evento 'IGUScrollView.OnScrollView' possuia um mal funcionamento pelo fato de que a função 'IGUObject.OnIGU'
+dos objetos 'IGUVerticalScrollbar' e 'IGUHorizontalScrollbar' era chamadas depois de obter o valor da propriedade
+'IGUSliderObject.Value' o que fazia o evento 'IGUScrollView.OnScrollView' a ser encerrado bruscamente.
+
+#Added
+A propriedade 'IGURectClip.AutoInvert' foi adicionando para fazer a inversão automatica da propriedade 'IGURectClip.ScrollView'.
+
+$Removed
+A Classe 'IGUComboBox' não herda mas da interface 'IIGUSerializationCallbackReceiver'.
+
+//===4.2.2(21/02/2024)
+#Fixed
+Correção na classe de desenho 'IGUComboBoxDrawer' devido a atualização feita na classe 'IGUComboBox'.
+
+//===4.2.3(21/02/2024)
+#Fixed
+- Nas classes 'IGUVerticalScrollbar' e 'IGUHorizontalScrollbar' dentro do método 'IGUObject.LowCallOnIGU()'
+a propriedade 'IGUSliderObject.Value' era passada por um 'Mathf.Clamp(float, float, float)' mas sem levar
+em consideração a propriedade 'ScrollbarThumbSize' das classes 'IGUVerticalScrollbar' e 'IGUHorizontalScrollbar'.
+- Na classe 'IGUScrollView' antes de passar o valor da propriedade 'IGUSliderObject.Value' das classes
+'IGUVerticalScrollbar' e 'IGUHorizontalScrollbar' para o RectClip é verificado se os objetos do tipo
+'IGUVerticalScrollbar' e 'IGUHorizontalScrollbar' se são visiveis para que o RectClip não sejá 
+posicionado incorretamente.
+
+//===4.2.4(22/02/2024)
+#Fixed
+No método estatico 'IGUContainer.CreatePermanentGenericIGUContainer()' o container gerado não se tornava objeto
+não destruivel da cena.
+
+//===4.2.5(23/02/2024)
+#Changed
+A dependencia 'com.cobilas.unity.management.runtime' foi atualizada para versão '2.2.2' por causa das 
+correções feitas na classe 'SceneContainerManager' que é usada pela classe 'IGUDrawer'.
+#Fixed
+Na classe 'IGUCheckBox' ao mudar o estatus 'Checked' possuia um mal funcionamento em que ao ser mudado 
+era verificado antes qual o gatilho do mouse era acionado mas isso fazia com que o estatus 'Checked' 
+não fosse alterado corretamente.
+#Added
+As classes 'BackEndIGU' e 'IGUUtilityDistortion' foram adicionados.
+
+//===2.3.0(24/02/2024)
+#Removed
+O métodos protegidos 'IGUObject.GetRect(bool)' e 'IGUObject.GetRect()' foram removidos e substituidos 
+pela propriedade 'IGUObject.LocalRect'.
+A propriedade 'IGULabel.RichText' foi removido.
+O método 'IGULabel.SetMarkedText(params MarkedText[])' foi removido.
+#Changed
+A propriedade 'IGUObject.MyConfg' foi renomeada para 'IGUObject.MyConfig'.
+A campo protegido 'IGUObject.myConfg' foi renomeada para 'IGUObject.myConfig'.
+A classe 'IGUSelectionGrid' foi atualizada.
+Os métodos 'IGUObject.Ignition()', 'IGUObject.Start()', 'IGUObject.IgnitionEnable()', 'IGUObject.IgnitionDisable()' e 
+'IGUObject.DestroyIgnition()' foram substituidos por
+```
+IGUObject.Ignition() >> IGUObject.IGUAwake()
+IGUObject.Start() >> IGUObject.IGUStart()
+IGUObject.IgnitionEnable() >> IGUObject.IGUOnEnable()
+IGUObject.IgnitionDisable() >> IGUObject.IGUOnDisable()
+IGUObject.DestroyIgnition() >> IGUObject.IGUOnDestroy()
+```
+O método 'IGUTextObject.GetGUIContent(string)' foi removido e substituido pelo operador de converção explicita 
+da classe 'IGUContent'.
+#Added
+A propriedade 'IGUObject.LocalConfig' foi adicionada para obter as configs do elemento IGU 
+levando em consideração o elemento IGU pai.
+Foi adicionando uma converção explicita 'string' para 'IGUStyle' onde e só digitar o nome do 
+estilo para ser carregado.
+Os métodos a seguir foram  adicionados.
+```c#
+IGUTextObject.GetGUIContentTemp(Texture, string);
+IGUTextObject.GetGUIContentTemp(Texture);
+IGUTextObject.GetIGUContentTemp(string, Texture, string);
+IGUTextObject.GetIGUContentTemp(string, string);
+IGUTextObject.GetIGUContentTemp(string, Texture);
+IGUTextObject.GetIGUContentTemp(Texture, string);
+IGUTextObject.GetIGUContentTemp(Texture);
+IGUTextObject.GetIGUContentTemp(string);
+```
+A propriedade 'IGUTextObject.RichText' foi adicionada.
+O método 'IGUTextObject.SetMarkedText(params MarkedText[])' foi adicionando.
+
+//===4.4.1(26/02/2024)
+#Removed
+A classe 'IGUUtilityDistortion' foi removido.
+A estrutura 'DoNotModifyRect' foi removido.
+As propriedades 'IGURect.ModifiedSize', 'IGURect.ModifiedPosition ', 'IGURect.ModifiedUp', 'IGURect.ModifiedDonw', 
+'IGURect.ModifiedRight', 'IGURect.ModifiedLeft' e 'IGURect.ModifiedCenter' foram removidos e substituidos pela
+propriedade 'IGURect.ModifiedRect'.
+Os métodos 'IGURect.SetModifiedPosition(vector2)' e 'IGURect.SetModifiedSize(Vector2)' foram removidos.
+A classe 'HashCodeCompare' foi removido.
+O método 'IGUDrawer.GetMousePosition()' foi removido e substituido pela propriedade 'IGUDrawer.MousePosition'.
+O método 'IGUObject.CreateIGUInstance<T>(string)' e 'IGUObject.CreateIGUInstance(Type, string)' foram removidos e 
+substituidos por 'IGUObject.Create<T>(string)' e 'IGUObject.Create(Type, string)'.
+As classes 'DeepAction' e 'IGUContainer' foram removidos e substituidos por 'IGUCanvas', 'IGUCanvasContainer' e 
+'IGUDepthDictionary'.
+A classe 'IGUBehaviour' foi removido.
+A classe 'IGUToolTip' foi removido.
+#Changed
+Agora no método 'IGURect.SetPivot(float, float)' os valores de entrada passam por um 'Mathf.Clamp01(float)' e 
+no método 'IGURect.SetRotation(float)' o valor de entrada ao ultrapassar '+360f' ou '-360f' ele retorna a '0f'.
+#Added
+A propriedade 'IGURepeatButton.OnRepeatClick' foi adicionada para ser usado como evento.
+As classes 'IGUTextFieldStringEvent', 'IGUCanvas', 'IGUCanvasContainer', 'IGUDepthDictionary' e 
+interfaces 'IIGUToolTip' e IIGUEndOfFrame foram adicionados.

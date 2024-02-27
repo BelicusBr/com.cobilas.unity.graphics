@@ -5,8 +5,9 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
     public class IGUCheckBox : IGUTextObject {
         public const string DefaultContantIGUCheckBox = "IGU check box";
 
-        private bool oneClick;
+        [SerializeField] private bool onclicked;
         [SerializeField] protected bool _checked;
+        [SerializeField] protected bool checkedtemp;
         [SerializeField] protected IGUStyle checkBoxStyle;
         [SerializeField] protected IGUOnClickEvent onClick;
         [SerializeField] protected IGUOnClickEvent checkBoxOn;
@@ -17,57 +18,43 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
         public IGUOnCheckedEvent OnChecked => onChecked;
         public IGUOnClickEvent CheckBoxOn => checkBoxOn;
         public IGUOnClickEvent CheckBoxOff => checkBoxOff;
-        public bool Checked { get => _checked; set => _checked = value; }
-        public IGUStyle CheckBoxStyle { get => checkBoxStyle; set => checkBoxStyle = value; }
+        public IGUStyle CheckBoxStyle { 
+            get => checkBoxStyle;
+            set => checkBoxStyle = value ?? (IGUStyle)"Black toggle border";
+        }
+        public bool Checked { 
+            get => _checked;
+            set => onChecked.Invoke(_checked = checkedtemp = value);
+        }
 
-        protected override void Awake() {
-            base.Awake();
-            myConfg = IGUConfig.Default;
+        protected override void IGUAwake() {
+            base.IGUAwake();
             myRect = IGURect.DefaultButton;
-            myColor = IGUColor.DefaultBoxColor;
-            content = new IGUContent(DefaultContantIGUCheckBox);
-            checkBoxStyle = IGUSkins.GetIGUStyle("Black toggle border");
-            oneClick = !(_checked = false);
             onClick = new IGUOnClickEvent();
             checkBoxOn = new IGUOnClickEvent();
             checkBoxOff = new IGUOnClickEvent();
             onChecked = new IGUOnCheckedEvent();
+            onclicked = checkedtemp = _checked = false;
+            checkBoxStyle = (IGUStyle)"Black toggle border";
+            content = new IGUContent(DefaultContantIGUCheckBox);
         }
 
         protected override void LowCallOnIGU() {
+            checkBoxStyle.RichText = richText;
+            checkedtemp = BackEndIGU.Toggle(LocalRect, checkedtemp, MyContent, checkBoxStyle);
 
-            bool checkedtemp = GUI.Toggle(GetRect(), _checked, GetGUIContent(DefaultContantIGUCheckBox),
-                IGUStyle.GetGUIStyleTemp(checkBoxStyle));
-
-            if (checkedtemp) {
-                if (oneClick)
-                    ModChecked(checkedtemp, false);
-            } else {
-                if (!oneClick)
-                    ModChecked(checkedtemp, true);
-            }
+            bool isRect = LocalRect.Contains(IGUDrawer.MousePosition);
+            if (IGUDrawer.Drawer.GetMouseButton(LocalConfig.MouseType))
+                onclicked = true;
+            if (Event.current.type == EventType.Repaint)
+                if (isRect && _checked != checkedtemp && onclicked) {
+                    onclicked = false;
+                    onClick.Invoke();
+                    onChecked.Invoke(_checked = checkedtemp);
+                }
 
             if (_checked) checkBoxOn.Invoke();
             else checkBoxOff.Invoke();
-
-            if (useTooltip)
-                if (GetRect(true).Contains(IGUDrawer.Drawer.GetMousePosition()))
-                    DrawTooltip();
         }
-
-        private void ModChecked(bool modChecked, bool modOneClick) {
-            if (IGUDrawer.Drawer.GetMouseButton(myConfg.MouseType)) {
-                _checked = modChecked;
-                oneClick = modOneClick;
-                onClick.Invoke();
-                onChecked.Invoke(modChecked);
-            }
-        }
-
-        protected override GUIContent GetGUIContent(string defaultGUIContent)
-            => base.GetGUIContent(defaultGUIContent);
-
-        protected override void DrawTooltip()
-            => base.DrawTooltip();
     }
 }

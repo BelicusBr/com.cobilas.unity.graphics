@@ -1,53 +1,47 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
+using Cobilas.Unity.Graphics.IGU.Events;
 using Cobilas.Unity.Graphics.IGU.Elements;
+using Cobilas.Unity.Graphics.IGU.Interfaces;
 
 namespace Cobilas.Unity.Graphics.IGU {
-    [Serializable]
-    public class IGUComboBoxButton {
+    public sealed class IGUComboBoxButton : IGUObject, IIGUToolTip {
+
         [SerializeField] private int index;
-        [SerializeField] private IGUButton button;
+        [SerializeField] private IGUStyle style;
+        [SerializeField] private bool useTooltip;
+        [SerializeField] private IGUContent myContent;
+        [SerializeField] private IGUStyle tooltipStyle;
+        [SerializeField] private IGUOnClickEvent onClick;
 
-        public int Index => index;
-        public IGUContent Content => button.MyContent;
+        public IGUContent MyContent => myContent;
+        public IGUOnClickEvent OnClick => onClick;
+        public int Index { get => index; set => index = value; }
+        public bool UseTooltip { get => useTooltip; set => useTooltip = value; }
+        public string Text { get => MyContent.Text; set => MyContent.Text = value; }
+        public Texture Image { get => MyContent.Image; set => MyContent.Image = value; }
+        public string ToolTip { get => MyContent.Tooltip; set => MyContent.Tooltip = value; }
+        public IGUStyle Style { get => style; set => style = value ?? (IGUStyle)"Black button border"; }
+        public IGUStyle TooltipStyle { get => tooltipStyle; set => tooltipStyle = value ?? (IGUStyle)"Black box border"; }
 
-        public IGUComboBoxButton(int index, int parentInstanceID, IGUContent content) {
-            this.button = IGUObject.CreateIGUInstance<IGUButton>($"({parentInstanceID})CBXBT[index:{this.index = index}]");
-            this.button.MyContent = content;
+        protected override void IGUAwake() {
+            base.IGUAwake();
+            useTooltip = false;
+            myRect = IGURect.DefaultButton;
+            onClick = new IGUOnClickEvent();
+            style = (IGUStyle)"Black button border";
+            tooltipStyle = (IGUStyle)"Black box border";
+            myContent = new IGUContent(IGUButton.DefaultContentIGUButton);
         }
-            //=> this.button = IGUButton.CreateIGUInstance($"({parentInstanceID})CBXBT[index:{this.index = index}]", content);
 
-        public void OnIGU(IGUStyle style, IGUScrollView sv) {
-            button.ButtonStyle = style;
-            IGURect rect = button.MyRect = button.MyRect.SetPosition(0, button.MyRect.Height * index);
-            rect.SetPosition(rect.X, rect.Y - sv.ScrollPosition.y);
-            if ((rect.Up > 0 || rect.Donw > 0) &&
-                (rect.Up < sv.MyRect.Height || rect.Donw < sv.MyRect.Height))
-                button.OnIGU();
+        protected override void LowCallOnIGU() {
+            if (BackEndIGU.Button(LocalRect, MyContent, style))
+                if (IGUDrawer.Drawer.GetMouseButtonUp(LocalConfig.MouseType))
+                    onClick.Invoke();
         }
 
-        public void ChangeWidth(float width)
-            => ChangeSize(width, button.MyRect.Height);
-
-        public void ChangeHeight(float height)
-            => ChangeSize(button.MyRect.Width, height);
-
-        public void ChangeIGUColor(IGUColor color)
-            => button.MyColor = color;
-
-        public void ChangeIGUConfig(IGUConfig config)
-            => button.MyConfg = config;
-
-        public void OnDestroy()
-            => UnityEngine.Object.Destroy(button);
-
-        public void AddSelectedIndex(Action<IGUComboBoxButton> selectedIndex)
-            => button.OnClick.AddListener(() => { selectedIndex(this); });
-
-        public void AddOnClick(Action onClick)
-            => button.OnClick.AddListener(() => onClick());
-
-        private void ChangeSize(float width, float height)
-            => button.MyRect = button.MyRect.SetSize(width, height);
+        void IIGUToolTip.InternalDrawToolTip() {
+            if (LocalRect.Contains(IGUDrawer.MousePosition) && UseTooltip)
+                    IGUDrawer.DrawTooltip(ToolTip, tooltipStyle);
+        }
     }
 }

@@ -78,6 +78,67 @@ namespace Cobilas.Unity.Graphics.IGU {
             Overflow = new IGUStyleRectOffSet();
         }
 
+        public IGUStyle(IGUStyle other) : this() {
+            name =                 other.Name;
+            fixedWidth =           other.FixedWidth;
+            fixedHeight =          other.FixedHeight;
+            stretchWidth =         other.StretchWidth;
+            stretchHeight =        other.StretchHeight;
+            font =                 other.Font;
+            fontSize =             other.FontSize;
+            fontStyle =            other.FontStyle;
+            wordWrap =             other.WordWrap;
+            richText =             other.RichText;
+            alignment =            other.Alignment;
+            imagePosition =        other.ImagePosition;
+            clipping =             other.Clipping;
+            contentOffset =        other.ContentOffset;
+            normal.Background =    other.normal.Background;
+            normal.TextColor =     other.normal.TextColor;
+            hover.Background =     other.hover.Background;
+            hover.TextColor =      other.hover.TextColor;
+            active.Background =    other.active.Background;
+            active.TextColor =     other.active.TextColor;
+            focused.Background =   other.focused.Background;
+            focused.TextColor =    other.focused.TextColor;
+            onNormal.Background =  other.onNormal.Background;
+            onNormal.TextColor =   other.onNormal.TextColor;
+            onHover.Background =   other.onHover.Background;
+            onHover.TextColor =    other.onHover.TextColor;
+            onActive.Background =  other.onActive.Background;
+            onActive.TextColor =   other.onActive.TextColor;
+            onFocused.Background = other.onFocused.Background;
+            onFocused.TextColor =  other.onFocused.TextColor;
+#if UNITY_EDITOR
+            normal.ScaledBackgrounds =    other.normal.ScaledBackgrounds;
+            hover.ScaledBackgrounds =     other.hover.ScaledBackgrounds;
+            active.ScaledBackgrounds =    other.active.ScaledBackgrounds;
+            focused.ScaledBackgrounds =   other.focused.ScaledBackgrounds;
+            onNormal.ScaledBackgrounds =  other.onNormal.ScaledBackgrounds;
+            onHover.ScaledBackgrounds =   other.onHover.ScaledBackgrounds;
+            onActive.ScaledBackgrounds =  other.onActive.ScaledBackgrounds;
+            onFocused.ScaledBackgrounds = other.onFocused.ScaledBackgrounds;
+#endif
+            border.Left =     other.border.Left;
+            border.Right =    other.border.Right;
+            border.Top =      other.border.Top;
+            border.Bottom =   other.border.Bottom;
+            margin.Left =     other.margin.Left;
+            margin.Right =    other.margin.Right;
+            margin.Top =      other.margin.Top;
+            margin.Bottom =   other.margin.Bottom;
+            padding.Left =    other.padding.Left;
+            padding.Right =   other.padding.Right;
+            padding.Top =     other.padding.Top;
+            padding.Bottom =  other.padding.Bottom;
+            overflow.Left =   other.overflow.Left;
+            overflow.Right =  other.overflow.Right;
+            overflow.Top =    other.overflow.Top;
+            overflow.Bottom = other.overflow.Bottom;
+        }
+
+        public IGUStyle(string styleName) : this(IGUSkins.GetIGUStyle(styleName)) {}
+
         [Obsolete("Use the explicit (GUIStyle)style conversion.")]
         public static GUIStyle GetGUIStyleTemp(IGUStyle style, int index)
             => InternalGetGUIStyleTemp(style);
@@ -103,42 +164,28 @@ namespace Cobilas.Unity.Graphics.IGU {
             style.gUIStyle.contentOffset = style.ContentOffset;
             style.gUIStyle.normal.background = style.normal.Background;
             style.gUIStyle.normal.textColor = style.normal.TextColor;
-#if UNITY_EDITOR
-            style.gUIStyle.normal.scaledBackgrounds = style.normal.ScaledBackgrounds;
-#endif
             style.gUIStyle.hover.background = style.hover.Background;
             style.gUIStyle.hover.textColor = style.hover.TextColor;
-#if UNITY_EDITOR
-            style.gUIStyle.hover.scaledBackgrounds = style.hover.ScaledBackgrounds;
-#endif
             style.gUIStyle.active.background = style.active.Background;
             style.gUIStyle.active.textColor = style.active.TextColor;
-#if UNITY_EDITOR
-            style.gUIStyle.active.scaledBackgrounds = style.active.ScaledBackgrounds;
-#endif
             style.gUIStyle.focused.background = style.focused.Background;
             style.gUIStyle.focused.textColor = style.focused.TextColor;
-#if UNITY_EDITOR
-            style.gUIStyle.focused.scaledBackgrounds = style.focused.ScaledBackgrounds;
-#endif
             style.gUIStyle.onNormal.background = style.onNormal.Background;
             style.gUIStyle.onNormal.textColor = style.onNormal.TextColor;
-#if UNITY_EDITOR
-            style.gUIStyle.onNormal.scaledBackgrounds = style.onNormal.ScaledBackgrounds;
-#endif
             style.gUIStyle.onHover.background = style.onHover.Background;
             style.gUIStyle.onHover.textColor = style.onHover.TextColor;
-#if UNITY_EDITOR
-            style.gUIStyle.onHover.scaledBackgrounds = style.onHover.ScaledBackgrounds;
-#endif
             style.gUIStyle.onActive.background = style.onActive.Background;
             style.gUIStyle.onActive.textColor = style.onActive.TextColor;
-#if UNITY_EDITOR
-            style.gUIStyle.onActive.scaledBackgrounds = style.onActive.ScaledBackgrounds;
-#endif
             style.gUIStyle.onFocused.background = style.onFocused.Background;
             style.gUIStyle.onFocused.textColor = style.onFocused.TextColor;
 #if UNITY_EDITOR
+            style.gUIStyle.normal.scaledBackgrounds = style.normal.ScaledBackgrounds;
+            style.gUIStyle.hover.scaledBackgrounds = style.hover.ScaledBackgrounds;
+            style.gUIStyle.active.scaledBackgrounds = style.active.ScaledBackgrounds;
+            style.gUIStyle.focused.scaledBackgrounds = style.focused.ScaledBackgrounds;
+            style.gUIStyle.onNormal.scaledBackgrounds = style.onNormal.ScaledBackgrounds;
+            style.gUIStyle.onHover.scaledBackgrounds = style.onHover.ScaledBackgrounds;
+            style.gUIStyle.onActive.scaledBackgrounds = style.onActive.ScaledBackgrounds;
             style.gUIStyle.onFocused.scaledBackgrounds = style.onFocused.ScaledBackgrounds;
 #endif
             style.gUIStyle.border.left = style.border.Left;
@@ -162,5 +209,7 @@ namespace Cobilas.Unity.Graphics.IGU {
 
         public static explicit operator GUIStyle(IGUStyle style) 
             => InternalGetGUIStyleTemp(style);
+        public static explicit operator IGUStyle(string styleName) 
+            => IGUSkins.GetIGUStyle(styleName);
     }
 }

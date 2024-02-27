@@ -24,11 +24,8 @@ namespace Cobilas.Unity.Editor.Graphics.IGU {
             EditorGUILayout.LabelField("Containers", EditorStyles.boldLabel);
             EditorGUILayout.BeginVertical(EditorStyles.helpBox);
             EditorGUI.indentLevel++;
-            for (int I = 0; I < prop_listDeep.arraySize; I++) {
-                SerializedProperty prop_listDeep_Item = prop_listDeep.GetArrayElementAtIndex(I);
-                IGUContainer temp = prop_listDeep_Item.objectReferenceValue as IGUContainer;
-                EditorGUILayout.LabelField(IGUTextObject.GetGUIContentTemp($"(ID:{temp.GetInstanceID()})-{temp.name}"));
-            }
+            IGUCanvasContainer temp = prop_listDeep.objectReferenceValue as IGUCanvasContainer;
+            EditorGUILayout.LabelField(IGUTextObject.GetGUIContentTemp($"(ID:{temp.GetInstanceID()})-{temp.name}"));
             EditorGUILayout.EndVertical();
             EditorGUI.indentLevel--;
             serializedObject.ApplyModifiedProperties();
