@@ -10,6 +10,9 @@ namespace Cobilas.Unity.Graphics.IGU {
     public sealed class IGUDepthDictionary : IEnumerable<IGUObject> {
         [SerializeField] private int depth;
         [SerializeField] private IGUObject[] objects;
+        #if UNITY_EDITOR
+        [SerializeField, HideInInspector] private bool foldout;
+        #endif
 
         public int Depth => depth;
         public int Count => ArrayManipulation.ArrayLength(objects);
@@ -24,8 +27,10 @@ namespace Cobilas.Unity.Graphics.IGU {
         public void Add(IGUObject @object)
             => ArrayManipulation.Add(@object, ref objects);
 
-        public void Remove(IGUObject @object)
-            => ArrayManipulation.Remove(@object, ref objects);
+        public void Remove(IGUObject @object) {
+            if (objects != null)
+                ArrayManipulation.Remove(@object, ref objects);
+        }
 
         public bool Contains(IGUObject @object) {
             for (int I = 0; I < Count; I++)

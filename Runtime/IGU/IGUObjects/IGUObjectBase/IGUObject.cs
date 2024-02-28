@@ -44,8 +44,11 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
             return this.container = container;
         }
 
+        public IGUCanvas ApplyToContainer(string name, IGUCanvasContainer.CanvasType type)
+            => ApplyToContainer(IGUCanvasContainer.GetOrCreateIGUCanvas(name, type));
+
         public IGUCanvas ApplyToContainer(string name)
-            => ApplyToContainer(IGUCanvasContainer.GetOrCreateIGUCanvas(name));
+            => ApplyToContainer(name, IGUCanvasContainer.CanvasType.Volatile);
 
         public IGUCanvas ApplyToGenericContainer()
             => ApplyToContainer(IGUCanvasContainer.GetGenericContainer());

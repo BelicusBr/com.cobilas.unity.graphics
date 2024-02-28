@@ -34,7 +34,7 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
                     sliderObjectStyle, verticalSliderThumb);
 
             if (valuetemp != value)
-                if (IGUDrawer.Drawer.GetMouseButton(LocalConfig.MouseType)) {
+                if (IGUDrawer.GetMouseButtonPress(LocalConfig.MouseType)) {
                     value = valuetemp;
                     onModifiedSlider.Invoke(value);
                     onModifiedSliderInt.Invoke((int)value);

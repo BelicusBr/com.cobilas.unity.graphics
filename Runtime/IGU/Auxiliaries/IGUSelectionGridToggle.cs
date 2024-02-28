@@ -55,7 +55,7 @@ namespace Cobilas.Unity.Graphics.IGU {
             checkedtemp = BackEndIGU.Toggle(LocalRect, checkedtemp, myContent, style);
 
             bool isRect = LocalRect.Contains(IGUDrawer.MousePosition);
-            if (IGUDrawer.Drawer.GetMouseButton(LocalConfig.MouseType))
+            if (IGUDrawer.GetMouseButtonPress(LocalConfig.MouseType))
                 onclicked = true;
             if (Event.current.type == EventType.Repaint)
                 if (isRect && _checked != checkedtemp && onclicked) {
