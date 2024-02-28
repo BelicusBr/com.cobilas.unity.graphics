@@ -227,7 +227,7 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
             IGURect rect_scv = myRect;
             rect_scv = rect_scv.SetSize(rect_scv.Size + Vector2.up * (CloseComboBoxView ? cbx_scrollview.MyRect.Height: 0f));
             if (!rect_scv.Contains(IGUDrawer.MousePosition))
-                if (IGUDrawer.Drawer.GetMouseButtonDown(LocalConfig.MouseType) && CloseComboBoxView)
+                if (IGUDrawer.GetMouseButtonDown(LocalConfig.MouseType) && CloseComboBoxView)
                     CloseComboBoxView = false;
         }
 

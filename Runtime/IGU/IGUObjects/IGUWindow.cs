@@ -49,7 +49,7 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
                     internalIndowFunction, MyContent, windowStyle);
 
             if (myRectTemp != myRect)
-                if (IGUDrawer.Drawer.GetMouseButton(LocalConfig.MouseType))
+                if (IGUDrawer.GetMouseButtonPress(LocalConfig.MouseType))
                     onMovingWindow.Invoke((myRect = myRectTemp).Position);
         }
 

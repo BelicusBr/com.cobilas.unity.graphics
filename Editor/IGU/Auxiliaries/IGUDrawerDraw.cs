@@ -10,7 +10,7 @@ namespace Cobilas.Unity.Editor.Graphics.IGU {
         SerializedProperty prop_listDeep;
 
         private void OnEnable() {
-            prop_listDeep = serializedObject.FindProperty("containers");
+            prop_listDeep = serializedObject.FindProperty("canvasContainer");
         }
 
         public override void OnInspectorGUI() {

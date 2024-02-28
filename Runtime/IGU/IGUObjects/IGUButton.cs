@@ -27,13 +27,12 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
             myColor = IGUColor.DefaultBoxColor;
             buttonStyle = (IGUStyle)"Black button border";
             content = new IGUContent(DefaultContentIGUButton);
-            (this as IIGUSerializationCallbackReceiver).Reserialization();
         }
 
         protected override void LowCallOnIGU() {
             buttonStyle.RichText = richText;
             if (BackEndIGU.Button(LocalRect, MyContent, buttonStyle))
-                if (IGUDrawer.Drawer.GetMouseButtonUp(LocalConfig.MouseType)) {
+                if (IGUDrawer.GetMouseButtonUp(LocalConfig.MouseType)) {
                     onClick.Invoke();
                     clicked[1] = true;
                 }

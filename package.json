@@ -1,13 +1,13 @@
 {
   "name": "com.cobilas.unity.graphics",
-  "version": "3.5.5",
+  "version": "4.5.0",
   "displayName": "Cobilas Graphics",
   "description": "Package that adds and manipulates graphic elements.",
   "licensesUrl": "https://github.com/BelicusBr/com.cobilas.unity.graphics/blob/main/LICENSE.md",
   "changelogUrl": "https://github.com/BelicusBr/com.cobilas.unity.graphics/blob/main/CHANGELOG.md",
   "unity": "2019.1",
   "unityRelease": "0b5",
-  "type": "tool",
+  "type": "library",
   "author": "B\u00e9licusBr",
   "repository": {
     "url": "git+https://github.com/BelicusBr/com.cobilas.unity.graphics.git",

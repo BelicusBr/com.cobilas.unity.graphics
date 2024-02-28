@@ -38,7 +38,7 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
                     sliderObjectStyle, sliderObjectThumbStyle);
 
             if (valuetemp != value)
-                if (IGUDrawer.Drawer.GetMouseButton(LocalConfig.MouseType)) {
+                if (IGUDrawer.GetMouseButtonPress(LocalConfig.MouseType)) {
                     value = valuetemp;
                     onModifiedScrollbar.Invoke(value);
                     onModifiedScrollbarInt.Invoke((int)value);
