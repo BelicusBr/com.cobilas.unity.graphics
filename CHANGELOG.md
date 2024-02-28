@@ -1,6 +1,14 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+# [4.5.1] (02/28/2024)
+## Changed
+- In `ToolTip` drawing methods:
+- - It is now checked whether the IGU element is visible.
+- - `ToolTip` text must not be empty or null.
+### Comments
+This change ensures that the `ToolTip` is only drawn if the IGU element is visible and the `ToolTip` text is valid.
+
 # [4.5.0] (28/02/2024)
 ## Added
 Class `IGUActionManager<A, T>`: manages the admission of actions for specified objects.
