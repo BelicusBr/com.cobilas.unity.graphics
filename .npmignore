@@ -14,6 +14,8 @@ node_modules.meta
 Test.meta
 test.meta
 # extension files
+*.code-workspace
+*.code-workspace.meta
 *.metafreeze
 *.metafreeze.meta
 *.sln

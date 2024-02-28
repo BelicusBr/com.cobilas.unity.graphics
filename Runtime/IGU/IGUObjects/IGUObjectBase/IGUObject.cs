@@ -26,16 +26,16 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
         public void OnIGU() {
             GUI.SetNextControlName(name);
             IGUConfig config = LocalConfig;
-            bool oldEnabled = GUI.enabled;
-            GUI.enabled = config.IsEnabled;
             if (config.IsVisible) {
+                bool oldEnabled = GUI.enabled;
+                GUI.enabled = config.IsEnabled;
                 myRect.SetScaleFactor(IGUDrawer.ScaleFactor);
 
                 (this as IIGUObject).InternalPreOnIGU();
                 LowCallOnIGU();
                 (this as IIGUObject).InternalPostOnIGU();
+                GUI.enabled = oldEnabled;
             }
-            GUI.enabled = oldEnabled;
         }
 
         public IGUCanvas ApplyToContainer(IGUCanvas container) {

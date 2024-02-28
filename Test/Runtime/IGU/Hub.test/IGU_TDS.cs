@@ -8,6 +8,7 @@ using UnityEngine.SceneManagement;
 using Cobilas.Collections;
 using Cobilas.Unity.Management.Runtime;
 using System.Text;
+using Test.Runtime.IGU.Block.Test;
 
 public class IGU_TDS : MonoBehaviour {
 
@@ -31,6 +32,7 @@ public class IGU_TDS : MonoBehaviour {
         comboBox.Add($"TDS/{nameof(IGUScrollView)}");
         comboBox.Add($"TDS/{nameof(IGUSelectionGrid)}");
         comboBox.Add($"TDS/{nameof(IGUNumericBox)}");
+        comboBox.Add($"TDS/IGUPhysics/1");
 
         comboBox.Index = 0;
 
@@ -102,6 +104,17 @@ public class IGU_TDS : MonoBehaviour {
                 else
                     operation.completed += (o) => {
                         Load(button, typeof(TDS_NBlock));
+                    };
+                break;
+            case 6:
+                scene = SceneManager.GetActiveScene();
+                operation = SceneManager.UnloadSceneAsync(scene);
+
+                if (operation is null)
+                    Load(button, typeof(TDS_IGUPHY));
+                else
+                    operation.completed += (o) => {
+                        Load(button, typeof(TDS_IGUPHY));
                     };
                 break;
         }

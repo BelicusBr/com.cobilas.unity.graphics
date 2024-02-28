@@ -14,7 +14,7 @@ namespace Cobilas.Unity.Graphics.IGU {
         [SerializeField] private float scaleFactorWidth;
         [SerializeField] private float scaleFactorHeight;
 #if UNITY_EDITOR
-        [HideInInspector] public bool foldout;
+        [SerializeField, HideInInspector] private bool foldout;
 #endif
 
         public static readonly Rect rectTemp = Rect.zero;

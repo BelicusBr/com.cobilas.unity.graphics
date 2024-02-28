@@ -1,0 +1,30 @@
+{
+    "folders": [
+		{
+			"name": "Unity Test",
+			"path": "../com.unity.test"
+		},
+		{
+			"name": "Unity Test/Assets",
+			"path": "../com.unity.test/Assets"
+		},
+		{
+			"name": "Graphics",
+			"path": "."
+		}
+	],
+    "extensions": {
+        "recommendations": [
+            "visualstudiotoolsforunity.vstuc"
+        ]
+    },
+    "settings": {
+        "files.exclude": {
+            "**/*.meta": true
+        },
+        "dotnet.preferCSharpExtension": true,
+        "dotnet.backgroundAnalysis.analyzerDiagnosticsScope": "openFiles",
+        "dotnet.dotnetPath": "C:/Program Files/dotnet",
+        "dotnet.defaultSolution": "com.unity.test.sln"
+    }
+}
