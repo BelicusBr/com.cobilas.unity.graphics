@@ -54,7 +54,8 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
         }
 
         protected override void DrawTooltip() {
-            if (useTooltip && LocalRect.SetSize(dragFlap.size).Contains(IGUDrawer.MousePosition))
+            if (useTooltip && LocalRect.SetSize(dragFlap.size).Contains(IGUDrawer.MousePosition) &&
+                LocalConfig.IsVisible && !string.IsNullOrEmpty(ToolTip))
                 IGUDrawer.DrawTooltip(ToolTip, tooltipStyle);
         }
 

@@ -69,7 +69,8 @@ namespace Cobilas.Unity.Graphics.IGU {
         }
 
         void IIGUToolTip.InternalDrawToolTip() {
-            if (LocalRect.Contains(IGUDrawer.MousePosition) && useTooltip)
+            if (LocalRect.Contains(IGUDrawer.MousePosition) && useTooltip &&
+                LocalConfig.IsVisible && !string.IsNullOrEmpty(ToolTip))
                 IGUDrawer.DrawTooltip(ToolTip, tooltipStyle);
         }
     }
