@@ -24,6 +24,8 @@ public class IGU_TDS : MonoBehaviour {
     private void Awake() {
         comboBox = IGUObject.Create<IGUComboBox>("#TDS1");
         _ = comboBox.ApplyToPermanentGenericContainer();
+        comboBox.UseTooltip = true;
+        comboBox.ToolTip = "TDS List";
 
         comboBox.Clear();
         comboBox.Add($"TDS/None");
