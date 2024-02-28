@@ -35,7 +35,7 @@ namespace Cobilas.Unity.Graphics.IGU {
 
         protected override void LowCallOnIGU() {
             if (BackEndIGU.Button(LocalRect, MyContent, style))
-                if (IGUDrawer.Drawer.GetMouseButtonUp(LocalConfig.MouseType))
+                if (IGUDrawer.GetMouseButtonUp(LocalConfig.MouseType))
                     onClick.Invoke();
         }
 

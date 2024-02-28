@@ -106,7 +106,7 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
             rectClip.OnIGU();
 
             if (scrollPositiontemp != scrollView)
-                if (IGUDrawer.Drawer.GetMouseButton(LocalConfig.MouseType)) 
+                if (IGUDrawer.GetMouseButtonPress(LocalConfig.MouseType)) 
                     onScrollView.Invoke(scrollView);
         }
 

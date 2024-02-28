@@ -18,13 +18,6 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
         protected override void LowCallOnIGU() {
             boxStyle.RichText = richText;
             BackEndIGU.Box(LocalRect, MyContent, boxStyle);
-
-            if (useTooltip)
-                if (LocalRect.ModifiedRect.Contains(Event.current.mousePosition))
-                    DrawTooltip();
         }
-
-        protected override void DrawTooltip()
-            => base.DrawTooltip();
     }
 }

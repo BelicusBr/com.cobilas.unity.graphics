@@ -12,7 +12,6 @@ namespace Cobilas.Unity.Graphics.IGU {
     public class IGUDrawer : MonoBehaviour, ISceneContainerItem {
         private Vector2 mousePosition;
         private Coroutine EndOfFrameCoroutine = null;
-        [SerializeField] private IGUMouseInput[] mouses;
         [SerializeField] private IGUObject[] reserialization;
         [SerializeField] private IGUCanvasContainer canvasContainer;
 #if UNITY_EDITOR
@@ -36,7 +35,6 @@ namespace Cobilas.Unity.Graphics.IGU {
         public static Vector2Int BaseCurrentResolution { get => baseCurrentResolution; set => baseCurrentResolution = value; }
 
         private void Awake() {
-            mouses = new IGUMouseInput[3];
             canvasContainer = GetComponent<IGUCanvasContainer>();
         }
 
@@ -65,52 +63,62 @@ namespace Cobilas.Unity.Graphics.IGU {
         private void OnGUI() {
             GUIUtility.ScaleAroundPivot(ScaleFactor, Vector2.zero);
             mousePosition = Event.current.mousePosition;
-// #if PLATFORM_STANDALONE || UNITY_EDITOR
-            mouses[0] = mouses[0].SetValues(
-                Input.GetKeyDown(KeyCode.Mouse0),
-                Input.GetKey(KeyCode.Mouse0),
-                Input.GetKeyUp(KeyCode.Mouse0),
-                mousePosition
-                );
-            mouses[1] = mouses[1].SetValues(
-                Input.GetKeyDown(KeyCode.Mouse1),
-                Input.GetKey(KeyCode.Mouse1),
-                Input.GetKeyUp(KeyCode.Mouse1),
-                Vector2.zero
-                );
-            mouses[2] = mouses[2].SetValues(
-                Input.GetKeyDown(KeyCode.Mouse2),
-                Input.GetKey(KeyCode.Mouse2),
-                Input.GetKeyUp(KeyCode.Mouse2),
-                Vector2.zero
-                );
-// #else
-//             mouses[0] = 
-//                 mouses[1] = 
-//                 mouses[2] = mouses[0].SetValues(true, true, true, mousePosition);
-// #endif
+            
             canvasContainer.OnIGU?.Invoke();
             canvasContainer.OnToolTip?.Invoke();
-        }
-
-        public bool GetMouseButton(MouseButtonType type) {
-            if (type == MouseButtonType.All) return true;
-            return mouses[(int)type].Press;
-        }
-
-        public bool GetMouseButtonDown(MouseButtonType type) {
-            if (type == MouseButtonType.All) return true;
-            return mouses[(int)type].Down;
-        }
-
-        public bool GetMouseButtonUp(MouseButtonType type) {
-            if (type == MouseButtonType.All) return true;
-            return mouses[(int)type].Up;
         }
 
         void ISceneContainerItem.sceneUnloaded(Scene scene) {}
 
         void ISceneContainerItem.sceneLoaded(Scene scene, LoadSceneMode mode) {}
+
+        public static bool GetMouseButtonPress(MouseButtonType buttonType) {
+            switch (buttonType) {
+                case MouseButtonType.Left:
+                    return Input.GetKey(KeyCode.Mouse0);
+                case MouseButtonType.Right:
+                    return Input.GetKey(KeyCode.Mouse1);
+                case MouseButtonType.Mid:
+                    return Input.GetKey(KeyCode.Mouse2);
+                default:
+                    if (Input.GetKey(KeyCode.Mouse0)) return true;
+                    else if (Input.GetKey(KeyCode.Mouse1)) return true;
+                    else if (Input.GetKey(KeyCode.Mouse2)) return true;
+                    return false;
+            }
+        }
+
+        public static bool GetMouseButtonDown(MouseButtonType buttonType) {
+            switch (buttonType) {
+                case MouseButtonType.Left:
+                    return Input.GetKeyDown(KeyCode.Mouse0);
+                case MouseButtonType.Right:
+                    return Input.GetKeyDown(KeyCode.Mouse1);
+                case MouseButtonType.Mid:
+                    return Input.GetKeyDown(KeyCode.Mouse2);
+                default:
+                    if (Input.GetKeyDown(KeyCode.Mouse0)) return true;
+                    else if (Input.GetKeyDown(KeyCode.Mouse1)) return true;
+                    else if (Input.GetKeyDown(KeyCode.Mouse2)) return true;
+                    return false;
+            }
+        }
+
+        public static bool GetMouseButtonUp(MouseButtonType buttonType) {
+            switch (buttonType) {
+                case MouseButtonType.Left:
+                    return Input.GetKeyUp(KeyCode.Mouse0);
+                case MouseButtonType.Right:
+                    return Input.GetKeyUp(KeyCode.Mouse1);
+                case MouseButtonType.Mid:
+                    return Input.GetKeyUp(KeyCode.Mouse2);
+                default:
+                    if (Input.GetKeyUp(KeyCode.Mouse0)) return true;
+                    else if (Input.GetKeyUp(KeyCode.Mouse1)) return true;
+                    else if (Input.GetKeyUp(KeyCode.Mouse2)) return true;
+                    return false;
+            }
+        }
 
         public static void DrawTooltip(string text, IGUStyle style) {
             GUIContent content = IGUTextObject.GetGUIContentTemp(text);

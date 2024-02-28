@@ -22,7 +22,7 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
             bool restemp = BackEndIGU.RepeatButton(LocalRect, MyContent, buttonStyle);
 
             if (restemp) {
-                if (IGUDrawer.Drawer.GetMouseButton(LocalConfig.MouseType))
+                if (IGUDrawer.GetMouseButtonPress(LocalConfig.MouseType))
                     RepeatButtonClick();
             } else {
                 clicked[0] = false;

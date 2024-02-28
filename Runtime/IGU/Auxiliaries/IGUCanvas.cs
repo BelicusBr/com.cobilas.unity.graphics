@@ -1,19 +1,25 @@
 using System;
 using UnityEngine;
+using System.Text;
 using Cobilas.Collections;
 using Cobilas.Unity.Graphics.IGU.Elements;
 using Cobilas.Unity.Graphics.IGU.Interfaces;
 
 namespace Cobilas.Unity.Graphics.IGU {
     [Serializable]
-    public sealed class IGUCanvas : IDisposable {
+    public sealed class IGUCanvas : IEquatable<IGUCanvas>, IDisposable {
         private event Action onIGU;
         private bool disposedValue;
         private event Action onToolTip;
         private event Action onEndOfFrame;
         [SerializeField] private string name;
+        [SerializeField] private string guid;
         [SerializeField] private IGUConfig config;
         [SerializeField] private IGUDepthDictionary[] deeps;
+        [SerializeField] private bool loadWhenSceneActivates;
+        #if UNITY_EDITOR
+        [SerializeField, HideInInspector] private bool foldout;
+        #endif
 
         public string Name => name;
         public Action OnIGU { get => InternalOnIGU; }
@@ -21,11 +27,13 @@ namespace Cobilas.Unity.Graphics.IGU {
         public Action OnToolTip { get => InternalOnToolTip; }
         public int DepthCount => ArrayManipulation.ArrayLength(deeps);
         public IGUConfig Config { get => config; set => config = value; }
+        public bool LoadWhenSceneActivates { get => loadWhenSceneActivates; set => loadWhenSceneActivates = value; }
 
-        public IGUCanvas(string name)
-        {
+        public IGUCanvas(string name) {
             this.name = name;
+            loadWhenSceneActivates = false;
             this.config = IGUConfig.Default;
+            this.guid = Guid.NewGuid().ToString();
         }
 
         ~IGUCanvas()
@@ -59,7 +67,9 @@ namespace Cobilas.Unity.Graphics.IGU {
         public bool Remove(IGUObject @object) {
             if (ContainsDepth(@object.MyConfig.Depth))
                 return false;
-            GetIGUDepthDictionary(@object.MyConfig.Depth).Remove(@object);
+            IGUDepthDictionary list = GetIGUDepthDictionary(@object.MyConfig.Depth);
+            if (!list.Contains(@object)) return false;
+            list.Remove(@object);
             RefreshEvents();
             return true;
         }
@@ -69,6 +79,27 @@ namespace Cobilas.Unity.Graphics.IGU {
                 GetIGUDepthDictionary(oldDepth).Remove(@object);
             GetIGUDepthDictionary(newDepth).Add(@object);
             RefreshEvents();
+        }
+
+        public bool Equals(IGUCanvas other)
+            => other.name == name && other.guid == guid;
+
+        public override bool Equals(object obj)
+            => obj is IGUCanvas cv && Equals(cv);
+
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
+        }
+
+        public override string ToString() {
+            StringBuilder builder = new StringBuilder();
+            builder.AppendLine("{");
+            builder.AppendFormat("\tName:{0}\r\n", name);
+            builder.AppendFormat("\tGUID:{0}\r\n", guid);
+            builder.AppendFormat("\tDepthCount:{0}\r\n", DepthCount);
+            builder.AppendLine("}");
+            return builder.ToString();
         }
 
         private void InternalOnIGU() {
@@ -81,10 +112,7 @@ namespace Cobilas.Unity.Graphics.IGU {
 
         private void InternalOnToolTip() {
             if (!config.IsVisible) return;
-            bool oldEnabled = GUI.enabled;
-            GUI.enabled = config.IsEnabled;
             onToolTip?.Invoke();
-            GUI.enabled = oldEnabled;
         }
 
         private IGUDepthDictionary GetIGUDepthDictionary(int depth) {
@@ -118,5 +146,8 @@ namespace Cobilas.Unity.Graphics.IGU {
                 disposedValue = true;
             }
         }
+
+        public static bool operator ==(IGUCanvas A, IGUCanvas B) => object.Equals(A, B);
+        public static bool operator !=(IGUCanvas A, IGUCanvas B) => !object.Equals(A, B);
     }
 }
