@@ -17,6 +17,8 @@ namespace Cobilas.Unity.Graphics.IGU {
         [HideInInspector] public bool foldout;
 #endif
 
+        public static readonly Rect rectTemp = Rect.zero;
+
         public float X => x;
         public float Y => y;
         public float Width => width;
@@ -27,28 +29,20 @@ namespace Cobilas.Unity.Graphics.IGU {
         public float ScaleFactorWidth => scaleFactorWidth;
         public float ScaleFactorHeight => scaleFactorHeight;
 
-        public Vector2 Position => new Vector2(x, y);
         public Vector2 Size => new Vector2(width, height);
         public Vector2 Pivot => new Vector2(pivotX, pivotY);
+        public Vector2 Position => GetPosition(this) - Size.Multiplication(Pivot);
         public Vector2 ScaleFactor => new Vector2(scaleFactorWidth, scaleFactorHeight);
 
-        public Vector2 ModifiedSize => Size.Multiplication(ScaleFactor);
-        public Vector2 ModifiedPosition => Position.Multiplication(ScaleFactor) - ModifiedSize.Multiplication(Pivot);
+        public IGURect ModifiedRect => new IGURect(
+            Position.Multiplication(ScaleFactor), Size.Multiplication(ScaleFactor), Pivot, ScaleFactor
+        ) { rotation = this.rotation };
 
         public float Up => y;
         public float Donw => y + height;
         public float Right => x;
         public float Left => x + width;
         public Vector2 Center => new Vector2(x + width * .5f, y + height * .5f);
-
-        public float ModifiedUp => (y * scaleFactorHeight) - height * pivotY;
-        public float ModifiedDonw => ((y * scaleFactorHeight) + height) - height * pivotY;
-        public float ModifiedRight => (x * scaleFactorWidth) - width * pivotX;
-        public float ModifiedLeft => ((x * scaleFactorWidth) + width) - width * pivotX;
-        public Vector2 ModifiedCenter => new Vector2(
-            ((x * scaleFactorWidth) + width * .5f) - width * pivotX,
-            ((y * scaleFactorHeight) + height * .5f) - height * pivotY
-            );
 
         public static IGURect Zero => new IGURect(Vector2.zero, Vector2.zero, Vector2.zero, Vector2.zero);
         public static IGURect DefaultBox => new IGURect(Vector2.zero, new Vector2(50f, 50f), Vector2.zero, Vector2.one);
@@ -104,16 +98,13 @@ namespace Cobilas.Unity.Graphics.IGU {
         }
 #endif
         public IGURect SetPosition(float x, float y) {
-            this.x = x;
-            this.y = y;
+            this.x = x + width * pivotX;
+            this.y = y + height * pivotY;
             return this;
         }
 
         public IGURect SetPosition(Vector2 position)
             => SetPosition(position.x, position.y);
-
-        public IGURect SetModifiedPosition(Vector2 position)
-            => SetPosition((position + Size.Multiplication(Pivot)).Division(ScaleFactor));
 
         public IGURect SetSize(float width, float height) {
             this.width = width;
@@ -123,9 +114,6 @@ namespace Cobilas.Unity.Graphics.IGU {
 
         public IGURect SetSize(Vector2 size)
             => SetSize(size.x, size.y);
-
-        public IGURect SetModifiedSize(Vector2 size)
-            => SetSize(size.Division(ScaleFactor));
 
         public IGURect SetScaleFactor(float sfWidth, float sfHeight) {
             this.scaleFactorWidth = sfWidth;
@@ -140,8 +128,8 @@ namespace Cobilas.Unity.Graphics.IGU {
         }
 
         public IGURect SetPivot(float pivotX, float pivotY) {
-            this.pivotX = pivotX;
-            this.pivotY = pivotY;
+            this.pivotX = Mathf.Clamp01(pivotX);
+            this.pivotY = Mathf.Clamp01(pivotY);
             return this;
         }
 
@@ -149,7 +137,7 @@ namespace Cobilas.Unity.Graphics.IGU {
             => SetPivot(pivot.x, pivot.y);
 
         public IGURect SetRotation(float rotation) {
-            this.rotation = rotation;
+            this.rotation = rotation > 360f || rotation < -360f ? 0f : rotation;
             return this;
         }
 
@@ -173,7 +161,45 @@ namespace Cobilas.Unity.Graphics.IGU {
             => $"{{(x:{x} y:{y})(w:{width} h:{height})(sfw:{scaleFactorWidth} sfh:{scaleFactorHeight})" +
             $"(px:{pivotX} py:{pivotY})(r:{rotation})}}";
 
+        public bool Contains(Vector2 point) {
+            Rect rect = (Rect)this;
+            Quaternion quaternion = Quaternion.Euler(Vector3.forward * rotation);
+            Vector2 diry = quaternion.GenerateDirectionUp();
+            Vector2 dirx = quaternion.GenerateDirectionRight();
+            Vector2 px = rect.position + dirx * rect.width;
+            Vector2 py = rect.position + diry * rect.height;
+            Vector2 pxy = px.Multiplication(Vector2.right) + py.Multiplication(Vector2.up);
+
+            return Area(rect.position, px, py, point) || 
+                Area(pxy, px, py, point);
+        }
+
+        private static bool Area(Vector2 p1, Vector2 p2, Vector2 p3, Vector2 p) {
+            float d1, d2, d3;
+            bool has_neg, has_pos;
+
+            d1 = Sign(p, p1, p2);
+            d2 = Sign(p, p2, p3);
+            d3 = Sign(p, p3, p1);
+
+            has_neg = (d1 < 0) || (d2 < 0) || (d3 < 0);
+            has_pos = (d1 > 0) || (d2 > 0) || (d3 > 0);
+
+            return !(has_neg && has_pos);
+        }
+
+        private static float Sign(Vector2 p1, Vector2 p2, Vector2 p3)
+            => (p1.x - p3.x) * (p2.y - p3.y) - (p2.x - p3.x) * (p1.y - p3.y);
+
+        private static Vector2 GetPosition(IGURect rect) => new Vector2(rect.x, rect.y);
+
         public static bool operator ==(IGURect A, IGURect B) => A.Equals(B);
         public static bool operator !=(IGURect A, IGURect B) => !(A == B);
+        public static explicit operator Rect(IGURect rect) {
+            Rect res = rectTemp;
+            res.position = rect.Position;
+            res.size = rect.Size;
+            return res;
+        }
     }
 }

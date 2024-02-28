@@ -21,7 +21,7 @@ namespace Cobilas.Unity.Editor.Graphics.IGU {
                 SerializedProperty prop_container = serialized.FindProperty("container");
                 SerializedProperty prop_myRect = serialized.FindProperty("myRect");
                 SerializedProperty prop_myColor = serialized.FindProperty("myColor");
-                SerializedProperty prop_myConfg = serialized.FindProperty("myConfg");
+                SerializedProperty prop_myConfg = serialized.FindProperty("myConfig");
 
                 SerializedProperty prop_onScrollView = serialized.FindProperty("onScrollView");
                 SerializedProperty prop_alwaysShowVertical = serialized.FindProperty("alwaysShowVertical");
@@ -36,7 +36,9 @@ namespace Cobilas.Unity.Editor.Graphics.IGU {
                     obj.name = EditorGUI.TextField(position, EditorGUIUtility.TrTempContent("Name"), obj.name);
                     EditorGUI.BeginDisabledGroup(true);
                     EditorGUI.ObjectField(position = MoveDownWithBlankSpace(position), prop_parent, EditorGUIUtility.TrTempContent("parent"));
-                    _ = EditorGUI.PropertyField(position = MoveDownWithBlankSpace(position), prop_container, EditorGUIUtility.TrTempContent("Container"));
+                    EditorGUI.LabelField(position = MoveDownWithBlankSpace(position),
+                        EditorGUIUtility.TrTempContent($"Container: {prop_container.FindPropertyRelative("name").stringValue}"),
+                        EditorStyles.helpBox);
                     EditorGUI.EndDisabledGroup();
                     --EditorGUI.indentLevel;
 
@@ -63,7 +65,7 @@ namespace Cobilas.Unity.Editor.Graphics.IGU {
                     Rect recttemp;
                     _ = EditorGUI.PropertyField(position, prop_alwaysShowVertical, EditorGUIUtility.TrTempContent("always Show Vertical"));
                     _ = EditorGUI.PropertyField(recttemp = MoveDownWithBlankSpace(position), prop_alwaysShowHorizontal, EditorGUIUtility.TrTempContent("always Show Horizontal"));
-                    obj.ViewRect = EditorGUI.RectField(MoveDownWithBlankSpace(recttemp), EditorGUIUtility.TrTempContent("View Rect"), obj.ViewRect);
+                    obj.RectView = EditorGUI.RectField(MoveDownWithBlankSpace(recttemp), EditorGUIUtility.TrTempContent("View Rect"), obj.RectView);
                     --EditorGUI.indentLevel;
 
                     _ = EditorGUI.PropertyField(MoveDown(position, pheight + BlankSpace), prop_onScrollView, EditorGUIUtility.TrTempContent("On ScrollView"));
@@ -78,7 +80,7 @@ namespace Cobilas.Unity.Editor.Graphics.IGU {
                 SerializedObject serialized = new SerializedObject(temp);
                 SerializedProperty prop_myRect = serialized.FindProperty("myRect");
                 SerializedProperty prop_myColor = serialized.FindProperty("myColor");
-                SerializedProperty prop_myConfg = serialized.FindProperty("myConfg");
+                SerializedProperty prop_myConfg = serialized.FindProperty("myConfig");
                 SerializedProperty prop_foldout = serialized.FindProperty("foldout");
                 SerializedProperty prop_onScrollView = serialized.FindProperty("onScrollView");
                 if (prop_foldout.boolValue)

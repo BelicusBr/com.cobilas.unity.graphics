@@ -9,44 +9,25 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
         [SerializeField] private IGUStyle labelStyle;
 
         public bool AutoSize { get => autoSize; set => autoSize = value; }
-        public IGUStyle LabelStyle { get => labelStyle; set => labelStyle = value; }
-        public bool RichText { get => labelStyle.RichText; set => labelStyle.RichText = value; }
+        public IGUStyle LabelStyle { get => labelStyle; set => labelStyle = value ?? (IGUStyle)"Label"; }
 
-        protected override void Awake() {
-            myConfg = IGUConfig.Default;
+        protected override void IGUAwake() {
+            base.IGUAwake();
+            autoSize = false;
             myRect = IGURect.DefaultButton;
+            labelStyle = (IGUStyle)"Label";
             myColor = IGUColor.DefaultLabelColor;
-            labelStyle = IGUSkins.GetIGUStyle("Label");
-            autoSize = RichText = false;
             content = new IGUContent(DefaultIGULabel);
         }
 
         protected override void LowCallOnIGU() {
+            labelStyle.RichText = richText;
+            GUIStyle style = (GUIStyle)labelStyle;
+            GUIContent content = GetGUIContentTemp(MyContent);
 
-            GUIStyle style = IGUStyle.GetGUIStyleTemp(labelStyle);
+            myRect = myRect.SetSize(autoSize ? style.CalcSize(content) + Vector2.right * 2f : myRect.Size);
 
-            GUIContent mycontent = GetGUIContent(DefaultIGULabel);
-
-            _ = myRect.SetSize(autoSize ? style.CalcSize(mycontent) + Vector2.right * 2f : myRect.Size);
-
-            GUI.Label(GetRect(), mycontent, style);
-
-            if (useTooltip)
-                if (GetRect(true).Contains(Event.current.mousePosition))
-                    DrawTooltip();
+            BackEndIGU.Label(LocalRect, MyContent, labelStyle);
         }
-
-        public void SetMarkedText(params MarkedText[] markeds) {
-            StringBuilder builder = new StringBuilder();
-            for (int I = 0; I < ArrayManipulation.ArrayLength(markeds); I++)
-                builder.Append(markeds[I]);
-            Text = builder.ToString();
-        }
-
-        protected override void DrawTooltip()
-            => base.DrawTooltip();
-
-        protected override GUIContent GetGUIContent(string defaultGUIContent)
-            => base.GetGUIContent(defaultGUIContent);
     }
 }

@@ -7,11 +7,9 @@ using Cobilas.Unity.Graphics.IGU.Interfaces;
 namespace Cobilas.Unity.Graphics.IGU.Layouts {
     public sealed class IGUGridLayout : IGULayout, IIGUSerializationCallbackReceiver {
 
-        [SerializeField] 
-        private CellIGUObject[] objects;
-        [SerializeField] 
-        private GridLayoutCellCursor cursor;
         private event Action<CellCursor> sub_OnIGU;
+        [SerializeField] private CellIGUObject[] objects;
+        [SerializeField] private GridLayoutCellCursor cursor;
 
         public override int Count => ArrayManipulation.ArrayLength(objects);
         public Vector2 Spacing { get => cursor.spacing; set => cursor.spacing = value; }
@@ -21,12 +19,12 @@ namespace Cobilas.Unity.Graphics.IGU.Layouts {
 
         public override IGUObject this[int index] => objects[index].@object;
 
-        protected override void Awake() {
+        protected override void IGUAwake() {
+            base.IGUAwake();
             cursor = new GridLayoutCellCursor();
             DirectionalCount = 3;
             cursor.UseCellSize = true;
             Spacing = Vector2.one * 3f;
-            myConfg = IGUConfig.Default;
             CellSize = Vector2.one * 100f;
             myRect = IGURect.DefaultButton;
             myColor = IGUColor.DefaultBoxColor;
@@ -52,11 +50,20 @@ namespace Cobilas.Unity.Graphics.IGU.Layouts {
             return true;
         }
 
-        public override bool Remove(IGUObject item) {
-            if (item == this || !Contains(item))
-                return false;
-            item.Parent = null;
-            int index = IndexOf(item);
+        public override bool Remove(IGUObject item)
+            => Remove(item, false);
+
+        public override bool Remove(IGUObject item, bool destroyObject)
+            => Remove(IndexOf(item), destroyObject);
+
+        public override bool Remove(int index)
+            => Remove(index, false);
+
+        public override bool Remove(int index, bool destroyObject) {
+            if (index < 0 || index >= Count) return false;
+            objects[index].@object.Parent = null;
+            if (destroyObject)
+                Destroy(objects[index].@object);
             objects[index].Dispose();
             ArrayManipulation.Remove(index, ref objects);
             RefreshOnIGUEvent();
@@ -136,7 +143,7 @@ namespace Cobilas.Unity.Graphics.IGU.Layouts {
                     cursorCount = 0;
                 }
 
-                @object.MyRect = @object.MyRect.SetPosition(cursor);
+                @object.MyRect = @object.LocalRect.SetPosition(cursor);
                 cursor += vec1.Multiplication(@object.MyRect.Size) + spacing.Multiplication(vec1);
                 ++cursorCount;
             }
