@@ -21,7 +21,7 @@ namespace Cobilas.Unity.Editor.Graphics.IGU {
                 SerializedProperty prop_container = serialized.FindProperty("container");
                 SerializedProperty prop_myRect = serialized.FindProperty("myRect");
                 SerializedProperty prop_myColor = serialized.FindProperty("myColor");
-                SerializedProperty prop_myConfg = serialized.FindProperty("myConfg");
+                SerializedProperty prop_myConfg = serialized.FindProperty("myConfig");
 
                 prop_foldout.boolValue = EditorGUI.Foldout(position, prop_foldout.boolValue,
                     EditorGUIUtility.TrTempContent($"[{temp.GetType().Name}]{temp.name}"));
@@ -32,7 +32,9 @@ namespace Cobilas.Unity.Editor.Graphics.IGU {
                     obj.name = EditorGUI.TextField(position, EditorGUIUtility.TrTempContent("Name"), obj.name);
                     EditorGUI.BeginDisabledGroup(true);
                     EditorGUI.ObjectField(position = MoveDownWithBlankSpace(position), prop_parent, EditorGUIUtility.TrTempContent("parent"));
-                    _ = EditorGUI.PropertyField(position = MoveDownWithBlankSpace(position), prop_container, EditorGUIUtility.TrTempContent("Container"));
+                    EditorGUI.LabelField(position = MoveDownWithBlankSpace(position),
+                        EditorGUIUtility.TrTempContent($"Container: {prop_container.FindPropertyRelative("name").stringValue}"),
+                        EditorStyles.helpBox);
                     EditorGUI.EndDisabledGroup();
                     --EditorGUI.indentLevel;
 
@@ -70,7 +72,7 @@ namespace Cobilas.Unity.Editor.Graphics.IGU {
                 SerializedObject serialized = new SerializedObject(temp);
                 SerializedProperty prop_myRect = serialized.FindProperty("myRect");
                 SerializedProperty prop_myColor = serialized.FindProperty("myColor");
-                SerializedProperty prop_myConfg = serialized.FindProperty("myConfg");
+                SerializedProperty prop_myConfg = serialized.FindProperty("myConfig");
                 SerializedProperty prop_foldout = serialized.FindProperty("foldout");
                 if (prop_foldout.boolValue)
                     return SingleRowHeightWithBlankSpace * 4f +

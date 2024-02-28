@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using Cobilas.Collections;
+using Cobilas.Unity.Management.Runtime;
 
 namespace Cobilas.Unity.Graphics.IGU {
     public static class IGUSkins {
@@ -10,7 +11,7 @@ namespace Cobilas.Unity.Graphics.IGU {
         public static int StyleCount => ArrayManipulation.ArrayLength(iGUStyles);
         public static int SettingsCount => ArrayManipulation.ArrayLength(iGUTextSettings);
 
-        [RuntimeInitializeOnLoadMethod]
+        [StartBeforeSceneLoad]
         private static void Init() {
             iGUStyles = Resources.LoadAll<IGUStyleCustom>(string.Empty);
             iGUTextSettings = Resources.LoadAll<SO_IGUTextSettings>(string.Empty);
