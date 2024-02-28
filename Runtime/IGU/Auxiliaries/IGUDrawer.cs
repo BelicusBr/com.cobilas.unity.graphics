@@ -124,7 +124,7 @@ namespace Cobilas.Unity.Graphics.IGU {
             GUIContent content = IGUTextObject.GetGUIContentTemp(text);
             GUIStyle styleTemp = (GUIStyle)style;
             Rect rect = IGURect.rectTemp;
-            rect.position = Vector2.one * 5f + MousePosition;
+            rect.position = Vector2.one * 15f + MousePosition;
             rect.size = styleTemp.CalcSize(content);
             GUI.Box(rect, content, styleTemp);
         }
