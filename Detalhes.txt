@@ -1,0 +1,7 @@
+As janelas são problematicas pelo fato de passarem por cima da orden de execução mas dá pra fazer uma gambiarra
+para que a física fucione que fazer uma dupla verificação no evento de física.
+A primeira verificação são os elementos comuns já a segunda verificação são para as janelas.
+Outras questões como profundidade da janela deve ser visto pelo fato de que janelas ignoram a profundidade
+configurada.
+Uma solução é criar uma interface 'IIGUWindow' para resolver a questão profundidade na hora de correr o evento de
+física, vai servir como uma sub-profundidade.

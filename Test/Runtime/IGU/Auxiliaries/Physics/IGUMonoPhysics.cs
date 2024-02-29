@@ -10,9 +10,7 @@ namespace Cobilas.Unity.Graphics.IGU.Physics {
         public IGURect MyRect { get => myRect; set => myRect = value; }
         public override bool IsHotPotato { get => isHotPotato; set => isHotPotato = value; }
 
-        public override bool CollisionConfirmed(Vector2 mouse) {
-            Debug.Log($"{myRect}|{mouse}");
-            return myRect.ModifiedRect.Contains(mouse);
-        }
+        public override bool CollisionConfirmed(Vector2 mouse)
+            => myRect.ModifiedRect.Contains(mouse);
     }
 }

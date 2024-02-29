@@ -56,11 +56,6 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
         public IGUCanvas ApplyToPermanentGenericContainer()
             => ApplyToContainer(IGUCanvasContainer.GetPermanentGenericContainer());
 
-        public void CallPhysicsFeedback()
-        {
-            
-        }
-
         public void RemoveFromContainer() {
             container?.Remove(this);
             container = null;
@@ -118,11 +113,6 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
                 GUI.contentColor = oldContentColor;
                 GUI.backgroundColor = oldBackgroundColor;
             }
-        }
-
-        void IIGUObject.AlteredDepth(List<IIGUObject> changed, int depth) {
-            if (myConfig.Depth != depth)
-                changed.Add(this);
         }
 
         void IIGUObject.InternalPreOnIGU() => PreOnIGU();

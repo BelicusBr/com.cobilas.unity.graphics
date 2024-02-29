@@ -3,6 +3,7 @@ using UnityEngine;
 using Cobilas.Collections;
 using Cobilas.Unity.Graphics.IGU;
 using Cobilas.Unity.Graphics.IGU.Elements;
+using Cobilas.Unity.Graphics.IGU.Physics;
 
 namespace Cobilas.Unity.Test.Graphics.IGU {
     public static class TDS_IGUStyle {
@@ -12,10 +13,10 @@ namespace Cobilas.Unity.Test.Graphics.IGU {
                 rect, IGUTextObject.GetGUIContentTemp(content), 
                 GUIUtility.GetControlID(FocusType.Passive, rect));
 
-        public static bool DrawButton(Rect rect, IGUStyle style, IGUContent content, bool isFocused, bool noAction) {
+        public static bool DrawButton(Rect rect, IGUStyle style, IGUContent content, IGUPhysicsBase phy, bool isFocused) {
             int ID = GUIUtility.GetControlID(FocusType.Passive, rect);
             Event @event = Event.current;
-            bool isHover = rect.Contains(@event.mousePosition) && !noAction;
+            bool isHover = rect.Contains(@event.mousePosition) && phy.IsHotPotato;
             switch (@event.GetTypeForControl(ID)) {
                 case EventType.MouseDown:
                     if (isHover) {
@@ -44,8 +45,8 @@ namespace Cobilas.Unity.Test.Graphics.IGU {
             }
         }
 
-        public static bool DrawButton(Rect rect, IGUStyle style, IGUContent content, bool noAction)
-            => DrawButton(rect, style, content, false, noAction);
+        public static bool DrawButton(Rect rect, IGUStyle style, IGUContent content, IGUPhysicsBase phy)
+            => DrawButton(rect, style, content, phy, false);
 
         public static bool DrawRepeatButton(Rect rect, IGUStyle style, IGUContent content, out bool onClick, bool isFocused, bool noAction) {
             int ID = GUIUtility.GetControlID(FocusType.Passive, rect);
@@ -218,6 +219,8 @@ namespace Cobilas.Unity.Test.Graphics.IGU {
 
             switch (@event.type) {
                 case EventType.MouseDown:
+                    if (isHover)
+                        GUI.FocusWindow(ID);
                     if (!isHover || !isDrag) break;
                     GUIUtility.hotControl = ID;
                     window.currentPosition = @event.mousePosition - rect.position;
@@ -231,7 +234,7 @@ namespace Cobilas.Unity.Test.Graphics.IGU {
                         rect.position = @event.mousePosition - window.currentPosition;
                     break;
                 case EventType.Repaint:
-                    winStyle.Draw(rect, IGUTextObject.GetGUIContentTemp(container), ID);
+                    winStyle.Draw(rect, IGUTextObject.GetGUIContentTemp(container), ID, GUIUtility.hotControl == ID);
                     break;
             }
             GUI.BeginClip(rect, Vector2.zero, Vector2.zero, false);

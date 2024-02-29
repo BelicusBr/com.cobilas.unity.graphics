@@ -9,9 +9,13 @@ using Cobilas.Collections;
 using Cobilas.Unity.Management.Runtime;
 using System.Text;
 using Test.Runtime.IGU.Block.Test;
+using Cobilas.Unity.Test.Graphics.IGU;
 
 public class IGU_TDS : MonoBehaviour {
 
+    public float rot;
+    public Rect rect;
+    public Rect rectDrag;
     [SerializeField] private IGUComboBox comboBox;
 
     [StartAfterSceneLoad]
@@ -43,6 +47,12 @@ public class IGU_TDS : MonoBehaviour {
 
     private void OnEnable() {
         comboBox.OnSelectedIndex.AddListener(SceneChange);
+    }
+
+    private void OnGUI() {
+        // rect = TDS_IGUStyle.DrawWindow(rect, rectDrag,
+        //     GUIUtility.GetControlID(FocusType.Passive, rect),
+        //     (id) => {}, (IGUStyle)"Black window border", new IGUContent("Win"));
     }
 
     void SceneChange(IGUComboBoxButton button) {

@@ -6,6 +6,7 @@ using Cobilas.Unity.Graphics.IGU;
 using Cobilas.Unity.Graphics.IGU.Elements;
 using Cobilas.Unity.Graphics.IGU.Interfaces;
 using Cobilas.Unity.Graphics.IGU.Physics;
+using Cobilas.Unity.Test.Graphics.IGU;
 using UnityEngine;
 
 namespace Test.Runtime.IGU.IGUObjects {
@@ -21,7 +22,16 @@ namespace Test.Runtime.IGU.IGUObjects {
 
         protected override void LowCallOnIGU() {
             
-            GUI.Button((Rect)LocalRect, "Button");
+            //GUI.Button((Rect)LocalRect, "Button");
+            if (TDS_IGUStyle.DrawButton((Rect)LocalRect, (IGUStyle)"Black button border", new IGUContent("Button"), _Physics))
+                Debug.Log($"[ID:{GetInstanceID()}]{name}");
+        }
+
+        void IIGUPhysics.CallPhysicsFeedback(Vector2 mouse, List<IGUPhysicsBase> phys) {
+            _Physics.MyRect = LocalRect;
+            _Physics.IsHotPotato = false;
+            if (_Physics.CollisionConfirmed(mouse))
+                phys[0] = _Physics;
         }
     }
 }
