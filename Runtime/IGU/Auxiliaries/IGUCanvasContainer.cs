@@ -2,7 +2,7 @@ using System;
 using UnityEngine;
 using Cobilas.Collections;
 using UnityEngine.SceneManagement;
-using Cobilas.Unity.Graphics.IGU.Events;
+using Cobilas.Unity.Graphics.IGU.Interfaces;
 
 namespace Cobilas.Unity.Graphics.IGU {
     public sealed class IGUCanvasContainer : MonoBehaviour {
@@ -12,119 +12,92 @@ namespace Cobilas.Unity.Graphics.IGU {
             Permanent = 2
         }
 
-        private DIGUAction<IGUCanvas> onIGU;
-        private DIGUAction<IGUCanvas> onToolTip;
-        private DIGUAction<IGUCanvas> onEndOfFrame;
-        [SerializeField] private IGUCanvas[] VolatileContainer;
-        [SerializeField] private IGUCanvas[] PermanentContainer;
+        private Action onIGU;
+        private Action onToolTip;
+        private Action onEndOfFrame;
+        //Unir essas duas matrizes em um
+        //Depois fazer um método o povoamento correto dos eventos
+        //Criar um campo que tenha um depth max e min
+        [SerializeField] private IGUCanvas[] Containers;
 
         private static IGUCanvasContainer container;
 
-        public Action OnIGU { get => onIGU.Function; }
-        public Action OnToolTip { get => onToolTip.Function; }
-        public Action OnEndOfFrame { get => onEndOfFrame.Function; }
+        public Action OnIGU { get => onIGU; }
+        public Action OnToolTip { get => onToolTip; }
+        public Action OnEndOfFrame { get => onEndOfFrame; }
 
         private void Awake() {
-            VolatileContainer = new IGUCanvas[1];
-            PermanentContainer = new IGUCanvas[1];
-            VolatileContainer[0] = new IGUCanvas("Generic container");
-            PermanentContainer[0] = new IGUCanvas("Permanent generic container");
-            PermanentContainer[0].LoadWhenSceneActivates =
-                VolatileContainer[0].LoadWhenSceneActivates = true;
+            Containers = new IGUCanvas[] {
+                new IGUCanvas("Generic container"),
+                new IGUCanvas("Permanent generic container")
+            };
+            Containers[0].Container = this;
+            Containers[1].Container = this;
         }
 
         private void OnEnable() {
             if (container == null)
                 container = this;
-            
-            (onIGU = new DIGUAction<IGUCanvas>()).RefreshFunction = (i) => i.OnIGU;
-            (onToolTip = new DIGUAction<IGUCanvas>()).RefreshFunction = (i) => i.OnToolTip;
-            (onEndOfFrame = new DIGUAction<IGUCanvas>()).RefreshFunction = (i) => i.OnEndOfFrame;
 
-            for (int I = 0; I < ArrayManipulation.ArrayLength(VolatileContainer); I++)
-                AddEvents(VolatileContainer[I]);
-            for (int I = 0; I < ArrayManipulation.ArrayLength(PermanentContainer); I++)
-                AddEvents(PermanentContainer[I]);
+            RefreshEvents();
 
             SceneManager.sceneLoaded += SceneLoaded;
             SceneManager.sceneUnloaded += SceneUnloaded;
             SceneManager.activeSceneChanged += ActiveSceneChanged;
         }
 
+        //A ação está sendo duplicada
         private void ActiveSceneChanged(Scene scene1, Scene scene2) {
-            for (int I = 0; I < ArrayManipulation.ArrayLength(VolatileContainer); I++)
-                if (VolatileContainer[I].LoadWhenSceneActivates)
-                    AddEvents(VolatileContainer[I]);
-            for (int I = 0; I < ArrayManipulation.ArrayLength(PermanentContainer); I++)
-                if (PermanentContainer[I].LoadWhenSceneActivates)
-                    AddEvents(PermanentContainer[I]);
+            RefreshEvents();
         }
 
         private void SceneLoaded(Scene scene, LoadSceneMode mode) {
-            for (int I = 0; I < ArrayManipulation.ArrayLength(VolatileContainer); I++)
-                if (!VolatileContainer[I].LoadWhenSceneActivates)
-                    AddEvents(VolatileContainer[I]);
-            for (int I = 0; I < ArrayManipulation.ArrayLength(PermanentContainer); I++)
-                if (!PermanentContainer[I].LoadWhenSceneActivates)
-                    AddEvents(PermanentContainer[I]);
         }
 
         private void SceneUnloaded(Scene scene) {
-            onIGU.Clear();
-            onToolTip.Clear();
-            onEndOfFrame.Clear();
-            for (int I = 0; I < ArrayManipulation.ArrayLength(VolatileContainer); I++)
-                VolatileContainer[I].Dispose();
-
-            VolatileContainer = new IGUCanvas[1];
-            VolatileContainer[0] = new IGUCanvas("Generic container");
-            PermanentContainer[0].LoadWhenSceneActivates =
-                VolatileContainer[0].LoadWhenSceneActivates = true;
+            onIGU = (Action)null;
+            onToolTip = (Action)null;
+            onEndOfFrame = (Action)null;
+            Containers[0].Dispose();
+            Containers[0].Clear();
+            Containers[1].Dispose();
+            for (int I = 2; I < ArrayManipulation.ArrayLength(Containers); I++)
+                Containers[I].Dispose();
+            if (Containers.Length > 2)
+                ArrayManipulation.Resize(ref Containers, 2);
         }
 
         private void OnDestroy() {
-            onIGU.Clear();
-            onToolTip.Clear();
-            onEndOfFrame.Clear();
-            onIGU = onToolTip = onEndOfFrame = null;
-            for (int I = 0; I < ArrayManipulation.ArrayLength(VolatileContainer); I++)
-                VolatileContainer[I].Dispose();
-            for (int I = 0; I < ArrayManipulation.ArrayLength(PermanentContainer); I++)
-                PermanentContainer[I].Dispose();
-            ArrayManipulation.ClearArraySafe(ref VolatileContainer);
-            ArrayManipulation.ClearArraySafe(ref PermanentContainer);
+            onIGU = (Action)null;
+            onToolTip = (Action)null;
+            onEndOfFrame = (Action)null;
+            for (int I = 0; I < ArrayManipulation.ArrayLength(Containers); I++)
+                Containers[I].Dispose();
+            ArrayManipulation.ClearArraySafe(ref Containers);
         }
 
-        private void AddEvents(IGUCanvas canvas) {
-            canvas.RefreshEvents();
-            this.onIGU += canvas;
-            this.onToolTip += canvas;
-            this.onEndOfFrame += canvas;
+        internal void RefreshEvents() {
+            foreach (IGUDepthDictionary item1 in ReoderDepth(Containers))
+                foreach (Elements.IGUObject item2 in item1) {
+                    onIGU += item2.OnIGU;
+                    if (item2 is IIGUToolTip tip) onToolTip += tip.InternalDrawToolTip;
+                    if (item2 is IIGUEndOfFrame frame) onEndOfFrame += frame.EndOfFrame;
+                }
         }
 
         public static IGUCanvas GetOrCreateIGUCanvas(string name, CanvasType type = CanvasType.All) {
             IGUCanvas res = GetGUCanvas(name, CanvasType.All);
             if (res == null) {
-                res = new IGUCanvas(name);
-                container.AddEvents(res);
-                switch (type) {
-                    case CanvasType.All:
-                    case CanvasType.Volatile:
-                        ArrayManipulation.Add(res, ref container.VolatileContainer);
-                        break;
-                    case CanvasType.Permanent:
-                        ArrayManipulation.Add(res, ref container.PermanentContainer);
-                        break;
-                }
+                res = new IGUCanvas(name, type == CanvasType.All ? CanvasType.Volatile : type);
+                ArrayManipulation.Add(res, ref container.Containers);
+                container.RefreshEvents();
             }
             return res;
         }
 
-        public static IGUCanvas GetGenericContainer()
-            => container.VolatileContainer[0];
+        public static IGUCanvas GetGenericContainer() => container.Containers[0];
 
-        public static IGUCanvas GetPermanentGenericContainer()
-            => container.PermanentContainer[0];
+        public static IGUCanvas GetPermanentGenericContainer() => container.Containers[1];
 
         public static IGUCanvas GetGUCanvas(string name, CanvasType type = CanvasType.All) {
             foreach (IGUCanvas item in GetAllIGUCanvas(type))
@@ -134,15 +107,23 @@ namespace Cobilas.Unity.Graphics.IGU {
         }
 
         public static IGUCanvas[] GetAllIGUCanvas(CanvasType type = CanvasType.All) {
-            switch (type) {
-                case CanvasType.Volatile:
-                    return container.VolatileContainer;
-                case CanvasType.Permanent:
-                    return container.PermanentContainer;
-                default:
-                    return ArrayManipulation.Add(container.VolatileContainer, container.PermanentContainer);
-            }
-            
+            if (type == CanvasType.All)
+                return container.Containers;
+            IGUCanvas[] result = null;
+            for (int I = 0; I < ArrayManipulation.ArrayLength(container.Containers); I++)
+                if (container.Containers[I].Status == type)
+                    ArrayManipulation.Add(container.Containers[I], ref result);
+            return result;
+        }
+
+        private static IGUDepthDictionary[] ReoderDepth(IGUCanvas[] canvas) {
+            IGUDepthDictionary[] res = new IGUDepthDictionary[0];
+            for (int I = 0; I < ArrayManipulation.ArrayLength(canvas); I++)
+                if (canvas[I].Deeps != null)
+                    ArrayManipulation.Add(canvas[I].Deeps, ref res);
+            if (res == null)
+                return res;
+            return IGUDepthDictionary.ReorderDepthDictionary(res);
         }
     }
 }
