@@ -29,7 +29,7 @@ namespace Cobilas.Unity.Graphics.IGU {
         private void Awake() {
             Containers = new IGUCanvas[] {
                 new IGUCanvas("Generic container"),
-                new IGUCanvas("Permanent generic container")
+                new IGUCanvas("Permanent generic container", CanvasType.Permanent)
             };
             Containers[0].Container = this;
             Containers[1].Container = this;
@@ -58,11 +58,10 @@ namespace Cobilas.Unity.Graphics.IGU {
             onIGU = (Action)null;
             onToolTip = (Action)null;
             onEndOfFrame = (Action)null;
-            Containers[0].Dispose();
             Containers[0].Clear();
-            Containers[1].Dispose();
-            for (int I = 2; I < ArrayManipulation.ArrayLength(Containers); I++)
-                Containers[I].Dispose();
+            for (int I = 1; I < ArrayManipulation.ArrayLength(Containers); I++)
+                if (Containers[I].Status == CanvasType.Volatile)
+                    Containers[I].Dispose();
             if (Containers.Length > 2)
                 ArrayManipulation.Resize(ref Containers, 2);
         }
@@ -77,6 +76,9 @@ namespace Cobilas.Unity.Graphics.IGU {
         }
 
         internal void RefreshEvents() {
+            onIGU = (Action)null;
+            onToolTip = (Action)null;
+            onEndOfFrame = (Action)null;
             foreach (IGUDepthDictionary item1 in ReoderDepth(Containers))
                 foreach (Elements.IGUObject item2 in item1) {
                     onIGU += item2.OnIGU;

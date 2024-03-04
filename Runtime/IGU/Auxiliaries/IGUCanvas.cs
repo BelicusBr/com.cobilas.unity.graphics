@@ -2,6 +2,7 @@ using System;
 using UnityEngine;
 using System.Text;
 using Cobilas.Collections;
+using Cobilas.Unity.Utility;
 using Cobilas.Unity.Graphics.IGU.Elements;
 
 namespace Cobilas.Unity.Graphics.IGU {
@@ -29,7 +30,22 @@ namespace Cobilas.Unity.Graphics.IGU {
             this.name = name;
             this.status = status;
             this.config = IGUConfig.Default;
-            this.guid = Guid.NewGuid().ToString();
+            StringBuilder builder = new StringBuilder();
+            for (int I = 0; I < 15; I++) {
+                if (Randomico.BooleanRandom) { 
+                    switch (Randomico.ByteRange(0, 5)) {
+                        case 0: _ = builder.Append('A'); break;
+                        case 1: _ = builder.Append('B'); break;
+                        case 2: _ = builder.Append('C'); break;
+                        case 3: _ = builder.Append('D'); break;
+                        case 4: _ = builder.Append('E'); break;
+                        case 5: _ = builder.Append('F'); break;
+                    }
+                } else {
+                    _ = builder.Append(Randomico.ByteRange(0, 9)); 
+                }
+            }
+            this.guid = builder.ToString();
         }
 
         public IGUCanvas(string name) : this(name, IGUCanvasContainer.CanvasType.Volatile) {}
