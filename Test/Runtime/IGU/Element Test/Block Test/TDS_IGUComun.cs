@@ -38,6 +38,11 @@ public class TDS_IGUComun : MonoBehaviour {
         horizontalScrollbar = IGUObject.Create<IGUHorizontalScrollbar>("#TDS4354");
         window = IGUObject.Create<IGUWindow>("#TDS35686");
 
+        repeatButton.MyConfig = repeatButton.MyConfig.SetDepth(2);
+        label2.MyConfig = label2.MyConfig.SetDepth(5);
+        pictureBox.MyConfig = pictureBox.MyConfig.SetDepth(-2);
+        button.MyConfig = button.MyConfig.SetDepth(10);
+
         IGUCanvas container = button.ApplyToGenericContainer();
         container = repeatButton.ApplyToContainer(container);
         container = checkBox.ApplyToContainer(container);

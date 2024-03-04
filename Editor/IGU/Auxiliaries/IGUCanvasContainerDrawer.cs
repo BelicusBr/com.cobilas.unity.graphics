@@ -1,23 +1,19 @@
 using UnityEditor;
 using Cobilas.Unity.Graphics.IGU;
-using Cobilas.Unity.Graphics.IGU.Elements;
 using UEEditor = UnityEditor.Editor;
 
 namespace Cobilas.Unity.Editor.Graphics.IGU {
     [CustomEditor(typeof(IGUCanvasContainer))]
     public class IGUCanvasContainerDrawer : UEEditor {
         private SerializedProperty p_VolatileContainer;
-        private SerializedProperty p_PermanentContainer;
 
         private void OnEnable() {
-            p_VolatileContainer = serializedObject.FindProperty("VolatileContainer");
-            p_PermanentContainer = serializedObject.FindProperty("PermanentContainer");
+            p_VolatileContainer = serializedObject.FindProperty("Containers");
         }
 
         public override void OnInspectorGUI() {
             serializedObject.Update();
-            ShowList("Volatile Container", p_VolatileContainer);
-            ShowList("Permanent Container", p_PermanentContainer);
+            ShowList("Containers", p_VolatileContainer);
             serializedObject.ApplyModifiedProperties();
         }
 
@@ -31,7 +27,7 @@ namespace Cobilas.Unity.Editor.Graphics.IGU {
                 SerializedProperty p_foldout = property.FindPropertyRelative("foldout");
                 SerializedProperty p_name = property.FindPropertyRelative("name");
                 SerializedProperty p_guid = property.FindPropertyRelative("guid");
-                SerializedProperty p_loadWhenSceneActivates = property.FindPropertyRelative("loadWhenSceneActivates");
+                SerializedProperty p_status = property.FindPropertyRelative("status");
 
                 EditorGUI.BeginChangeCheck();
                 bool foldout = EditorGUILayout.Foldout(p_foldout.boolValue, EditorGUIUtility.TrTextContent(p_name.stringValue));
@@ -40,8 +36,7 @@ namespace Cobilas.Unity.Editor.Graphics.IGU {
                 if (foldout) {
                     EditorGUILayout.LabelField(EditorGUIUtility.TrTextContent($"GUID:{p_guid.stringValue}"), EditorStyles.helpBox);
                     EditorGUI.BeginDisabledGroup(true);
-                    EditorGUILayout.ToggleLeft(EditorGUIUtility.TrTextContent("Load When Scene Activates"),
-                        p_loadWhenSceneActivates.boolValue);
+                    EditorGUILayout.PropertyField(p_status, EditorGUIUtility.TrTextContent("Container Status"));
                     EditorGUI.EndDisabledGroup();
                     
                     ++EditorGUI.indentLevel;
