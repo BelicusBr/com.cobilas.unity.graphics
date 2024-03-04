@@ -48,19 +48,17 @@ namespace Cobilas.Unity.Graphics.IGU {
         IEnumerator IEnumerable.GetEnumerator()
             => new ArrayToIEnumerator<IGUObject>(objects);
 
+        //correção no método
         public static IGUDepthDictionary[] ReorderDepthDictionary(IGUDepthDictionary[] list) {
             IGUDepthDictionary[] res = new IGUDepthDictionary[ArrayManipulation.ArrayLength(list)];
             List<IGUDepthDictionary> temp = new List<IGUDepthDictionary>(list);
-            int index = 0;
-            while (temp.Count != 0) {
-                for (int I = index; I < res.Length; I++) {
-                    if (res[I] == null) res[I] = list[I];
-                    else res[I] = temp[I].depth < res[I].depth ? temp[I] : res[I];
+            for (int I = 0; I < res.Length; I++) {
+                for (int J = 0; J < temp.Count; J++) {
+                    if (res[I] == null) res[I] = temp[J];
+                    else res[I] = temp[J].depth < res[I].depth ? temp[J] : res[I];
                 }
-                _ = temp.Remove(res[index]);
-                index++;
+                _ = temp.Remove(res[I]);
             }
-            temp.Capacity = 0;
             return res;
         }
     }
