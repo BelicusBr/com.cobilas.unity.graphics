@@ -1,6 +1,17 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+# [4.5.2] (03/03/2024)
+## Fixed
+The issue in the `IGUDepthDictionary.ReorderDepthDictionary(IGUDepthDictionary[])` method that caused `ArgumentNullException` when reordering the depth list has been fixed.
+## Changed
+The `IGUCanvas.OnIGU`, `IGUCanvas.OnEndOfFrame`, and `IGUCanvas.OnToolTip` properties have been removed so that events better respect the depth of IGU elements.
+## Removed
+The `IGUCanvas.LoadWhenSceneActivates` depth has been removed and replaced with the `IGUCanvas.Status` property.
+## Added
+`IGUCanvas.Deeps` and `IGUCanvas.Status` properties.
+`IGUCanvas.Clear()` method to clear the depth list.
+
 # [4.5.1] (02/28/2024)
 ## Changed
 - In `ToolTip` drawing methods:
