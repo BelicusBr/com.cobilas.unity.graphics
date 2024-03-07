@@ -15,10 +15,9 @@ namespace Cobilas.Unity.Graphics.IGU {
         private Action onIGU;
         private Action onToolTip;
         private Action onEndOfFrame;
-        //Unir essas duas matrizes em um
-        //Depois fazer um método o povoamento correto dos eventos
-        //Criar um campo que tenha um depth max e min
+        [SerializeField] private long focusedWindowId;
         [SerializeField] private IGUCanvas[] Containers;
+        [SerializeField] private MaxMinSliderInt maxMinDepth;
 
         private static IGUCanvasContainer container;
 
@@ -27,6 +26,7 @@ namespace Cobilas.Unity.Graphics.IGU {
         public Action OnEndOfFrame { get => onEndOfFrame; }
 
         private void Awake() {
+            focusedWindowId = long.MinValue;
             Containers = new IGUCanvas[] {
                 new IGUCanvas("Generic container"),
                 new IGUCanvas("Permanent generic container", CanvasType.Permanent)
@@ -79,12 +79,28 @@ namespace Cobilas.Unity.Graphics.IGU {
             onIGU = (Action)null;
             onToolTip = (Action)null;
             onEndOfFrame = (Action)null;
-            foreach (IGUDepthDictionary item1 in ReoderDepth(Containers))
+            IGUDepthDictionary[] list = ReoderDepth(Containers);
+            if (!ArrayManipulation.EmpytArray(list)) maxMinDepth = MaxMinSliderInt.Default;
+            else maxMinDepth.Set(list[0].Depth, list[list.Length - 1].Depth);
+            foreach (IGUDepthDictionary item1 in list)
                 foreach (Elements.IGUObject item2 in item1) {
                     onIGU += item2.OnIGU;
                     if (item2 is IIGUToolTip tip) onToolTip += tip.InternalDrawToolTip;
                     if (item2 is IIGUEndOfFrame frame) onEndOfFrame += frame.EndOfFrame;
                 }
+        }
+
+        internal void FocusWindow(int id) {
+            if (id == focusedWindowId) return;
+            focusedWindowId = id;
+            for (int I = 0; I < ArrayManipulation.ArrayLength(Containers); I++)
+                for (int J = 0; J < Containers[I].DepthCount; J++)
+                    for (int L = 0; L < Containers[I][J].Count; L++)
+                        if (Containers[I][J][L] is IIGUWindow win) {
+                            if (win.GetInstanceID() == id) win.IsFocused = WindowFocusStatus.Focused;
+                            else if (win.IsFocused == WindowFocusStatus.Focused)
+                                win.IsFocused = WindowFocusStatus.Unfocused;
+                        }
         }
 
         public static IGUCanvas GetOrCreateIGUCanvas(string name, CanvasType type = CanvasType.All) {

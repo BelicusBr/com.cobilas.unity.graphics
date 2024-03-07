@@ -26,6 +26,8 @@ namespace Cobilas.Unity.Graphics.IGU {
         public IGUConfig Config { get => config; set => config = value; }
         internal IGUCanvasContainer Container { get => container; set => container = value; }
 
+        public IGUDepthDictionary this[int index] => deeps[index];
+
         public IGUCanvas(string name, IGUCanvasContainer.CanvasType status) {
             this.name = name;
             this.status = status;

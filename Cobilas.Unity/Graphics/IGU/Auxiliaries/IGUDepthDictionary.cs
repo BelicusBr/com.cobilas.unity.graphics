@@ -10,19 +10,24 @@ namespace Cobilas.Unity.Graphics.IGU {
     public sealed class IGUDepthDictionary : IEnumerable<IGUObject> {
         [SerializeField] private int depth;
         [SerializeField] private IGUObject[] objects;
+        [SerializeField] private bool isFocusedWindow;
         #if UNITY_EDITOR
         [SerializeField, HideInInspector] private bool foldout;
         #endif
 
         public int Depth => depth;
+        public bool IsFocusedWindow => isFocusedWindow;
         public int Count => ArrayManipulation.ArrayLength(objects);
 
         public IGUObject this[int index] => objects[index];
 
-        public IGUDepthDictionary(int depth)
+        public IGUDepthDictionary(int depth, bool isFocusedWindow)
         {
             this.depth = depth;
+            this.isFocusedWindow = isFocusedWindow;
         }
+
+        public IGUDepthDictionary(int depth) : this(depth, false) {}
 
         public void Add(IGUObject @object)
             => ArrayManipulation.Add(@object, ref objects);

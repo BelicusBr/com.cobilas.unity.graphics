@@ -10,6 +10,8 @@ bin.meta
 obj.meta
 node_modules.meta
 # extension files
+*.code-workspace
+*.code-workspace.meta
 *.sln
 *.sln.meta
 *.csproj
