@@ -1,6 +1,12 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+# [4.6.1] (07/03/2024)
+## Removed
+The `IIGUObject.AlteredDepth(List<IIGUObject>, int)` method was removed due to the fact that the `IGUObject.MyConfig` property already fulfilled this function.
+## Fixed
+Previously, the `IGUObject.MyConfig` property did not implement the private method `IGUObject.SetIGUConfig(IGUConfig)` that allows the IGU element to change its depth automatically.
+
 # [4.5.2] (03/03/2024)
 ## Fixed
 The issue in the `IGUDepthDictionary.ReorderDepthDictionary(IGUDepthDictionary[])` method that caused `ArgumentNullException` when reordering the depth list has been fixed.
