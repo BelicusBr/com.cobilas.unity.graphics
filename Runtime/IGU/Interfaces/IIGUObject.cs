@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace Cobilas.Unity.Graphics.IGU.Interfaces {
+﻿namespace Cobilas.Unity.Graphics.IGU.Interfaces {
     public interface IIGUObject {
         string name { get; set; }
 
@@ -8,6 +6,5 @@ namespace Cobilas.Unity.Graphics.IGU.Interfaces {
         void InternalOnIGU();
         void InternalPreOnIGU();
         void InternalPostOnIGU();
-        void AlteredDepth(List<IIGUObject> changed, int depth);
     }
 }

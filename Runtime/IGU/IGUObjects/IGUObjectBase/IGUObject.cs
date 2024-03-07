@@ -1,6 +1,5 @@
 ﻿using System;
 using UnityEngine;
-using System.Collections.Generic;
 using Cobilas.Unity.Graphics.IGU.Interfaces;
 
 namespace Cobilas.Unity.Graphics.IGU.Elements {
@@ -21,7 +20,7 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
         public IGURect MyRect { get => myRect; set => myRect = value; }
         public IGUObject Parent { get => parent; set => parent = value; }
         public IGUColor MyColor { get => myColor; set => myColor = value; }
-        public IGUConfig MyConfig { get => myConfig; set => myConfig = value; }
+        public IGUConfig MyConfig { get => myConfig; set => SetIGUConfig(value); }
 
         public void OnIGU() {
             GUI.SetNextControlName(name);
@@ -113,11 +112,6 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
                 GUI.contentColor = oldContentColor;
                 GUI.backgroundColor = oldBackgroundColor;
             }
-        }
-
-        void IIGUObject.AlteredDepth(List<IIGUObject> changed, int depth) {
-            if (myConfig.Depth != depth)
-                changed.Add(this);
         }
 
         void IIGUObject.InternalPreOnIGU() => PreOnIGU();
