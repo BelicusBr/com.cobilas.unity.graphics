@@ -8,11 +8,6 @@ using Cobilas.Unity.Test.Graphics.IGU.Physics;
 
 namespace Cobilas.Unity.Test.Graphics.IGU {
     public static class BackEndIGU {
-        public enum WindowFocusStatus : byte {
-            None = 0,
-            Focused = 1,
-            Unfocused = 2
-        }
 
         private static int indexMatrix = 0;
         private static List<Matrix4x4> matrix = new List<Matrix4x4>();
@@ -218,7 +213,7 @@ namespace Cobilas.Unity.Test.Graphics.IGU {
         public static float Slider(IGURect rect, float value, MaxMinSlider maxMin, int ID, IGUPhysicsBase phy, IGUStyle style, IGUStyle styleThumb, bool isHoriz)
             => Slider(rect, value, 0f, maxMin, ID, phy, style, styleThumb, isHoriz, false);
 
-        public static IGURect SimpleWindow(IGURect rect, Rect rectDrag, Vector2 clippingScrollOffset, IGUContent content, IGUStyle style, IGUPhysicsBase phy, int ID, Action<int, Vector2> function, out WindowFocusStatus focusStatus) {
+        public static IGURect SimpleWindow(IGURect rect, Rect rectDrag, Vector2 clippingScrollOffset, IGUContent content, IGUStyle style, IGUPhysicsBase phy, int ID, Action<int, Vector2> function, ref WindowFocusStatus focusStatus) {
             BeginRotation(rect);
             Event @event = Event.current;
             GUIStyle winStyle = (GUIStyle)style;
@@ -229,7 +224,6 @@ namespace Cobilas.Unity.Test.Graphics.IGU {
 
             bool isHover = rect.Contains(@event.mousePosition) && phy.IsHotPotato && GUI.enabled;
             bool isDrag = rectDrag.Contains(@event.mousePosition);
-            focusStatus = WindowFocusStatus.None;
 
             switch (@event.type) {
                 case EventType.MouseDown:
@@ -239,7 +233,8 @@ namespace Cobilas.Unity.Test.Graphics.IGU {
                     }
                     if (!isHover || !isDrag) { 
                         window.CurrentID = 0;
-                        focusStatus = WindowFocusStatus.Unfocused;
+                        if (focusStatus == WindowFocusStatus.Focused)
+                            focusStatus = WindowFocusStatus.Unfocused;
                         break;
                     }
                     GUIUtility.hotControl = ID;
@@ -467,6 +462,11 @@ namespace Cobilas.Unity.Test.Graphics.IGU {
             GUI.BeginClip((Rect)rect, scrollOffset, Vector2.zero, false);
             clippinFunc(scrollOffset);
             EndRotation();
+        }
+
+        private static void FocusWindow(int id) {
+            GUI.FocusWindow(id);
+            IGUCanvasContainer.FocusWindow(id);
         }
 
         private static void BeginRotation(IGURect rect) {

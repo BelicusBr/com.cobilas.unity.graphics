@@ -3,6 +3,7 @@ using UnityEngine;
 using Cobilas.Collections;
 using UnityEngine.SceneManagement;
 using Cobilas.Unity.Graphics.IGU.Interfaces;
+using Cobilas.Unity.Graphics.IGU.Elements;
 
 namespace Cobilas.Unity.Graphics.IGU {
     public sealed class IGUCanvasContainer : MonoBehaviour {
@@ -31,8 +32,6 @@ namespace Cobilas.Unity.Graphics.IGU {
                 new IGUCanvas("Generic container"),
                 new IGUCanvas("Permanent generic container", CanvasType.Permanent)
             };
-            Containers[0].Container = this;
-            Containers[1].Container = this;
         }
 
         private void OnEnable() {
@@ -75,32 +74,30 @@ namespace Cobilas.Unity.Graphics.IGU {
             ArrayManipulation.ClearArraySafe(ref Containers);
         }
 
-        internal void RefreshEvents() {
+        private void InternalRefreshEvents() {
             onIGU = (Action)null;
             onToolTip = (Action)null;
             onEndOfFrame = (Action)null;
-            IGUDepthDictionary[] list = ReoderDepth(Containers);
-            if (!ArrayManipulation.EmpytArray(list)) maxMinDepth = MaxMinSliderInt.Default;
-            else maxMinDepth.Set(list[0].Depth, list[list.Length - 1].Depth);
-            foreach (IGUDepthDictionary item1 in list)
-                foreach (Elements.IGUObject item2 in item1) {
-                    onIGU += item2.OnIGU;
-                    if (item2 is IIGUToolTip tip) onToolTip += tip.InternalDrawToolTip;
-                    if (item2 is IIGUEndOfFrame frame) onEndOfFrame += frame.EndOfFrame;
-                }
+            IGUObject[] elements = IGUCanvas.ReoderDepth(Containers);
+            for (long I = 0; I < ArrayManipulation.ArrayLongLength(elements); I++) {
+                onIGU += elements[I].OnIGU;
+                if (elements[I] is IIGUToolTip tip) onToolTip += tip.InternalDrawToolTip;
+                if (elements[I] is IIGUEndOfFrame frame) onEndOfFrame += frame.EndOfFrame;                
+            }
         }
 
-        internal void FocusWindow(int id) {
+        private void InternalFocusWindow(int id) {
             if (id == focusedWindowId) return;
             focusedWindowId = id;
             for (int I = 0; I < ArrayManipulation.ArrayLength(Containers); I++)
-                for (int J = 0; J < Containers[I].DepthCount; J++)
-                    for (int L = 0; L < Containers[I][J].Count; L++)
-                        if (Containers[I][J][L] is IIGUWindow win) {
-                            if (win.GetInstanceID() == id) win.IsFocused = WindowFocusStatus.Focused;
-                            else if (win.IsFocused == WindowFocusStatus.Focused)
-                                win.IsFocused = WindowFocusStatus.Unfocused;
-                        }
+                for (int J = 0; J < Containers[I].ElementsCount; J++) {
+                    IGUObject temp = Containers[I][J];
+                    if (temp is IIGUWindow win) {
+                        if (win.GetInstanceID() == id) win.IsFocused = WindowFocusStatus.Focused;
+                        else if (win.IsFocused != WindowFocusStatus.None)
+                            win.IsFocused = WindowFocusStatus.Unfocused;
+                    }
+                }
         }
 
         public static IGUCanvas GetOrCreateIGUCanvas(string name, CanvasType type = CanvasType.All) {
@@ -108,10 +105,14 @@ namespace Cobilas.Unity.Graphics.IGU {
             if (res == null) {
                 res = new IGUCanvas(name, type == CanvasType.All ? CanvasType.Volatile : type);
                 ArrayManipulation.Add(res, ref container.Containers);
-                container.RefreshEvents();
+                container.InternalRefreshEvents();
             }
             return res;
         }
+
+        public static void FocusWindow(int id) => container.InternalFocusWindow(id);
+
+        public static void RefreshEvents() => container.InternalRefreshEvents();
 
         public static IGUCanvas GetGenericContainer() => container.Containers[0];
 
@@ -132,16 +133,6 @@ namespace Cobilas.Unity.Graphics.IGU {
                 if (container.Containers[I].Status == type)
                     ArrayManipulation.Add(container.Containers[I], ref result);
             return result;
-        }
-
-        private static IGUDepthDictionary[] ReoderDepth(IGUCanvas[] canvas) {
-            IGUDepthDictionary[] res = new IGUDepthDictionary[0];
-            for (int I = 0; I < ArrayManipulation.ArrayLength(canvas); I++)
-                if (canvas[I].Deeps != null)
-                    ArrayManipulation.Add(canvas[I].Deeps, ref res);
-            if (res == null)
-                return res;
-            return IGUDepthDictionary.ReorderDepthDictionary(res);
         }
     }
 }
