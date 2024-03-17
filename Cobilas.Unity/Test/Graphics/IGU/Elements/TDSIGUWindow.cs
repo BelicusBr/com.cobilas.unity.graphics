@@ -12,7 +12,7 @@ namespace Cobilas.Unity.Test.Graphics.IGU.Elements {
         [SerializeField] private IGUStyle style;
         [SerializeField] private WindowFocusStatus isFocused;
 
-        public IGUPhysicsBase Physics => physicsBase;
+        public IGUPhysicsBase Physics { get => physicsBase; set => physicsBase = value; }
 
         WindowFocusStatus IIGUWindow.IsFocused { get => isFocused; set => isFocused = value; }
 

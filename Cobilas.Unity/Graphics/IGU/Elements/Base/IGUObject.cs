@@ -11,7 +11,7 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
         [SerializeField] protected IGUConfig myConfig;
         [SerializeField] protected IGUCanvas container;
 #if UNITY_EDITOR
-        [SerializeField] private bool foldout;
+        [SerializeField, HideInInspector] private bool foldout;
 #endif
 
         public IGUCanvas Container => container;

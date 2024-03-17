@@ -6,11 +6,13 @@ using Cobilas.Unity.Graphics.IGU.Events;
 namespace Cobilas.Unity.Test.Graphics.IGU.Physics {
     [Serializable]
     public sealed class IGUMultiPhysics : IGUPhysicsBase {
+        private Triangle[] triangles;
         private IGUPhysicsBase target;
         [SerializeField] private bool isHotPotato;
         private IGUCollisionConfirmedAction onPhysics;
         private delegate void SubCollisionConfirmed(IGUPhysicsBase ipt, in Vector2 mouse, out IGUPhysicsBase otp);
 
+        public override Triangle[] Triangles => triangles;
         public override bool IsHotPotato { get => GetTarget().IsHotPotato; set => GetTarget().IsHotPotato = value; }
 
         public override bool CollisionConfirmed(Vector2 mouse) {

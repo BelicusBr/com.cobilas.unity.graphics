@@ -49,17 +49,64 @@ public class IGU_TDS : MonoBehaviour {
         DontDestroyOnLoad(gameObject);
     }
 
-    private void OnEnable() {
-        comboBox.OnSelectedIndex.AddListener(SceneChange);
+    private Triangle[] triangles = Triangle.Circle;
+    private Triangle[] trianglesbox = Triangle.Box;
+    public IGURect recttt = new IGURect(Vector2.one * 145f, Vector2.one * 250f);
+    private void Update() {
+        // Vector2 mpos = (Input.mousePosition - Vector3.up * Screen.height).InvertY();
+        // for (int I = 0; I < triangles.Length; I++) {
+        //     if (Triangle.InsideInTriangle(triangles[I], recttt, mpos))
+        //         print($"Colisão triangulo {I}");
+        // }
     }
 
-    private void OnGUI() {
-        // rect = TDS_IGUStyle.DrawWindow(rect, rectDrag,
-        //     GUIUtility.GetControlID(FocusType.Passive, rect),
-        //     (id) => {}, (IGUStyle)"Black window border", new IGUContent("Win"));
-        //GUI.enabled = false;
-        BEIGU.PasswordField(rect, content, GetInstanceID(), 0, '*', new IGUPhysicsTest(), (IGUStyle)"Black text field border");
-        //Debug.Log(Event.current.type);
+    private void OnDrawGizmos() {
+        for (int I = 0; I < triangles.Length; I++) {
+            Quaternion quaternion = Quaternion.Euler(Vector3.forward * recttt.Rotation);
+            Vector2 n_size = recttt.Size * .5f;
+            Vector2 a = triangles[I].A * n_size;
+            Vector2 b = triangles[I].B * n_size;
+            Vector2 c = triangles[I].C * n_size;
+
+            a = (Vector2)(quaternion.GenerateDirectionRight() * a.x + quaternion.GenerateDirectionUp() * a.y) + recttt.Position;
+            b = (Vector2)(quaternion.GenerateDirectionRight() * b.x + quaternion.GenerateDirectionUp() * b.y) + recttt.Position;
+            c = (Vector2)(quaternion.GenerateDirectionRight() * c.x + quaternion.GenerateDirectionUp() * c.y) + recttt.Position;
+          
+            a = Camera.main.ScreenToWorldPoint(a).InvertY();
+            b = Camera.main.ScreenToWorldPoint(b).InvertY();
+            c = Camera.main.ScreenToWorldPoint(c).InvertY();
+            Gizmos.color = Color.red;
+            Gizmos.DrawLine(a, b);
+            Gizmos.DrawLine(b, c);
+            Gizmos.DrawLine(c, a);            
+        }
+        for (int I = 0; I < trianglesbox.Length; I++) {
+            Quaternion quaternion = Quaternion.Euler(Vector3.forward * recttt.Rotation);
+            Vector2 a = trianglesbox[I].A * recttt.Size;
+            Vector2 b = trianglesbox[I].B * recttt.Size;
+            Vector2 c = trianglesbox[I].C * recttt.Size;
+
+            a = (Vector2)(quaternion.GenerateDirectionRight() * a.x + quaternion.GenerateDirectionUp() * a.y) + recttt.Position;
+            b = (Vector2)(quaternion.GenerateDirectionRight() * b.x + quaternion.GenerateDirectionUp() * b.y) + recttt.Position;
+            c = (Vector2)(quaternion.GenerateDirectionRight() * c.x + quaternion.GenerateDirectionUp() * c.y) + recttt.Position;
+
+            Gizmos.color = Color.green;
+            Vector2 vector = Camera.main.ScreenToWorldPoint(recttt.Position).InvertY();
+            Gizmos.DrawLine(vector, vector + Vector2.up);
+            Gizmos.DrawLine(vector, vector + Vector2.right);
+        
+            a = Camera.main.ScreenToWorldPoint(a).InvertY();
+            b = Camera.main.ScreenToWorldPoint(b).InvertY();
+            c = Camera.main.ScreenToWorldPoint(c).InvertY();
+            Gizmos.color = Color.red;
+            Gizmos.DrawLine(a, b);
+            Gizmos.DrawLine(b, c);
+            Gizmos.DrawLine(c, a);
+        }
+    }
+
+    private void OnEnable() {
+        comboBox.OnSelectedIndex.AddListener(SceneChange);
     }
 
     void SceneChange(IGUComboBoxButton button) {

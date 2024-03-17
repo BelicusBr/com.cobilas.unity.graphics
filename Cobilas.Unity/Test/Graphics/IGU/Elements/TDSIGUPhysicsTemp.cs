@@ -12,7 +12,7 @@ using UnityEngine;
 namespace Cobilas.Unity.Test.Graphics.IGU.Elements {
     public class TDSIGUPhysicsTemp : IGUObject, IIGUPhysics {
         public IGUMonoPhysics _Physics;
-        public IGUPhysicsBase Physics => _Physics;
+        public IGUPhysicsBase Physics { get => _Physics; set => _Physics = (IGUMonoPhysics)value; }
 
         protected override void IGUAwake() {
             base.IGUAwake();

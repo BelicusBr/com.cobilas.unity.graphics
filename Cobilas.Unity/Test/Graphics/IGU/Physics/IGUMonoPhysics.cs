@@ -9,6 +9,7 @@ namespace Cobilas.Unity.Test.Graphics.IGU.Physics {
         [SerializeField] private bool isHotPotato;
 
         public IGURect MyRect { get => myRect; set => myRect = value; }
+        public override Triangle[] Triangles => throw new NotImplementedException();
         public override bool IsHotPotato { get => isHotPotato; set => isHotPotato = value; }
 
         public override bool CollisionConfirmed(Vector2 mouse)
