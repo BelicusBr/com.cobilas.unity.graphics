@@ -75,7 +75,7 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
 
         private void SetIGUConfig(IGUConfig config) {
             if (myConfig.Depth != config.Depth)
-                IGUCanvasContainer.RefreshEvents();;
+                IGUCanvasContainer.RefreshEvents();
             myConfig = config;
         }
 

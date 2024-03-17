@@ -48,12 +48,14 @@ namespace Cobilas.Unity.Graphics.IGU {
         public bool Add(IGUObject @object) {
             if (Contains(@object)) return false;
             ArrayManipulation.Add(@object, ref elements);
+            IGUCanvasContainer.RefreshEvents();
             return true;
         }
 
         public bool Remove(IGUObject @object) {
             if (!Contains(@object)) return false;
             ArrayManipulation.Remove(@object, ref elements);
+            IGUCanvasContainer.RefreshEvents();
             return true;
         }
 
@@ -80,6 +82,7 @@ namespace Cobilas.Unity.Graphics.IGU {
 
         public void Clear() {
             ArrayManipulation.ClearArraySafe(ref elements);
+            IGUCanvasContainer.RefreshEvents();
         }
 
         public override string ToString() {
