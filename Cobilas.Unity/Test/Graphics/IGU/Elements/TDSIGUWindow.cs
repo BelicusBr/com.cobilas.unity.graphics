@@ -17,6 +17,7 @@ namespace Cobilas.Unity.Test.Graphics.IGU.Elements {
         WindowFocusStatus IIGUWindow.IsFocused { get => isFocused; set => isFocused = value; }
 
         public void CallPhysicsFeedback(Vector2 mouse, List<IGUPhysicsBase> phys) {
+            physicsBase.Rect = myRect;
             if (physicsBase.CollisionConfirmed(mouse))
                 phys[0] = physicsBase;
         }
@@ -29,7 +30,7 @@ namespace Cobilas.Unity.Test.Graphics.IGU.Elements {
 
         protected override void IGUOnEnable() {
             base.IGUOnEnable();
-            physicsBase = new IGUPhysicsTest();
+            physicsBase = new IGUBoxPhysics();
         }
 
         protected override void LowCallOnIGU() {

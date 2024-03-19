@@ -2,6 +2,7 @@ using System;
 using UnityEngine;
 using Cobilas.Collections;
 using Cobilas.Unity.Graphics.IGU.Events;
+using Cobilas.Unity.Graphics.IGU;
 
 namespace Cobilas.Unity.Test.Graphics.IGU.Physics {
     [Serializable]
@@ -12,6 +13,7 @@ namespace Cobilas.Unity.Test.Graphics.IGU.Physics {
         private IGUCollisionConfirmedAction onPhysics;
         private delegate void SubCollisionConfirmed(IGUPhysicsBase ipt, in Vector2 mouse, out IGUPhysicsBase otp);
 
+        public override IGURect Rect { get; set; }
         public override Triangle[] Triangles => triangles;
         public override bool IsHotPotato { get => GetTarget().IsHotPotato; set => GetTarget().IsHotPotato = value; }
 
