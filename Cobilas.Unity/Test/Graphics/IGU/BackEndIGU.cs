@@ -5,12 +5,13 @@ using Cobilas.Unity.Graphics.IGU;
 using System.Collections.Generic;
 using Cobilas.Unity.Graphics.IGU.Elements;
 using Cobilas.Unity.Test.Graphics.IGU.Physics;
+using Cobilas.Collections;
 
 namespace Cobilas.Unity.Test.Graphics.IGU {
     public static class BackEndIGU {
 
         private static int indexMatrix = 0;
-        private static List<Matrix4x4> matrix = new List<Matrix4x4>();
+        private static Matrix4x4[] matrix = new Matrix4x4[0];
 
         public static void Label(IGURect rect, IGUContent content, IGUStyle style, int ID) {
             BeginRotation(rect);
@@ -237,7 +238,7 @@ namespace Cobilas.Unity.Test.Graphics.IGU {
                             focusStatus = WindowFocusStatus.Unfocused;
                         break;
                     }
-                    GUIUtility.hotControl = ID;
+                    GUIUtility.hotControl = window.CurrentID = ID;
                     window.CurrentPosition = @event.mousePosition - rect.Position;
                     break;
                 case EventType.MouseUp:
@@ -254,7 +255,8 @@ namespace Cobilas.Unity.Test.Graphics.IGU {
                     winStyle.Draw((Rect)rect, IGUTextObject.GetGUIContentTemp(content), ID, window.CurrentID == ID);
                     break;
             }
-            Clipping(rect.SetRotation(0f), clippingScrollOffset, window.ClippingFunc);
+            IGURect rectClip = rect;
+            Clipping(rectClip.SetRotation(0f), clippingScrollOffset, window.ClippingFunc);
             EndRotation();
             return rect;
         }
@@ -461,6 +463,7 @@ namespace Cobilas.Unity.Test.Graphics.IGU {
             scrollOffset = Vector2.zero - rect.Position + scrollOffset;
             GUI.BeginClip((Rect)rect, scrollOffset, Vector2.zero, false);
             clippinFunc(scrollOffset);
+            GUI.EndClip();
             EndRotation();
         }
 
@@ -471,8 +474,8 @@ namespace Cobilas.Unity.Test.Graphics.IGU {
 
         private static void BeginRotation(IGURect rect) {
             ++indexMatrix;
-            if (indexMatrix > matrix.Capacity)
-                matrix.Add(Matrix4x4.zero);
+            if (matrix.Length < indexMatrix)
+                ArrayManipulation.Resize(ref matrix, indexMatrix);
             matrix[indexMatrix - 1] = GUI.matrix;
             GUIUtility.RotateAroundPivot(rect.Rotation, rect.ModifiedRect.Position);
         }

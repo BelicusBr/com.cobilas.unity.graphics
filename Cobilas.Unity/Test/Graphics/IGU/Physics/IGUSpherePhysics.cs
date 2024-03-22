@@ -1,4 +1,3 @@
-using System;
 using UnityEngine;
 using Cobilas.Unity.Graphics.IGU;
 

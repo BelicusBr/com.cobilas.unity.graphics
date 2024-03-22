@@ -8,6 +8,7 @@ using Cobilas.Unity.Test.Graphics.IGU.Interfaces;
 using Cobilas.Unity.Test.Graphics.IGU.Physics;
 using Cobilas.Unity.Test.Graphics.IGU;
 using UnityEngine;
+using Cobilas.Unity.Graphics.IGU.Interfaces;
 
 namespace Cobilas.Unity.Test.Graphics.IGU.Elements {
     public class TDSIGUPhysicsTemp : IGUObject, IIGUPhysics {
@@ -20,15 +21,26 @@ namespace Cobilas.Unity.Test.Graphics.IGU.Elements {
             myRect = IGURect.DefaultButton;
         }
 
+        protected override void IGUOnEnable() {
+            _Physics = new IGUBoxPhysics();
+        }
+
         protected override void LowCallOnIGU() {
             //GUI.Button((Rect)LocalRect, "Button");
-            if (TDS_IGUStyle.DrawButton((Rect)LocalRect, (IGUStyle)"Black button border", new IGUContent("Button"), _Physics))
+            // if (TDS_IGUStyle.DrawButton((Rect)LocalRect, (IGUStyle)"Black button border", new IGUContent("Button"), _Physics))
+            //     Debug.Log($"[ID:{GetInstanceID()}]{name}");
+            if (BackEndIGU.Button(LocalRect, new IGUContent("Button"), (IGUStyle)"Black button border", _Physics, GetInstanceID()))
                 Debug.Log($"[ID:{GetInstanceID()}]{name}");
         }
 
         void IIGUPhysics.CallPhysicsFeedback(Vector2 mouse, List<IGUPhysicsBase> phys) {
             if (!LocalConfig.IsVisible) return;
-            _Physics.Rect = LocalRect;
+            if (parent is IIGUPhysics phy && parent is IIGUClipping)
+                if (!phy.Physics.CollisionConfirmed(mouse))
+                    return;
+            if (parent is IIGUClipping clipping)
+                _Physics.Rect = LocalRect.SetPosition(LocalRect.Position + clipping.ScrollView);
+            else _Physics.Rect = LocalRect;
             _Physics.IsHotPotato = false;
             if (_Physics.CollisionConfirmed(mouse))
                 phys[0] = _Physics;
