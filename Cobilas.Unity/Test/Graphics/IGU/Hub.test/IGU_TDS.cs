@@ -206,6 +206,7 @@ public class IGU_TDS : MonoBehaviour {
                 Vector2 poss = Camera.current.ScreenToWorldPoint(((Vector2)quaternion.GenerateDirectionRight() * rect.Width) + GetGURect(this).Position);
                 DrawSeta((poss - Vector2.up * Screen.height).InvertY());
 
+                // https://en.wikipedia.org/wiki/Rotation_matrix
                 // if (parent != null) {
                 //     Quaternion quaternion = Quaternion.Euler(Vector3.forward * GetRotation(this));
                 //     Vector2 pos = GetGURect(this).Position;
