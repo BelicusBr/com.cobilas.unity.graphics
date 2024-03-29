@@ -69,7 +69,7 @@ namespace Cobilas.Unity.Test.Graphics.IGU {
             Vector2 a = quaternion.GenerateDirection(triangle.A) * rect.Size + rect.Position;
             Vector2 b = quaternion.GenerateDirection(triangle.B) * rect.Size + rect.Position;
             Vector2 c = quaternion.GenerateDirection(triangle.C) * rect.Size + rect.Position;
-            return Area(b, c, a, position);
+            return IsPointInside(b, c, a, position);
         }
 
         public static bool InsideInTriangle(Triangle[] triangles, Vector2 position) {
@@ -79,11 +79,12 @@ namespace Cobilas.Unity.Test.Graphics.IGU {
             return false;
         }
 
-        public static bool InsideInTriangle(Triangle triangle, Vector2 position)
-            => Area(triangle.b, triangle.c, triangle.a, position);
+        public static bool InsideInTriangle(Triangle triangle, Vector2 position) {
+            return IsPointInside(triangle.a, triangle.b, triangle.c, position);
+        }
 
         public static bool InsideInTriangle(Vector2 a, Vector2 b, Vector2 c, Vector2 position)
-            => Area(b, c, a, position);
+            => IsPointInside(a, b, c, position);
 
         private static bool Area(Vector2 p1, Vector2 p2, Vector2 p3, Vector2 p) {
             float d1, d2, d3;
@@ -101,6 +102,35 @@ namespace Cobilas.Unity.Test.Graphics.IGU {
 
         private static float Sign(Vector2 p1, Vector2 p2, Vector2 p3)
             => (p1.x - p3.x) * (p2.y - p3.y) - (p2.x - p3.x) * (p1.y - p3.y);
+
+        private static bool IsPointInsideTriangle(Vector2 v1, Vector2 v2, Vector2 v3, Vector2 point) {
+            float totalArea = TriangleArea(v1, v2, v3);
+            float area1 = TriangleArea(point, v2, v3);
+            float area2 = TriangleArea(v1, point, v3);
+            float area3 = TriangleArea(v1, v2, point);
+            return Mathf.Abs(totalArea - (area1 + area2 + area3)) < 0.0001f;
+        }
+
+        private static float TriangleArea(Vector2 v1, Vector2 v2, Vector2 v3)
+            => Mathf.Abs((v1.x * (v2.y - v3.y) + v2.x * (v3.y - v1.y) + v3.x * (v1.y - v2.y)) / 2);
+
+        private static bool IsPointInside(Vector2 v1, Vector2 v2, Vector2 v3, Vector2 point) {
+            Vector2 center = (v1 + v2 + v3) / 3f;
+
+            Vector2 v21_point = (v2 + v1) / 2f;
+            Vector2 v32_point = (v3 + v2) / 2f;
+            Vector2 v13_point = (v1 + v3) / 2f;
+
+            Vector2 normal1 = (v21_point - center).normalized;
+            Vector2 normal2 = (v32_point - center).normalized;
+            Vector2 normal3 = (v13_point - center).normalized;
+
+            bool side1 = Vector2.Dot(normal1, point - v21_point) < 0f;
+            bool side2 = Vector2.Dot(normal2, point - v32_point) < 0f;
+            bool side3 = Vector2.Dot(normal3, point - v13_point) < 0f;
+
+            return side1 && side2 && side3;
+        }
 
         public static bool operator ==(Triangle A, Triangle B) => A.Equals(B);
         public static bool operator !=(Triangle A, Triangle B) => !A.Equals(B);

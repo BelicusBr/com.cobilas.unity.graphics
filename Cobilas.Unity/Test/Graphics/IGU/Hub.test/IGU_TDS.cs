@@ -17,6 +17,8 @@ using System;
 
 public class IGU_TDS : MonoBehaviour {
 
+    public Vector2[] triangle = new Vector2[4];
+
     public TDSIGUBoxPhy boxPhy1;
     public TDSIGUBoxPhy boxPhy2;
     public TDSIGUBoxPhy boxPhy3;
@@ -85,21 +87,89 @@ public class IGU_TDS : MonoBehaviour {
     }
 
     private void OnGUI() {
-        boxPhy1.OnGUI();
-            boxPhy2.OnGUI();
-                boxPhy3.OnGUI();
-                    boxPhy4.OnGUI();
-                    boxPhy4.EndOnGUI();
-                boxPhy3.EndOnGUI();
-            boxPhy2.EndOnGUI();
-        boxPhy1.EndOnGUI();
+        // boxPhy1.OnGUI();
+        //     boxPhy2.OnGUI();
+        //         boxPhy3.OnGUI();
+        //             boxPhy4.OnGUI();
+        //             boxPhy4.EndOnGUI();
+        //         boxPhy3.EndOnGUI();
+        //     boxPhy2.EndOnGUI();
+        // boxPhy1.EndOnGUI();
     }
 
     private void OnDrawGizmos() {
-        boxPhy1.OnDrawGizmos();
-        boxPhy2.OnDrawGizmos();
-        boxPhy3.OnDrawGizmos();
-        boxPhy4.OnDrawGizmos();
+        // boxPhy1.OnDrawGizmos();
+        // boxPhy2.OnDrawGizmos();
+        // boxPhy3.OnDrawGizmos();
+        // boxPhy4.OnDrawGizmos();
+        /*
+            A = (3,4)
+            B = (2,1)
+            C = (1,3)
+
+            AB = (2,1) - (3,4) = (-1,-3)
+            AC = (1,3) - (3,4) = (-2,-1)
+            N = n(AB) = (-3,1)
+            D = dot(N,AC) = 6 + -1 = 5
+
+            since D > 0:
+              N = -N = (3,-1)
+        */
+        
+        Gizmos.color = Color.red;
+        triangle[3] = (triangle[0] + triangle[1] + triangle[2]) / 3f;
+        Vector2 mpos = (Input.mousePosition - Vector3.up * Screen.height).InvertY();
+
+        Vector2 norm1 = (triangle[1] - triangle[0]).normalized;
+        Vector2 norm2 = (triangle[2] - triangle[1]).normalized;
+        Vector2 norm3 = (triangle[0] - triangle[2]).normalized;
+
+        norm1 = (Vector2.right * norm1.y + Vector2.up * norm1.x).InvertX();
+        norm2 = (Vector2.right * norm2.y + Vector2.up * norm2.x).InvertX();
+        norm3 = (Vector2.right * norm3.y + Vector2.up * norm3.x).InvertX();
+        Vector2 n3pos = (Vector2.right * norm3.y + Vector2.up * norm3.x).InvertY();
+        n3pos = n3pos * new Vector2(200f, 150f) + triangle[2];
+
+        Debug.Log($"{norm1} {norm2} {norm3} {mpos}");
+
+        Vector2 vc1 = Camera.current.ScreenToWorldPoint((triangle[0] - Vector2.up * Screen.height).InvertY());
+        Vector2 vc2 = Camera.current.ScreenToWorldPoint((triangle[1] - Vector2.up * Screen.height).InvertY());
+        Vector2 vc3 = Camera.current.ScreenToWorldPoint((triangle[2] - Vector2.up * Screen.height).InvertY());
+        Vector2 cen = Camera.current.ScreenToWorldPoint((triangle[3] - Vector2.up * Screen.height).InvertY());
+
+        Vector2 n1 = Camera.current.ScreenToWorldPoint((norm1 * 10f + ((triangle[1] + triangle[0]) / 2f) - Vector2.up * Screen.height).InvertY());
+        Vector2 n2 = Camera.current.ScreenToWorldPoint((norm2 * 10f + ((triangle[2] + triangle[1]) / 2f) - Vector2.up * Screen.height).InvertY());
+        Vector2 n3 = Camera.current.ScreenToWorldPoint((norm3 * 10f + ((triangle[0] + triangle[2]) / 2f) - Vector2.up * Screen.height).InvertY());
+
+        Vector2 n4 = Camera.current.ScreenToWorldPoint((n3pos - Vector2.up * Screen.height).InvertY());
+
+        Gizmos.DrawLine(vc1, vc2);
+        Gizmos.DrawLine(vc2, vc3);
+        Gizmos.DrawLine(vc3, vc1);
+
+        Gizmos.DrawLine(cen, cen + Vector2.right * .5f);
+        Gizmos.color = Color.green;
+        Gizmos.DrawLine(cen, cen + Vector2.up * .5f);
+
+        Gizmos.color = Color.red;
+        Gizmos.DrawLine(n1, n1 + Vector2.right * .5f);
+        Gizmos.color = Color.green;
+        Gizmos.DrawLine(n1, n1 + Vector2.up * .5f);
+
+        Gizmos.color = Color.red;
+        Gizmos.DrawLine(n2, n2 + Vector2.right * .5f);
+        Gizmos.color = Color.green;
+        Gizmos.DrawLine(n2, n2 + Vector2.up * .5f);
+
+        Gizmos.color = Color.red;
+        Gizmos.DrawLine(n3, n3 + Vector2.right * .5f);
+        Gizmos.color = Color.green;
+        Gizmos.DrawLine(n3, n3 + Vector2.up * .5f);
+
+        Gizmos.color = Color.red;
+        Gizmos.DrawLine(n4, n4 + Vector2.right * .5f);
+        Gizmos.color = Color.green;
+        Gizmos.DrawLine(n4, n4 + Vector2.up * .5f);
     }
 
     void SceneChange(IGUComboBoxButton button) {
@@ -198,32 +268,19 @@ public class IGU_TDS : MonoBehaviour {
             if (triangles == null) return;
             foreach (var item in triangles) {
                 Gizmos.color = color;
-                Vector2 a = item.A * rect.Size + GetGURect(this).Position;
-                Vector2 b = item.B * rect.Size + GetGURect(this).Position;
-                Vector2 c = item.C * rect.Size + GetGURect(this).Position;
+                Vector2 a = item.A * rect.Size;
+                Vector2 b = item.B * rect.Size;
+                Vector2 c = item.C * rect.Size;
 
-                Quaternion quaternion = Quaternion.Euler(Vector3.forward * rect.Rotation);
-                Vector2 poss = Camera.current.ScreenToWorldPoint(((Vector2)quaternion.GenerateDirectionRight() * rect.Width) + GetGURect(this).Position);
-                DrawSeta((poss - Vector2.up * Screen.height).InvertY());
+                Quaternion quaternion = Quaternion.Euler(Vector3.forward * GetRotation(this));
 
-                // https://en.wikipedia.org/wiki/Rotation_matrix
-                // if (parent != null) {
-                //     Quaternion quaternion = Quaternion.Euler(Vector3.forward * GetRotation(this));
-                //     Vector2 pos = GetGURect(this).Position;
+                a = quaternion.GenerateDirectionRight() * a.x + quaternion.GenerateDirectionUp() * a.y;
+                b = quaternion.GenerateDirectionRight() * b.x + quaternion.GenerateDirectionUp() * b.y;
+                c = quaternion.GenerateDirectionRight() * c.x + quaternion.GenerateDirectionUp() * c.y;
 
-                //     a = (Vector2)(quaternion.GenerateDirectionRight() * a.x + quaternion.GenerateDirectionUp() * a.y) + pos;
-                //     b = (Vector2)(quaternion.GenerateDirectionRight() * b.x + quaternion.GenerateDirectionUp() * b.y) + pos;
-                //     c = (Vector2)(quaternion.GenerateDirectionRight() * c.x + quaternion.GenerateDirectionUp() * c.y) + pos;
-
-                //     // a += (Vector2)(quaternion.GenerateDirectionRight() * rect.X + quaternion.GenerateDirectionUp() * rect.Y);
-                //     // b += (Vector2)(quaternion.GenerateDirectionRight() * rect.X + quaternion.GenerateDirectionUp() * rect.Y);
-                //     // c += (Vector2)(quaternion.GenerateDirectionRight() * rect.X + quaternion.GenerateDirectionUp() * rect.Y);
-                // } else {
-                //     Quaternion quaternion = Quaternion.Euler(Vector3.forward * rect.Rotation);
-                //     a = (Vector2)(quaternion.GenerateDirectionRight() * a.x + quaternion.GenerateDirectionUp() * a.y) + rect.Position;
-                //     b = (Vector2)(quaternion.GenerateDirectionRight() * b.x + quaternion.GenerateDirectionUp() * b.y) + rect.Position;
-                //     c = (Vector2)(quaternion.GenerateDirectionRight() * c.x + quaternion.GenerateDirectionUp() * c.y) + rect.Position;
-                // }
+                a += GetGURect(this, false).Position;
+                b += GetGURect(this, false).Position;
+                c += GetGURect(this, false).Position;
 
                 a = Camera.current.ScreenToWorldPoint((a - Vector2.up * Screen.height).InvertY());
                 b = Camera.current.ScreenToWorldPoint((b - Vector2.up * Screen.height).InvertY());
@@ -241,10 +298,15 @@ public class IGU_TDS : MonoBehaviour {
             return obj.rect.Rotation;
         }
 
-        private static IGURect GetGURect(TDSIGUBoxPhy phy) {
+        private static IGURect GetGURect(TDSIGUBoxPhy phy, bool noRot) {
             if (phy.parent != null) {
                 IGURect temp = phy.rect;
-                return temp.SetPosition(GetGURect(phy.parent).Position + temp.Position);
+                Vector2 pos = temp.Position;
+                if (!noRot) {
+                    Quaternion quaternion = Quaternion.Euler(Vector3.forward * GetRotation(phy.parent));
+                    pos = quaternion.GenerateDirectionRight() * temp.X + quaternion.GenerateDirectionUp() * temp.Y;
+                }
+                return temp.SetPosition(GetGURect(phy.parent, noRot).Position + pos);
             }
             return phy.rect;
         }
@@ -262,8 +324,8 @@ public class IGU_TDS : MonoBehaviour {
         public void OnGUI() {
             name = name ?? string.Empty;
             matrix = GUI.matrix;
-            GUIUtility.RotateAroundPivot(rect.Rotation, GetGURect(this).Position);
-            GUI.Box((Rect)GetGURect(this), name);
+            GUIUtility.RotateAroundPivot(rect.Rotation, GetGURect(this, false).Position);
+            GUI.Box((Rect)GetGURect(this, true), name);
         }
 
         public void EndOnGUI() {

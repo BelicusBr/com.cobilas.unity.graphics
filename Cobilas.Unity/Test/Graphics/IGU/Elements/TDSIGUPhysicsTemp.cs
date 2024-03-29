@@ -33,14 +33,19 @@ namespace Cobilas.Unity.Test.Graphics.IGU.Elements {
                 Debug.Log($"[ID:{GetInstanceID()}]{name}");
         }
 
+        public void OnDrawGizmos() {
+            //(_Physics as IGUBoxPhysics)?.OnDrawGizmos();
+        }
+
         void IIGUPhysics.CallPhysicsFeedback(Vector2 mouse, List<IGUPhysicsBase> phys) {
             if (!LocalConfig.IsVisible) return;
+            _Physics.Target = this;
             if (parent is IIGUPhysics phy && parent is IIGUClipping)
                 if (!phy.Physics.CollisionConfirmed(mouse))
                     return;
-            if (parent is IIGUClipping clipping)
-                _Physics.Rect = LocalRect.SetPosition(LocalRect.Position + clipping.ScrollView);
-            else _Physics.Rect = LocalRect;
+            // if (parent is IIGUClipping clipping)
+            //     _Physics.Rect = LocalRect.SetPosition(LocalRect.Position + clipping.ScrollView);
+            // else _Physics.Rect = LocalRect;
             _Physics.IsHotPotato = false;
             if (_Physics.CollisionConfirmed(mouse))
                 phys[0] = _Physics;

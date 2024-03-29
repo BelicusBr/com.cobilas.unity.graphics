@@ -19,6 +19,7 @@ public class TDS_IGUPHY : MonoBehaviour {
     public TDSIGUPhysicsTemp temp5;
     public TDSIGUPhysicsTemp temp6;
     public TDSIGUPhysicsTemp temp7;
+    public TDSIGUPhysicsTemp temp8;
     private event Action<Vector2, List<IGUPhysicsBase>> callPhy;
 
     private void Awake() {
@@ -39,6 +40,9 @@ public class TDS_IGUPHY : MonoBehaviour {
         temp6.MyRect = temp6.MyRect.SetPosition(Vector2.right * 45f + Vector2.up * (temp5.MyRect.Donw - temp5.MyRect.Height * .5f));
         temp7.MyRect = temp7.MyRect.SetPosition(Vector2.right * 65f + Vector2.up * (temp6.MyRect.Donw - temp6.MyRect.Height * .5f));
 
+        temp8 = IGUObject.Create<TDSIGUPhysicsTemp>("#TDSPHY008");
+        temp8.MyRect = temp8.MyRect.SetPosition(Vector2.right * 380f);
+
         temp5.Parent = temp6.Parent = temp7.Parent = temp4;
         _ = (temp4 as IIGURectClipPhysics).Add(temp5);
         _ = (temp4 as IIGURectClipPhysics).Add(temp6);
@@ -50,6 +54,7 @@ public class TDS_IGUPHY : MonoBehaviour {
         callPhy += (temp2 as IIGUPhysics).CallPhysicsFeedback;
         callPhy += (temp3 as IIGUPhysics).CallPhysicsFeedback;
         callPhy += (temp4 as IIGUPhysics).CallPhysicsFeedback;
+        callPhy += (temp8 as IIGUPhysics).CallPhysicsFeedback;
         foreach (var item in temp4.InternalPhysicsList)
             callPhy += item.CallPhysicsFeedback;
         temp4.windowFunction += (id) => {
@@ -64,13 +69,23 @@ public class TDS_IGUPHY : MonoBehaviour {
     List<IGUPhysicsBase> result;
     private void OnGUI() {
         if (Event.current.type == EventType.MouseMove) {
+        }
+            //Debug.Log("Drifft");
             mouse = (Input.mousePosition - Vector3.up * Screen.height).InvertY();
             callPhy(mouse, result);
             if (result[0] != null) result[0].IsHotPotato = true;
-        }
         temp1.OnIGU();
         temp2.OnIGU();
         temp3.OnIGU();
         temp4.OnIGU();
+        temp8.OnIGU();
+    }
+
+    private void OnDrawGizmos() {
+        temp1.OnDrawGizmos();
+        temp2.OnDrawGizmos();
+        temp3.OnDrawGizmos();
+        temp8.OnDrawGizmos();
+        //temp4.OnDrawGizmos();
     }
 }
