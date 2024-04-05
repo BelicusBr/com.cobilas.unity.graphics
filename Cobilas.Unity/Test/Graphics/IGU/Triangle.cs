@@ -2,7 +2,6 @@ using System;
 using UnityEngine;
 using Cobilas.Collections;
 using System.Globalization;
-using Cobilas.Unity.Graphics.IGU;
 
 namespace Cobilas.Unity.Test.Graphics.IGU {
     public readonly struct Triangle : IEquatable<Triangle>, IFormattable {
@@ -14,34 +13,14 @@ namespace Cobilas.Unity.Test.Graphics.IGU {
         public Vector2 B => b;
         public Vector2 C => c;
 
+        public static Triangle[] Circle16 => GetCircle(22.5f);
+        public static Triangle[] Circle32 => GetCircle(11.25f);
+        public static Triangle[] Circle64 => GetCircle();
+        public static Triangle[] Circle128 => GetCircle(2.8125f);
         public static Triangle[] Box => new Triangle[2] {
-            new Triangle(Vector2.up, Vector2.zero, Vector2.right),
-            new Triangle(Vector2.up, Vector2.one, Vector2.right)
+            new Triangle(Vector2.zero, Vector2.up, Vector2.one),
+            new Triangle(Vector2.one, Vector2.right, Vector2.zero)
         };
-
-        public static Triangle[] Circle {
-            get {
-                Triangle[] result = new Triangle[1];
-                int count = 0;
-                float warp = 5.625f;
-                float rot = warp * 2f;
-                Vector2 center = Vector2.one;
-
-                Triangle triangle = new Triangle((Vector2)Quaternion.identity.GenerateDirectionUp() + center, center,
-                    (Vector2)Quaternion.Euler(Vector3.forward * warp).GenerateDirectionUp() + center);
-                result[0] = triangle;
-                while (rot < 360f) {
-                    Quaternion quaternion = Quaternion.Euler(Vector3.forward * rot);
-                    rot += warp;
-                    triangle = new Triangle(result[count].c, center, (Vector2)quaternion.GenerateDirectionUp() + center);
-                    ArrayManipulation.Add(triangle, ref result);
-                    count++;
-                }
-                triangle = new Triangle(result[result.Length - 1].c, center, result[0].a);
-                ArrayManipulation.Add(triangle, ref result);
-                return result;
-            }
-        }
 
         public Triangle(Vector2 a, Vector2 b, Vector2 c) {
             this.a = a;
@@ -64,14 +43,6 @@ namespace Cobilas.Unity.Test.Graphics.IGU {
         public string ToString(string format, IFormatProvider formatProvider)
             => string.Format(formatProvider, format ?? "A:{0} B:{1} C:{2}", a, b, c);
 
-        public static bool InsideInTriangle(Triangle triangle, IGURect rect, Vector2 position) {
-            Quaternion quaternion = Quaternion.Euler(Vector3.forward * rect.Rotation);
-            Vector2 a = quaternion.GenerateDirection(triangle.A) * rect.Size + rect.Position;
-            Vector2 b = quaternion.GenerateDirection(triangle.B) * rect.Size + rect.Position;
-            Vector2 c = quaternion.GenerateDirection(triangle.C) * rect.Size + rect.Position;
-            return IsPointInside(b, c, a, position);
-        }
-
         public static bool InsideInTriangle(Triangle[] triangles, Vector2 position) {
             for (long I = 0; I < ArrayManipulation.ArrayLongLength(triangles); I++)
                 if (InsideInTriangle(triangles[I], position))
@@ -79,14 +50,17 @@ namespace Cobilas.Unity.Test.Graphics.IGU {
             return false;
         }
 
-        public static bool InsideInTriangle(Triangle triangle, Vector2 position) {
-            return IsPointInside(triangle.a, triangle.b, triangle.c, position);
-        }
+        public static bool InsideInTriangle(Triangle triangle, Vector2 position)
+            => Area(triangle.a, triangle.b, triangle.c, position);
 
         public static bool InsideInTriangle(Vector2 a, Vector2 b, Vector2 c, Vector2 position)
-            => IsPointInside(a, b, c, position);
+            => Area(a, b, c, position);
 
         private static bool Area(Vector2 p1, Vector2 p2, Vector2 p3, Vector2 p) {
+            Vector2 center = (p1 + p2 + p3) / 3f;
+            if (center == p1 || center == p2 || center == p3)
+                return center == p;
+
             float d1, d2, d3;
             bool has_neg, has_pos;
 
@@ -103,33 +77,25 @@ namespace Cobilas.Unity.Test.Graphics.IGU {
         private static float Sign(Vector2 p1, Vector2 p2, Vector2 p3)
             => (p1.x - p3.x) * (p2.y - p3.y) - (p2.x - p3.x) * (p1.y - p3.y);
 
-        private static bool IsPointInsideTriangle(Vector2 v1, Vector2 v2, Vector2 v3, Vector2 point) {
-            float totalArea = TriangleArea(v1, v2, v3);
-            float area1 = TriangleArea(point, v2, v3);
-            float area2 = TriangleArea(v1, point, v3);
-            float area3 = TriangleArea(v1, v2, point);
-            return Mathf.Abs(totalArea - (area1 + area2 + area3)) < 0.0001f;
-        }
+        private static Triangle[] GetCircle(float warp = 5.625f) {
+            Triangle[] result = new Triangle[1];
+            int count = 0;
+            float rot = warp * 2f;
+            Vector2 center = Vector2.one * .5f;
 
-        private static float TriangleArea(Vector2 v1, Vector2 v2, Vector2 v3)
-            => Mathf.Abs((v1.x * (v2.y - v3.y) + v2.x * (v3.y - v1.y) + v3.x * (v1.y - v2.y)) / 2);
-
-        private static bool IsPointInside(Vector2 v1, Vector2 v2, Vector2 v3, Vector2 point) {
-            Vector2 center = (v1 + v2 + v3) / 3f;
-
-            Vector2 v21_point = (v2 + v1) / 2f;
-            Vector2 v32_point = (v3 + v2) / 2f;
-            Vector2 v13_point = (v1 + v3) / 2f;
-
-            Vector2 normal1 = (v21_point - center).normalized;
-            Vector2 normal2 = (v32_point - center).normalized;
-            Vector2 normal3 = (v13_point - center).normalized;
-
-            bool side1 = Vector2.Dot(normal1, point - v21_point) < 0f;
-            bool side2 = Vector2.Dot(normal2, point - v32_point) < 0f;
-            bool side3 = Vector2.Dot(normal3, point - v13_point) < 0f;
-
-            return side1 && side2 && side3;
+            Triangle triangle = new Triangle((Vector2)Quaternion.identity.GenerateDirectionUp() * .5f + center, center,
+                (Vector2)Quaternion.Euler(Vector3.forward * warp).GenerateDirectionUp() * .5f + center);
+            result[0] = triangle;
+            while (rot < 360f) {
+                Quaternion quaternion = Quaternion.Euler(Vector3.forward * rot);
+                rot += warp;
+                triangle = new Triangle(result[count].c, center, (Vector2)quaternion.GenerateDirectionUp() * .5f + center);
+                ArrayManipulation.Add(triangle, ref result);
+                count++;
+            }
+            triangle = new Triangle(result[result.Length - 1].c, center, result[0].a);
+            ArrayManipulation.Add(triangle, ref result);
+            return result;
         }
 
         public static bool operator ==(Triangle A, Triangle B) => A.Equals(B);

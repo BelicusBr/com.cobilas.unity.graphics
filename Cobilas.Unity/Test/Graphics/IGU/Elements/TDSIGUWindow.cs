@@ -8,23 +8,21 @@ using System.Collections.Generic;
 using Cobilas.Collections;
 
 namespace Cobilas.Unity.Test.Graphics.IGU.Elements {
-    public sealed class TDSIGUWindow : IGUObject, IIGUWindow, IIGUClipping, IIGURectClipPhysics {
+    public sealed class TDSIGUWindow : IGUObject, IIGUWindow, IIGUClipping {
         public GUI.WindowFunction windowFunction;
-        private IGUPhysicsBase physicsBase;
+        private IGUBasicPhysics physicsBase;
         [SerializeField] private IGUStyle style;
         [SerializeField] private WindowFocusStatus isFocused;
-        [SerializeField] private IGUObject[] internalPhysicsList;
 
-        public IGUPhysicsBase Physics { get => physicsBase; set => physicsBase = value; }
+        public IGUBasicPhysics Physics { get => physicsBase; set => physicsBase = value; }
         WindowFocusStatus IIGUWindow.IsFocused { get => isFocused; set => isFocused = value; }
-        public IIGUPhysics[] InternalPhysicsList => ArrayManipulation.ConvertAll(internalPhysicsList, I => (IIGUPhysics)I);
 
         public bool IsClipping => true;
 
         public Rect RectView { get => throw new System.NotImplementedException(); set => throw new System.NotImplementedException(); }
         public Vector2 ScrollView { get => LocalRect.Position; set => throw new System.NotImplementedException(); }
 
-        public void CallPhysicsFeedback(Vector2 mouse, List<IGUPhysicsBase> phys) {
+        public void CallPhysicsFeedback(Vector2 mouse, List<IGUBasicPhysics> phys) {
             if (!LocalConfig.IsVisible) return;
             physicsBase.Target = this;
             if (parent is IIGUPhysics phy && parent is IIGUClipping)
@@ -57,19 +55,5 @@ namespace Cobilas.Unity.Test.Graphics.IGU.Elements {
 
         private void funcwin (int id, Vector2 vector)
             => windowFunction?.Invoke(id);
-
-        bool IIGURectClipPhysics.Add(IIGUPhysics physics) {
-            if (internalPhysicsList != null && ArrayManipulation.Exists((IGUObject)physics, internalPhysicsList)) 
-                return false;
-            ArrayManipulation.Add((IGUObject)physics, ref internalPhysicsList);
-            return true;
-        }
-
-        bool IIGURectClipPhysics.Remove(IIGUPhysics physics) {
-            if (internalPhysicsList != null && !ArrayManipulation.Exists((IGUObject)physics, internalPhysicsList))
-                return false;
-            ArrayManipulation.Remove((IGUObject)physics, ref internalPhysicsList);
-            return true;
-        }
     }
 }

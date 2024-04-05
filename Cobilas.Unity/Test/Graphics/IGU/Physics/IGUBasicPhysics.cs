@@ -1,15 +1,14 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 using Cobilas.Unity.Graphics.IGU;
 using Cobilas.Unity.Graphics.IGU.Elements;
 using Cobilas.Unity.Graphics.IGU.Interfaces;
 
 namespace Cobilas.Unity.Test.Graphics.IGU.Physics {
-    [Serializable]
-    public abstract class IGUPhysicsBase {
-        public abstract IGUObject Target { get; set; }
+    public abstract class IGUBasicPhysics {
         public abstract Triangle[] Triangles { get; }
+        public abstract IGUObject Target { get; set; }
         public abstract bool IsHotPotato { get; set; }
+        public abstract IGUBasicPhysics Parent { get; set; }
 
         public abstract bool CollisionConfirmed(Vector2 mouse);
 

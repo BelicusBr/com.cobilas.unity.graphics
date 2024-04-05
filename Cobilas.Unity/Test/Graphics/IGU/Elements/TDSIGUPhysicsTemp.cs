@@ -12,8 +12,8 @@ using Cobilas.Unity.Graphics.IGU.Interfaces;
 
 namespace Cobilas.Unity.Test.Graphics.IGU.Elements {
     public class TDSIGUPhysicsTemp : IGUObject, IIGUPhysics {
-        public IGUPhysicsBase _Physics;
-        public IGUPhysicsBase Physics { get => _Physics; set => _Physics = value; }
+        public IGUBasicPhysics _Physics;
+        public IGUBasicPhysics Physics { get => _Physics; set => _Physics = value; }
 
         protected override void IGUAwake() {
             base.IGUAwake();
@@ -37,7 +37,7 @@ namespace Cobilas.Unity.Test.Graphics.IGU.Elements {
             //(_Physics as IGUBoxPhysics)?.OnDrawGizmos();
         }
 
-        void IIGUPhysics.CallPhysicsFeedback(Vector2 mouse, List<IGUPhysicsBase> phys) {
+        void IIGUPhysics.CallPhysicsFeedback(Vector2 mouse, List<IGUBasicPhysics> phys) {
             if (!LocalConfig.IsVisible) return;
             _Physics.Target = this;
             if (parent is IIGUPhysics phy && parent is IIGUClipping)

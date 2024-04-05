@@ -1,13 +1,13 @@
 using System;
-using System.Collections.Generic;
+using UnityEngine;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 using Cobilas.Unity.Graphics.IGU.Elements;
 using Cobilas.Unity.Graphics.IGU.Interfaces;
+using Cobilas.Unity.Test.Graphics.IGU.Physics;
 using Cobilas.Unity.Test.Graphics.IGU.Elements;
 using Cobilas.Unity.Test.Graphics.IGU.Interfaces;
-using Cobilas.Unity.Test.Graphics.IGU.Physics;
-using UnityEngine;
 
 public class TDS_IGUPHY : MonoBehaviour {
     public Vector2 mouse;
@@ -20,7 +20,7 @@ public class TDS_IGUPHY : MonoBehaviour {
     public TDSIGUPhysicsTemp temp6;
     public TDSIGUPhysicsTemp temp7;
     public TDSIGUPhysicsTemp temp8;
-    private event Action<Vector2, List<IGUPhysicsBase>> callPhy;
+    private event Action<Vector2, List<IGUBasicPhysics>> callPhy;
 
     private void Awake() {
         temp1 = IGUObject.Create<TDSIGUPhysicsTemp>("#TDSPHY001");
@@ -30,8 +30,8 @@ public class TDS_IGUPHY : MonoBehaviour {
         temp2.MyRect = temp2.MyRect.SetPosition(Vector2.right * 195f + Vector2.up * (temp1.MyRect.Donw - temp1.MyRect.Height * .5f));
         temp3.MyRect = temp3.MyRect.SetPosition(Vector2.right * 215f + Vector2.up * (temp2.MyRect.Donw - temp2.MyRect.Height * .5f));
 
-        temp4 = IGUObject.Create<TDSIGUWindow>("#TDSPHY004");
-        temp4.MyRect = temp4.MyRect.SetPosition(512f, 25f);
+        // temp4 = IGUObject.Create<TDSIGUWindow>("#TDSPHY004");
+        // temp4.MyRect = temp4.MyRect.SetPosition(512f, 25f);
 
         temp5 = IGUObject.Create<TDSIGUPhysicsTemp>("#TDSPHY005");
         temp6 = IGUObject.Create<TDSIGUPhysicsTemp>("#TDSPHY006");
@@ -41,39 +41,37 @@ public class TDS_IGUPHY : MonoBehaviour {
         temp7.MyRect = temp7.MyRect.SetPosition(Vector2.right * 65f + Vector2.up * (temp6.MyRect.Donw - temp6.MyRect.Height * .5f));
 
         temp8 = IGUObject.Create<TDSIGUPhysicsTemp>("#TDSPHY008");
-        temp8.MyRect = temp8.MyRect.SetPosition(Vector2.right * 380f);
+        temp8.MyRect = temp8.MyRect.SetPosition(Vector2.right * 380f).SetRotation(45f);
 
         temp5.Parent = temp6.Parent = temp7.Parent = temp4;
-        _ = (temp4 as IIGURectClipPhysics).Add(temp5);
-        _ = (temp4 as IIGURectClipPhysics).Add(temp6);
-        _ = (temp4 as IIGURectClipPhysics).Add(temp7);
+        // _ = (temp4 as IIGURectClipPhysics).Add(temp5);
+        // _ = (temp4 as IIGURectClipPhysics).Add(temp6);
+        // _ = (temp4 as IIGURectClipPhysics).Add(temp7);
     }
 
     private void OnEnable() {
         callPhy += (temp1 as IIGUPhysics).CallPhysicsFeedback;
         callPhy += (temp2 as IIGUPhysics).CallPhysicsFeedback;
         callPhy += (temp3 as IIGUPhysics).CallPhysicsFeedback;
-        callPhy += (temp4 as IIGUPhysics).CallPhysicsFeedback;
+        // callPhy += (temp4 as IIGUPhysics).CallPhysicsFeedback;
         callPhy += (temp8 as IIGUPhysics).CallPhysicsFeedback;
-        foreach (var item in temp4.InternalPhysicsList)
-            callPhy += item.CallPhysicsFeedback;
-        temp4.windowFunction += (id) => {
-            temp5.OnIGU();
-            temp6.OnIGU();
-            temp7.OnIGU();
-        };
-        result = new List<IGUPhysicsBase>(1);
+        // foreach (var item in temp4.InternalPhysicsList)
+        //     callPhy += item.CallPhysicsFeedback;
+        // temp4.windowFunction += (id) => {
+        //     temp5.OnIGU();
+        //     temp6.OnIGU();
+        //     temp7.OnIGU();
+        // };
+        result = new List<IGUBasicPhysics>(1);
         result.Add(null);
     }
     
-    List<IGUPhysicsBase> result;
+    List<IGUBasicPhysics> result;
     private void OnGUI() {
-        if (Event.current.type == EventType.MouseMove) {
-        }
-            //Debug.Log("Drifft");
-            mouse = (Input.mousePosition - Vector3.up * Screen.height).InvertY();
-            callPhy(mouse, result);
-            if (result[0] != null) result[0].IsHotPotato = true;
+        mouse = Event.current.mousePosition;
+
+        callPhy(mouse, result);
+        if (result[0] != null) result[0].IsHotPotato = true;
         temp1.OnIGU();
         temp2.OnIGU();
         temp3.OnIGU();

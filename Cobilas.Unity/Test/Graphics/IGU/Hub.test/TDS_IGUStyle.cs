@@ -13,7 +13,7 @@ namespace Cobilas.Unity.Test.Graphics.IGU {
                 rect, IGUTextObject.GetGUIContentTemp(content), 
                 GUIUtility.GetControlID(FocusType.Passive, rect));
 
-        public static bool DrawButton(Rect rect, IGUStyle style, IGUContent content, IGUPhysicsBase phy, bool isFocused) {
+        public static bool DrawButton(Rect rect, IGUStyle style, IGUContent content, IGUBasicPhysics phy, bool isFocused) {
             int ID = GUIUtility.GetControlID(FocusType.Passive, rect);
             Event @event = Event.current;
             bool isHover = rect.Contains(@event.mousePosition) && phy.IsHotPotato;
@@ -45,7 +45,7 @@ namespace Cobilas.Unity.Test.Graphics.IGU {
             }
         }
 
-        public static bool DrawButton(Rect rect, IGUStyle style, IGUContent content, IGUPhysicsBase phy)
+        public static bool DrawButton(Rect rect, IGUStyle style, IGUContent content, IGUBasicPhysics phy)
             => DrawButton(rect, style, content, phy, false);
 
         public static bool DrawRepeatButton(Rect rect, IGUStyle style, IGUContent content, out bool onClick, bool isFocused, bool noAction) {
