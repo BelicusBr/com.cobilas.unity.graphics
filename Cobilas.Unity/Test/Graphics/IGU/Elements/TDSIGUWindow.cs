@@ -8,13 +8,13 @@ using System.Collections.Generic;
 using Cobilas.Collections;
 
 namespace Cobilas.Unity.Test.Graphics.IGU.Elements {
-    public sealed class TDSIGUWindow : IGUObject, IIGUWindow, IIGUClipping {
+    public sealed class TDSIGUWindow : IGUObject, IIGUWindow, IIGUClipping, IIGUPhysics {
         public GUI.WindowFunction windowFunction;
         private IGUBasicPhysics physicsBase;
         [SerializeField] private IGUStyle style;
         [SerializeField] private WindowFocusStatus isFocused;
 
-        public IGUBasicPhysics Physics { get => physicsBase; set => physicsBase = value; }
+        IGUBasicPhysics IIGUPhysics.Physics { get => physicsBase; set => physicsBase = value; }
         WindowFocusStatus IIGUWindow.IsFocused { get => isFocused; set => isFocused = value; }
 
         public bool IsClipping => true;
@@ -22,16 +22,12 @@ namespace Cobilas.Unity.Test.Graphics.IGU.Elements {
         public Rect RectView { get => throw new System.NotImplementedException(); set => throw new System.NotImplementedException(); }
         public Vector2 ScrollView { get => LocalRect.Position; set => throw new System.NotImplementedException(); }
 
-        public void CallPhysicsFeedback(Vector2 mouse, List<IGUBasicPhysics> phys) {
+        void IIGUPhysics.CallPhysicsFeedback(Vector2 mouse, List<IGUBasicPhysics> phys) {
             if (!LocalConfig.IsVisible) return;
-            physicsBase.Target = this;
-            if (parent is IIGUPhysics phy && parent is IIGUClipping)
-                if (!phy.Physics.CollisionConfirmed(mouse))
-                    return;
-            // if (parent is IIGUClipping clipping)
-            //     physicsBase.Rect = LocalRect.SetPosition(LocalRect.Position + clipping.ScrollView);
-            // else physicsBase.Rect = LocalRect;
             physicsBase.IsHotPotato = false;
+            // if (parent is IIGUPhysics phy && parent is IIGUClipping)
+            //     if (!phy.Physics.CollisionConfirmed(mouse))
+            //         return;
             if (physicsBase.CollisionConfirmed(mouse))
                 phys[0] = physicsBase;
         }
@@ -44,7 +40,8 @@ namespace Cobilas.Unity.Test.Graphics.IGU.Elements {
 
         protected override void IGUOnEnable() {
             base.IGUOnEnable();
-            physicsBase = new IGUBoxPhysics();
+            physicsBase = new IGUMultiPhysics(Triangle.Box);
+            physicsBase.Target = this;
         }
 
         protected override void LowCallOnIGU() {

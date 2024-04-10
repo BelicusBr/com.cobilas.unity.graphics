@@ -30,38 +30,42 @@ public class TDS_IGUPHY : MonoBehaviour {
         temp2.MyRect = temp2.MyRect.SetPosition(Vector2.right * 195f + Vector2.up * (temp1.MyRect.Donw - temp1.MyRect.Height * .5f));
         temp3.MyRect = temp3.MyRect.SetPosition(Vector2.right * 215f + Vector2.up * (temp2.MyRect.Donw - temp2.MyRect.Height * .5f));
 
-        // temp4 = IGUObject.Create<TDSIGUWindow>("#TDSPHY004");
-        // temp4.MyRect = temp4.MyRect.SetPosition(512f, 25f);
+        temp4 = IGUObject.Create<TDSIGUWindow>("#TDSPHY004");
+        temp4.MyRect = temp4.MyRect.SetPosition(512f, 25f);
 
         temp5 = IGUObject.Create<TDSIGUPhysicsTemp>("#TDSPHY005");
         temp6 = IGUObject.Create<TDSIGUPhysicsTemp>("#TDSPHY006");
         temp7 = IGUObject.Create<TDSIGUPhysicsTemp>("#TDSPHY007");
         temp5.MyRect = temp5.MyRect.SetPosition(Vector2.right * 25f);
         temp6.MyRect = temp6.MyRect.SetPosition(Vector2.right * 45f + Vector2.up * (temp5.MyRect.Donw - temp5.MyRect.Height * .5f));
-        temp7.MyRect = temp7.MyRect.SetPosition(Vector2.right * 65f + Vector2.up * (temp6.MyRect.Donw - temp6.MyRect.Height * .5f));
+        temp7.MyRect = temp7.MyRect.SetPosition(Vector2.one * 130f);
 
         temp8 = IGUObject.Create<TDSIGUPhysicsTemp>("#TDSPHY008");
         temp8.MyRect = temp8.MyRect.SetPosition(Vector2.right * 380f).SetRotation(45f);
 
         temp5.Parent = temp6.Parent = temp7.Parent = temp4;
-        // _ = (temp4 as IIGURectClipPhysics).Add(temp5);
-        // _ = (temp4 as IIGURectClipPhysics).Add(temp6);
-        // _ = (temp4 as IIGURectClipPhysics).Add(temp7);
+        bool ok = false;
+        ok = ((temp4 as IIGUPhysics).Physics as IGUMultiPhysics).Add(temp5.Physics);
+        Debug.Log($"[{ok}]temp5");
+        ok = ((temp4 as IIGUPhysics).Physics as IGUMultiPhysics).Add(temp6.Physics);
+        Debug.Log($"[{ok}]temp6");
+        ok = ((temp4 as IIGUPhysics).Physics as IGUMultiPhysics).Add(temp7.Physics);
+        Debug.Log($"[{ok}]temp7");
     }
-
+    
     private void OnEnable() {
         callPhy += (temp1 as IIGUPhysics).CallPhysicsFeedback;
         callPhy += (temp2 as IIGUPhysics).CallPhysicsFeedback;
         callPhy += (temp3 as IIGUPhysics).CallPhysicsFeedback;
-        // callPhy += (temp4 as IIGUPhysics).CallPhysicsFeedback;
+        callPhy += (temp4 as IIGUPhysics).CallPhysicsFeedback;
         callPhy += (temp8 as IIGUPhysics).CallPhysicsFeedback;
-        // foreach (var item in temp4.InternalPhysicsList)
-        //     callPhy += item.CallPhysicsFeedback;
-        // temp4.windowFunction += (id) => {
-        //     temp5.OnIGU();
-        //     temp6.OnIGU();
-        //     temp7.OnIGU();
-        // };
+        foreach (var item in ((temp4 as IIGUPhysics).Physics as IGUMultiPhysics).SubPhysics)
+            callPhy += (item.Target as IIGUPhysics).CallPhysicsFeedback;
+        temp4.windowFunction += (id) => {
+            temp5.OnIGU();
+            temp6.OnIGU();
+            temp7.OnIGU();
+        };
         result = new List<IGUBasicPhysics>(1);
         result.Add(null);
     }
@@ -71,12 +75,16 @@ public class TDS_IGUPHY : MonoBehaviour {
         mouse = Event.current.mousePosition;
 
         callPhy(mouse, result);
-        if (result[0] != null) result[0].IsHotPotato = true;
+        if (result[0] != null) {
+            result[0].IsHotPotato = true;
+            Debug.Log(result[0].Target.name);
+        }
         temp1.OnIGU();
         temp2.OnIGU();
         temp3.OnIGU();
         temp4.OnIGU();
         temp8.OnIGU();
+        result[0] = null;
     }
 
     private void OnDrawGizmos() {

@@ -9,6 +9,7 @@ namespace Cobilas.Unity.Test.Graphics.IGU.Physics {
         public abstract IGUObject Target { get; set; }
         public abstract bool IsHotPotato { get; set; }
         public abstract IGUBasicPhysics Parent { get; set; }
+        public delegate void CallPhysicsFeedback(Vector2 mousePosition, ref IGUBasicPhysics phy);
 
         public abstract bool CollisionConfirmed(Vector2 mouse);
 
@@ -30,6 +31,29 @@ namespace Cobilas.Unity.Test.Graphics.IGU.Physics {
                     .SetPosition(position + GetLocalPosition(obj.Parent, noRotation).Position);
             }
             return obj.MyRect;
+        }
+
+        public static int BuildBufferTriangles(Triangle[] triangles, Triangle[] bufferTriangles, IGUObject obj, int rectHash) {
+            if (obj == null) return rectHash;
+            if (rectHash == (rectHash = obj.MyRect.GetHashCode())) return rectHash;
+
+            for (int I = 0; I < triangles.Length; I++) {
+                Quaternion quaternion = Quaternion.Euler(Vector3.forward * GetGlobalRotation(obj));
+                Vector2 a = triangles[I].A * obj.MyRect.Size;
+                Vector2 b = triangles[I].B * obj.MyRect.Size;
+                Vector2 c = triangles[I].C * obj.MyRect.Size;
+
+                a = quaternion.GenerateDirectionRight() * a.x + quaternion.GenerateDirectionUp() * a.y;
+                b = quaternion.GenerateDirectionRight() * b.x + quaternion.GenerateDirectionUp() * b.y;
+                c = quaternion.GenerateDirectionRight() * c.x + quaternion.GenerateDirectionUp() * c.y;
+
+                a += GetLocalPosition(obj, false).Position;
+                b += GetLocalPosition(obj, false).Position;
+                c += GetLocalPosition(obj, false).Position;
+
+                bufferTriangles[I] = new Triangle(a, b, c);
+            }
+            return rectHash;
         }
     }
 }

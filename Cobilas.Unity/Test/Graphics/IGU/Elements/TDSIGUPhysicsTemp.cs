@@ -23,6 +23,7 @@ namespace Cobilas.Unity.Test.Graphics.IGU.Elements {
 
         protected override void IGUOnEnable() {
             _Physics = new IGUBoxPhysics();
+            _Physics.Target = this;
         }
 
         protected override void LowCallOnIGU() {
@@ -39,14 +40,10 @@ namespace Cobilas.Unity.Test.Graphics.IGU.Elements {
 
         void IIGUPhysics.CallPhysicsFeedback(Vector2 mouse, List<IGUBasicPhysics> phys) {
             if (!LocalConfig.IsVisible) return;
-            _Physics.Target = this;
-            if (parent is IIGUPhysics phy && parent is IIGUClipping)
-                if (!phy.Physics.CollisionConfirmed(mouse))
-                    return;
-            // if (parent is IIGUClipping clipping)
-            //     _Physics.Rect = LocalRect.SetPosition(LocalRect.Position + clipping.ScrollView);
-            // else _Physics.Rect = LocalRect;
             _Physics.IsHotPotato = false;
+            // if (parent is IIGUPhysics phy && parent is IIGUClipping)
+            //     if (!phy.Physics.CollisionConfirmed(mouse))
+            //         return;
             if (_Physics.CollisionConfirmed(mouse))
                 phys[0] = _Physics;
         }
