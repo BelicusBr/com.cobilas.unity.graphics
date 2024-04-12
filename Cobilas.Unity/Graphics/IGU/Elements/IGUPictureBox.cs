@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using Cobilas.Unity.Graphics.IGU.Physics;
 
 namespace Cobilas.Unity.Graphics.IGU.Elements {
     public class IGUPictureBox : IGUObject {
@@ -17,6 +18,7 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
         public Vector4 BorderRadiuses { get => borderRadiuses; set => borderRadiuses = value; }
         public float BorderWidth { get => borderWidths.Summation() / 4f; set => borderWidths = Vector4.one * value; }
         public float BorderRadius { get => borderRadiuses.Summation() / 4f; set => borderRadiuses = Vector4.one * value; }
+        public override IGUBasicPhysics Physics { get => throw new System.NotImplementedException(); set => throw new System.NotImplementedException(); }
 
         protected override void IGUAwake() {
             base.IGUAwake();
@@ -31,8 +33,7 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
         }
 
         protected override void LowCallOnIGU() {
-            
-            BackEndIGU.DrawTexture(LocalRect, texture, scaleMode, AlphaBlend, imageAspect, myColor.MyColor,
+            BackEndIGU.TextureBox(LocalRect, texture, scaleMode, AlphaBlend, imageAspect, myColor.MyColor,
                     borderWidths, borderRadiuses);
         }
     }

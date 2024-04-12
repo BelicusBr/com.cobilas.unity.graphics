@@ -5,6 +5,7 @@ using Cobilas.Collections;
 using System.Collections.Generic;
 using Cobilas.Unity.Graphics.IGU.Events;
 using Cobilas.Unity.Graphics.IGU.Layouts;
+using Cobilas.Unity.Graphics.IGU.Physics;
 using Cobilas.Unity.Graphics.IGU.Interfaces;
 
 namespace Cobilas.Unity.Graphics.IGU.Elements {
@@ -44,6 +45,7 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
             get => throw new NotImplementedException();
             set => throw new NotImplementedException();
         }
+        public override IGUBasicPhysics Physics { get => throw new System.NotImplementedException(); set => throw new System.NotImplementedException(); }
 
         public IGUSelectionGridToggle this[int index] => gridLayout[index] as IGUSelectionGridToggle;
 

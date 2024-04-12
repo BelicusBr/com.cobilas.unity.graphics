@@ -2,8 +2,8 @@
 using UnityEngine;
 using Cobilas.Collections;
 using Cobilas.Unity.Graphics.IGU;
+using Cobilas.Unity.Graphics.IGU.Physics;
 using Cobilas.Unity.Graphics.IGU.Elements;
-using Cobilas.Unity.Test.Graphics.IGU.Physics;
 
 namespace Cobilas.Unity.Test.Graphics.IGU {
     public static class TDS_IGUStyle {

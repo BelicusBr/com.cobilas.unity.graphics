@@ -5,7 +5,7 @@ using Cobilas.Collections;
 
 namespace Cobilas.Unity.Graphics.IGU {
     [Serializable]
-    public sealed class IGUContent {
+    public sealed class IGUContent : IEquatable<IGUContent>, IEquatable<Texture> {
         [SerializeField] private string text;
         [SerializeField] private Texture image;
         [SerializeField] private bool richText;
@@ -55,7 +55,30 @@ namespace Cobilas.Unity.Graphics.IGU {
 
         public void SetMarkedText(params MarkedText[] markeds) => this.markeds = markeds;
 
+        public bool Equals(Texture other) => other == image;
+        public bool Equals(IGUContent other)
+            => other.text == text && other.tooltip == tooltip && Equals(other.image);
+        public override bool Equals(object obj)
+            => (obj is IGUContent other && Equals(other)) ||
+                (obj is Texture img && Equals(img));
+        public override int GetHashCode() => base.GetHashCode();
+
         public static explicit operator GUIContent(IGUContent A) => new GUIContent(A.text, A.image, A.tooltip);
         public static explicit operator IGUContent(GUIContent A) => new IGUContent(A);
+
+        public static bool operator ==(IGUContent A, IGUContent B) {
+            if (A is null && B is null) return true;
+            else if (A is null || B is null) return false;
+            return A.Equals(B);
+        }
+        public static bool operator !=(IGUContent A, IGUContent B) => !(A == B);
+        public static bool operator ==(IGUContent A, Texture B) {
+            if (A is null && B == null) return true;
+            else if (A is null || B == null) return false;
+            return A.Equals(B);
+        }
+        public static bool operator !=(IGUContent A, Texture B) => !(A == B);
+        public static bool operator ==(Texture A, IGUContent B) => B == A;
+        public static bool operator !=(Texture A, IGUContent B) => B != A;
     }
 }

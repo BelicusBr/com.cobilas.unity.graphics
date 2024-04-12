@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using Cobilas.Unity.Graphics.IGU.Events;
+using Cobilas.Unity.Graphics.IGU.Physics;
 
 namespace Cobilas.Unity.Graphics.IGU.Elements {
     public class IGUPasswordField : IGUTextFieldObject {
@@ -20,6 +21,7 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
             get => passwordFieldStyle;
             set => passwordFieldStyle = value ?? (IGUStyle)"Black text field border";
         }
+        public override IGUBasicPhysics Physics { get => throw new System.NotImplementedException(); set => throw new System.NotImplementedException(); }
 
         protected override void IGUAwake() {
             base.IGUAwake();
@@ -37,23 +39,20 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
             GUISettings oldSettings = GUI.skin.settings;
             SetGUISettings(settings);
 
-            string textTemp = BackEndIGU.PasswordField(LocalRect, Text ?? string.Empty, maskChar, maxLength, passwordFieldStyle);
+            IGUContent contentTemp = GetIGUContentTemp(MyContent.Text, MyContent.Image, MyContent.Tooltip);
+
+            BackEndIGU.PasswordField(LocalRect, contentTemp, GetInstanceID(), maxLength,
+                maskChar, IGUNonePhysics.None, passwordFieldStyle, ref isFocused);
 
             SetGUISettings(oldSettings);
             Event current = Event.current;
 
-            if (LocalRect.Contains(current.mousePosition)) {
-                if (current.clickCount > 0 && GUI.GetNameOfFocusedControl() == name) {
-                    isFocused = true;
+            if (LocalRect.Contains(current.mousePosition))
+                if (IGUDrawer.GetMouseButtonDown(LocalConfig.MouseType) && isFocused)
                     onClick.Invoke();
-                }
-            } else {
-                if (current.clickCount > 0)
-                    isFocused = false;
-            }
 
-            if (textTemp != Text && isFocused)
-                onStringChanged.Invoke(Text = textTemp);
+            if (contentTemp != MyContent && isFocused)
+                onStringChanged.Invoke((MyContent = contentTemp).Text);
         }
 
         protected override void SetGUISettings(GUISettings settings)

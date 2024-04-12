@@ -1,9 +1,10 @@
-﻿using UnityEngine;
-using Cobilas.Unity.Graphics.IGU;
+﻿using System;
+using UnityEngine;
 using Cobilas.Unity.Graphics.IGU.Elements;
 using Cobilas.Unity.Graphics.IGU.Interfaces;
 
-namespace Cobilas.Unity.Test.Graphics.IGU.Physics {
+namespace Cobilas.Unity.Graphics.IGU.Physics {
+    [Serializable]
     public abstract class IGUBasicPhysics {
         public abstract Triangle[] Triangles { get; }
         public abstract IGUObject Target { get; set; }

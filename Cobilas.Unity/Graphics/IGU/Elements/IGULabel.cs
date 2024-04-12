@@ -1,6 +1,5 @@
 ﻿using UnityEngine;
-using System.Text;
-using Cobilas.Collections;
+using Cobilas.Unity.Graphics.IGU.Physics;
 
 namespace Cobilas.Unity.Graphics.IGU.Elements {
     public class IGULabel : IGUTextObject {
@@ -10,6 +9,7 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
 
         public bool AutoSize { get => autoSize; set => autoSize = value; }
         public IGUStyle LabelStyle { get => labelStyle; set => labelStyle = value ?? (IGUStyle)"Label"; }
+        public override IGUBasicPhysics Physics { get => throw new System.NotImplementedException(); set => throw new System.NotImplementedException(); }
 
         protected override void IGUAwake() {
             base.IGUAwake();
@@ -27,7 +27,7 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
 
             myRect = myRect.SetSize(autoSize ? style.CalcSize(content) + Vector2.right * 2f : myRect.Size);
 
-            BackEndIGU.Label(LocalRect, MyContent, labelStyle);
+            BackEndIGU.Label(LocalRect, MyContent, labelStyle, GetInstanceID());
         }
     }
 }

@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Collections.Generic;
 using Cobilas.Unity.Graphics.IGU.Events;
 using Cobilas.Unity.Graphics.IGU.Interfaces;
+using Cobilas.Unity.Graphics.IGU.Physics;
 
 namespace Cobilas.Unity.Graphics.IGU.Elements {
     public class IGUButton : IGUTextObject, IIGUEndOfFrame {
@@ -11,6 +12,7 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
         [SerializeField] protected bool[] clicked;
         [SerializeField] protected IGUStyle buttonStyle;
         [SerializeField] protected IGUOnClickEvent onClick;
+        [SerializeField] protected IGUBoxPhysics boxPhysics;
 
         public IGUOnClickEvent OnClick => onClick;
         public virtual bool Clicked => GetClicked();
@@ -18,6 +20,7 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
             get => buttonStyle;
             set => buttonStyle = value ?? (IGUStyle)"Black button border";
         }
+        public override IGUBasicPhysics Physics { get => boxPhysics; set => boxPhysics = (IGUBoxPhysics)value; }
 
         protected override void IGUAwake() {
             base.IGUAwake();
@@ -25,13 +28,14 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
             myRect = IGURect.DefaultButton;
             onClick = new IGUOnClickEvent();
             myColor = IGUColor.DefaultBoxColor;
+            boxPhysics = new IGUBoxPhysics(this);
             buttonStyle = (IGUStyle)"Black button border";
             content = new IGUContent(DefaultContentIGUButton);
         }
 
         protected override void LowCallOnIGU() {
             buttonStyle.RichText = richText;
-            if (BackEndIGU.Button(LocalRect, MyContent, buttonStyle))
+            if (BackEndIGU.Button(LocalRect, MyContent, buttonStyle, IGUNonePhysics.None, GetInstanceID()))
                 if (IGUDrawer.GetMouseButtonUp(LocalConfig.MouseType)) {
                     onClick.Invoke();
                     clicked[1] = true;

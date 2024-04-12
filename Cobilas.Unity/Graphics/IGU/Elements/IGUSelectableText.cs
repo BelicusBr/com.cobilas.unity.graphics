@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using Cobilas.Unity.Graphics.IGU.Events;
+using Cobilas.Unity.Graphics.IGU.Physics;
 
 namespace Cobilas.Unity.Graphics.IGU.Elements {
     public class IGUSelectableText : IGUTextFieldObject {
@@ -15,6 +16,7 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
             get => selectableTextStyle;
             set => selectableTextStyle = value ?? (IGUStyle)"Black text field border";
         }
+        public override IGUBasicPhysics Physics { get => throw new System.NotImplementedException(); set => throw new System.NotImplementedException(); }
 
         protected override void IGUAwake() {
             base.IGUAwake();
@@ -28,9 +30,7 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
             GUISettings oldSettings = GUI.skin.settings;
             SetGUISettings(settings);
 
-            Event current = Event.current;
-
-            BackEndIGU.SelectableText(LocalRect, MyContent, selectableTextStyle, ref isFocused);
+            BackEndIGU.SelectableText(LocalRect, MyContent, GetInstanceID(), IGUNonePhysics.None, selectableTextStyle, ref isFocused);
             SetGUISettings(oldSettings);
         }
 

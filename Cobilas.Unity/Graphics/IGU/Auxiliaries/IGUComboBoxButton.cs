@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using Cobilas.Unity.Graphics.IGU.Events;
+using Cobilas.Unity.Graphics.IGU.Physics;
 using Cobilas.Unity.Graphics.IGU.Elements;
 using Cobilas.Unity.Graphics.IGU.Interfaces;
 
@@ -22,6 +23,7 @@ namespace Cobilas.Unity.Graphics.IGU {
         public string ToolTip { get => MyContent.Tooltip; set => MyContent.Tooltip = value; }
         public IGUStyle Style { get => style; set => style = value ?? (IGUStyle)"Black button border"; }
         public IGUStyle TooltipStyle { get => tooltipStyle; set => tooltipStyle = value ?? (IGUStyle)"Black box border"; }
+        public override IGUBasicPhysics Physics { get => throw new System.NotImplementedException(); set => throw new System.NotImplementedException(); }
 
         protected override void IGUAwake() {
             base.IGUAwake();
@@ -34,7 +36,7 @@ namespace Cobilas.Unity.Graphics.IGU {
         }
 
         protected override void LowCallOnIGU() {
-            if (BackEndIGU.Button(LocalRect, MyContent, style))
+            if (BackEndIGU.Button(LocalRect, MyContent, style, IGUNonePhysics.None, GetInstanceID()))
                 if (IGUDrawer.GetMouseButtonUp(LocalConfig.MouseType))
                     onClick.Invoke();
         }

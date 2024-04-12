@@ -10,8 +10,7 @@ using Cobilas.Unity.Management.Runtime;
 using System.Text;
 using Cobilas.Unity.Test.Graphics.IGU;
 
-using BEIGU = Cobilas.Unity.Test.Graphics.IGU.BackEndIGU;
-using Cobilas.Unity.Test.Graphics.IGU.Physics;
+using BEIGU = Cobilas.Unity.Graphics.IGU.BackEndIGU;
 using System.Linq;
 using System;
 

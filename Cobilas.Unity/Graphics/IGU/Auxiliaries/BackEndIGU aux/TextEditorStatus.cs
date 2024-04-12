@@ -1,7 +1,7 @@
 using System.Text;
 using UnityEngine;
 
-namespace Cobilas.Unity.Test.Graphics.IGU {
+namespace Cobilas.Unity.Graphics.IGU {
     internal sealed class TextEditorStatus : TextEditor {
         private string textMod;
 

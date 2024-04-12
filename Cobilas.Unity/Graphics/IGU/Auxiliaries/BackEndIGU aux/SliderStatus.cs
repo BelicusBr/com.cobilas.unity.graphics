@@ -2,7 +2,7 @@ using System;
 using UnityEngine;
 using Cobilas.Unity.Graphics.IGU;
 
-namespace Cobilas.Unity.Test.Graphics.IGU {
+namespace Cobilas.Unity.Graphics.IGU {
     internal sealed class SliderStatus {
             public bool isHoriz;
             public Vector2 rectSize;

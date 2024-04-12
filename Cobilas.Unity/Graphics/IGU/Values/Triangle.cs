@@ -3,11 +3,12 @@ using UnityEngine;
 using Cobilas.Collections;
 using System.Globalization;
 
-namespace Cobilas.Unity.Test.Graphics.IGU {
-    public readonly struct Triangle : IEquatable<Triangle>, IFormattable {
-        private readonly Vector2 a;
-        private readonly Vector2 b;
-        private readonly Vector2 c;
+namespace Cobilas.Unity.Graphics.IGU {
+    [Serializable]
+    public struct Triangle : IEquatable<Triangle>, IFormattable {
+        [SerializeField] private Vector2 a;
+        [SerializeField] private Vector2 b;
+        [SerializeField] private Vector2 c;
 
         public Vector2 A => a;
         public Vector2 B => b;

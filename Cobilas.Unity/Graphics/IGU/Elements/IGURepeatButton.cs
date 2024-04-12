@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using Cobilas.Unity.Graphics.IGU.Events;
+using Cobilas.Unity.Graphics.IGU.Physics;
 
 namespace Cobilas.Unity.Graphics.IGU.Elements {
     public class IGURepeatButton : IGUButton {
@@ -19,15 +20,26 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
 
         protected override void LowCallOnIGU() {
 
-            bool restemp = BackEndIGU.RepeatButton(LocalRect, MyContent, buttonStyle);
+            bool restemp = BackEndIGU.RepeatButton(LocalRect, MyContent, buttonStyle,
+                IGUNonePhysics.None, GetInstanceID(), out bool onCheckedTemp);
+
+            Event @event = Event.current;
 
             if (restemp) {
-                if (IGUDrawer.GetMouseButtonPress(LocalConfig.MouseType))
-                    RepeatButtonClick();
-            } else {
-                clicked[0] = false;
-                onClicked = true;
-            }
+                // if (IGUDrawer.GetMouseButtonPress(LocalConfig.MouseType))
+                //     RepeatButtonClick();
+                if (@event.type == EventType.MouseDown) {
+                    if (@event.button == (int)LocalConfig.MouseType) {
+                        onRepeatClick.Invoke();
+                        if (onClicked = onCheckedTemp)
+                            onClick.Invoke();
+                    }
+                }
+            } 
+            // else {
+            //     clicked[0] = false;
+            //     onClicked = true;
+            // }
         }
 
         private void RepeatButtonClick() {

@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using Cobilas.Unity.Graphics.IGU.Events;
+using Cobilas.Unity.Graphics.IGU.Physics;
 
 namespace Cobilas.Unity.Graphics.IGU.Elements {
     public class IGUTextField : IGUTextFieldObject {
@@ -25,6 +26,7 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
             get => textFieldStyle;
             set => textFieldStyle = value ?? (IGUStyle)"Black text field border";
         }
+        public override IGUBasicPhysics Physics { get => throw new System.NotImplementedException(); set => throw new System.NotImplementedException(); }
 
         protected override void IGUAwake() {
             base.IGUAwake();
@@ -42,26 +44,24 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
 
             GUISettings oldSettings = GUI.skin.settings;
             SetGUISettings(settings);
-            string textTemp = string.Empty;
+            // string textTemp = string.Empty;
 
-            if (isTextArea) textTemp = BackEndIGU.TextArea(LocalRect, Text ?? string.Empty, maxLength, textFieldStyle);
-            else textTemp = BackEndIGU.TextField(LocalRect, Text ?? string.Empty, maxLength, textFieldStyle);
+            IGUContent contentTemp = GetIGUContentTemp(MyContent.Text, MyContent.Image, MyContent.Tooltip);
+
+            BackEndIGU.TextBox(LocalRect, MyContent, GetInstanceID(), maxLength, IGUNonePhysics.None, textFieldStyle, isTextArea, ref isFocused);
+
+            // if (isTextArea) textTemp = BackEndIGU.TextArea(LocalRect, Text ?? string.Empty, maxLength, textFieldStyle);
+            // else textTemp = BackEndIGU.TextField(LocalRect, Text ?? string.Empty, maxLength, textFieldStyle);
             
             SetGUISettings(oldSettings);
             Event current = Event.current;
 
-            if (LocalRect.Contains(current.mousePosition)) {
-                if (current.clickCount > 0 && GUI.GetNameOfFocusedControl() == name) {
-                    isFocused = true;
+            if (LocalRect.Contains(current.mousePosition))
+                if (IGUDrawer.GetMouseButtonDown(LocalConfig.MouseType) && isFocused)
                     onClick.Invoke();
-                }
-            } else {
-                if (current.clickCount > 0)
-                    isFocused = false;
-            }
 
-            if (textTemp != Text && isFocused)
-                onStringChanged.Invoke(Text = textTemp);
+            if (contentTemp != MyContent && isFocused)
+                onStringChanged.Invoke((MyContent = contentTemp).Text);
 
             if (current.type == EventType.KeyDown && isFocused) {
                 onKeyDown.Invoke(current.keyCode);

@@ -3,6 +3,7 @@ using UnityEngine;
 using Cobilas.Collections;
 using Cobilas.Unity.Graphics.IGU.Elements;
 using Cobilas.Unity.Graphics.IGU.Interfaces;
+using Cobilas.Unity.Graphics.IGU.Physics;
 
 namespace Cobilas.Unity.Graphics.IGU.Layouts {
     public sealed class IGUGridLayout : IGULayout, IIGUSerializationCallbackReceiver {
@@ -16,6 +17,7 @@ namespace Cobilas.Unity.Graphics.IGU.Layouts {
         public Vector2 CellSize { get => cursor.CellSize; set => cursor.CellSize = value; }
         public int DirectionalCount { get => cursor.directionalCount; set => cursor.directionalCount = value; }
         public DirectionalBreak DirectionalBreak { get => cursor.directionalBreak; set => cursor.directionalBreak = value; }
+        public override IGUBasicPhysics Physics { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
         public override IGUObject this[int index] => objects[index].@object;
 

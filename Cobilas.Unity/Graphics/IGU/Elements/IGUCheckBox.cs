@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using Cobilas.Unity.Graphics.IGU.Events;
+using Cobilas.Unity.Graphics.IGU.Physics;
 
 namespace Cobilas.Unity.Graphics.IGU.Elements {
     public class IGUCheckBox : IGUTextObject {
@@ -10,6 +11,7 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
         [SerializeField] protected bool checkedtemp;
         [SerializeField] protected IGUStyle checkBoxStyle;
         [SerializeField] protected IGUOnClickEvent onClick;
+        [SerializeField] protected IGUBoxPhysics boxPhysics;
         [SerializeField] protected IGUOnClickEvent checkBoxOn;
         [SerializeField] protected IGUOnClickEvent checkBoxOff;
         [SerializeField] protected IGUOnCheckedEvent onChecked;
@@ -26,6 +28,7 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
             get => _checked;
             set => onChecked.Invoke(_checked = checkedtemp = value);
         }
+        public override IGUBasicPhysics Physics { get => boxPhysics; set => boxPhysics = (IGUBoxPhysics)value; }
 
         protected override void IGUAwake() {
             base.IGUAwake();
@@ -34,6 +37,7 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
             checkBoxOn = new IGUOnClickEvent();
             checkBoxOff = new IGUOnClickEvent();
             onChecked = new IGUOnCheckedEvent();
+            boxPhysics = new IGUBoxPhysics(this);
             onclicked = checkedtemp = _checked = false;
             checkBoxStyle = (IGUStyle)"Black toggle border";
             content = new IGUContent(DefaultContantIGUCheckBox);
@@ -41,14 +45,19 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
 
         protected override void LowCallOnIGU() {
             checkBoxStyle.RichText = richText;
-            checkedtemp = BackEndIGU.Toggle(LocalRect, checkedtemp, MyContent, checkBoxStyle);
+            checkedtemp = BackEndIGU.Toggle(LocalRect, checkedtemp, MyContent, checkBoxStyle,
+                IGUNonePhysics.None, GetInstanceID(), out bool onclickedTemp);
 
+            Event @event = Event.current;
             bool isRect = LocalRect.Contains(IGUDrawer.MousePosition);
-            if (IGUDrawer.GetMouseButtonPress(LocalConfig.MouseType))
-                onclicked = true;
-            if (Event.current.type == EventType.Repaint)
+            // if (IGUDrawer.GetMouseButtonPress(LocalConfig.MouseType))
+            //     onclicked = true;
+            if (@event.type == EventType.MouseDown)
+                if (@event.button == (int)LocalConfig.MouseType)
+                    onclicked = onclickedTemp;
+            if (@event.type == EventType.Repaint)
                 if (isRect && _checked != checkedtemp && onclicked) {
-                    onclicked = false;
+                    // onclicked = false;
                     onClick.Invoke();
                     onChecked.Invoke(_checked = checkedtemp);
                 }

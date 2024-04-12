@@ -3,6 +3,7 @@ using UnityEngine;
 using Cobilas.Collections;
 using Cobilas.Unity.Graphics.IGU.Elements;
 using Cobilas.Unity.Graphics.IGU.Interfaces;
+using Cobilas.Unity.Graphics.IGU.Physics;
 
 namespace Cobilas.Unity.Graphics.IGU.Layouts {
     public sealed class IGUHorizontalLayout : IGULayout, IIGUSerializationCallbackReceiver {
@@ -15,6 +16,7 @@ namespace Cobilas.Unity.Graphics.IGU.Layouts {
         public float Spacing { get => cursor.spacing; set => cursor.spacing = value; }
         public Vector2 CellSize { get => cursor.CellSize; set => cursor.CellSize = value; }
         public bool UseCellSize { get => cursor.UseCellSize; set => cursor.UseCellSize = value; }
+        public override IGUBasicPhysics Physics { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
         public override IGUObject this[int index] => objects[index].@object;
 

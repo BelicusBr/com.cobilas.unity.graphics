@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using Cobilas.Unity.Graphics.IGU.Events;
+using Cobilas.Unity.Graphics.IGU.Physics;
 
 namespace Cobilas.Unity.Graphics.IGU.Elements {
     public class IGUHorizontalSlider : IGUSliderObject {
@@ -10,6 +11,7 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
         public IGUOnSliderValueEvent OnModifiedSlider => onModifiedSlider;
         public IGUOnSliderIntValueEvent OnModifiedSliderInt => onModifiedSliderInt;
         public IGUStyle HorizontalSliderThumb { get => horizontalSliderThumb; set => horizontalSliderThumb = value; }
+        public override IGUBasicPhysics Physics { get => throw new System.NotImplementedException(); set => throw new System.NotImplementedException(); }
 
         protected override void IGUAwake() {
             base.IGUAwake();
@@ -27,8 +29,8 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
             MaxMinSlider temp = isInt ? maxMinSlider.ToMaxMinSliderInt() : maxMinSlider;
             value = Mathf.Clamp(value, temp.Min, temp.Max);
 
-            float valuetemp = BackEndIGU.Slider(LocalRect, isInt ? ValueToInt : value, temp, true,
-                    sliderObjectStyle, horizontalSliderThumb);
+            float valuetemp = BackEndIGU.Slider(LocalRect, isInt ? ValueToInt : value, temp, GetInstanceID(),
+                IGUNonePhysics.None, sliderObjectStyle, horizontalSliderThumb, true);
 
             if (valuetemp != value)
                 if (IGUDrawer.GetMouseButtonPress(LocalConfig.MouseType)) {

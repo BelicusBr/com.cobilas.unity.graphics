@@ -5,6 +5,7 @@ using Cobilas.Collections;
 using System.Collections.Generic;
 using Cobilas.Unity.Graphics.IGU.Events;
 using Cobilas.Unity.Graphics.IGU.Layouts;
+using Cobilas.Unity.Graphics.IGU.Physics;
 using Cobilas.Unity.Graphics.IGU.Interfaces;
 
 namespace Cobilas.Unity.Graphics.IGU.Elements {
@@ -101,6 +102,7 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
             get => cbx_scrollview.HorizontalScrollbarThumbStyle;
             set => cbx_scrollview.HorizontalScrollbarThumbStyle = value;
         }
+        public override IGUBasicPhysics Physics { get => throw new System.NotImplementedException(); set => throw new System.NotImplementedException(); }
 
         public IGUComboBoxButton this[int index] 
             => cbx_verticalLayout[index] as IGUComboBoxButton;

@@ -1,11 +1,12 @@
 ﻿using System;
 using UnityEngine;
+using Cobilas.Unity.Graphics.IGU.Physics;
 using Cobilas.Unity.Graphics.IGU.Interfaces;
 
 namespace Cobilas.Unity.Graphics.IGU.Elements {
     public class IGURectClip : IGUObject, IIGUClipping {
 
-        public event Action<Rect> RectClipAction;
+        public event Action<Vector2> RectClipAction;
         [SerializeField] protected Rect rectView;
         [SerializeField] protected bool isClipping;
         [SerializeField] protected bool autoInvert;
@@ -18,6 +19,7 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
             get => rectView.position = scrollView.Invert(autoInvert, autoInvert);
             set => rectView.position = scrollView = value.Invert(autoInvert, autoInvert);
         }
+        public override IGUBasicPhysics Physics { get => throw new System.NotImplementedException(); set => throw new System.NotImplementedException(); }
 
         protected override void IGUAwake() {
             base.IGUAwake();
@@ -28,12 +30,12 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
         }
 
         protected override void LowCallOnIGU() {
-            BackEndIGU.BeginClip(LocalRect, scrollView, ClipFunc);
+            BackEndIGU.Clipping(LocalRect, scrollView, ClipFunc);
         }
 
-        private void ClipFunc(Vector2 scrollOffset, Vector2 renderOffset) {
+        private void ClipFunc(Vector2 scrollOffset) {
             isClipping = true;
-            RectClipAction?.Invoke(RectView);
+            RectClipAction?.Invoke(scrollOffset);
             isClipping = false;
         }
     }

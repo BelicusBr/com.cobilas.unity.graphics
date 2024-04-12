@@ -2,6 +2,7 @@
 using Cobilas.Unity.Graphics.IGU.Events;
 using Cobilas.Unity.Graphics.IGU.Elements;
 using Cobilas.Unity.Graphics.IGU.Interfaces;
+using Cobilas.Unity.Graphics.IGU.Physics;
 
 namespace Cobilas.Unity.Graphics.IGU {
     public sealed class IGUSelectionGridToggle : IGUObject, IIGUToolTip {
@@ -34,6 +35,7 @@ namespace Cobilas.Unity.Graphics.IGU {
             get => _checked;
             internal set => onChecked.Invoke(checkedtemp = _checked = value);
         }
+        public override IGUBasicPhysics Physics { get => throw new System.NotImplementedException(); set => throw new System.NotImplementedException(); }
 
         protected override void IGUAwake() {
             base.IGUAwake();
@@ -52,7 +54,8 @@ namespace Cobilas.Unity.Graphics.IGU {
 
         protected override void LowCallOnIGU() {
 
-            checkedtemp = BackEndIGU.Toggle(LocalRect, checkedtemp, myContent, style);
+            checkedtemp = BackEndIGU.Toggle(LocalRect, checkedtemp, myContent, style, IGUNonePhysics.None,
+                GetInstanceID(), out _);
 
             bool isRect = LocalRect.Contains(IGUDrawer.MousePosition);
             if (IGUDrawer.GetMouseButtonPress(LocalConfig.MouseType))

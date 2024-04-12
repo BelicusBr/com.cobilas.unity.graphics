@@ -1,15 +1,17 @@
 ﻿using System;
 using UnityEngine;
 using Cobilas.Unity.Graphics.IGU.Interfaces;
+using Cobilas.Unity.Graphics.IGU.Physics;
 
 namespace Cobilas.Unity.Graphics.IGU.Elements {
-    public abstract class IGUObject : ScriptableObject, IIGUObject {
+    public abstract class IGUObject : ScriptableObject, IIGUObject, IIGUPhysics {
         private bool isBuild;
         [SerializeField] protected IGURect myRect;
         [SerializeField] protected IGUColor myColor;
         [SerializeField] protected IGUObject parent;
         [SerializeField] protected IGUConfig myConfig;
         [SerializeField] protected IGUCanvas container;
+        [SerializeField] protected bool isPhysicalElement;
 #if UNITY_EDITOR
         [SerializeField, HideInInspector] private bool foldout;
 #endif
@@ -17,10 +19,12 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
         public IGUCanvas Container => container;
         public IGURect LocalRect => GetLocalPosition(this);
         public IGUConfig LocalConfig => GetLocalConfig(this);
+        public abstract IGUBasicPhysics Physics { get; set; }
         public IGURect MyRect { get => myRect; set => myRect = value; }
-        public IGUObject Parent { get => parent; set => parent = value; }
+        public IGUObject Parent { get => parent; set => SetParent(value); }
         public IGUColor MyColor { get => myColor; set => myColor = value; }
         public IGUConfig MyConfig { get => myConfig; set => SetIGUConfig(value); }
+        public bool IsPhysicalElement { get => isPhysicalElement; set => isPhysicalElement = value; }
 
         public void OnIGU() {
             GUI.SetNextControlName(name);
@@ -79,6 +83,16 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
             myConfig = config;
         }
 
+        private void SetParent(IGUObject parent) {
+            if (this.parent != null)
+                if (this.parent.Physics is IGUMultiPhysics mphy)
+                    _ = mphy.Remove(Physics);
+            this.parent = parent;
+            if (this.parent != null)
+                if (this.parent.Physics is IGUMultiPhysics mphy)
+                    _ = mphy.Add(Physics);
+        }
+
         private void OnDestroy() {
             if (container != null)
                 if (container.Remove(this))
@@ -93,6 +107,11 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
         }
 
         private void OnDisable() => IGUOnDisable();
+
+        protected virtual void InternalCallPhysicsFeedback(Vector2 mouse, ref IGUBasicPhysics phys) {
+            if (Physics.CollisionConfirmed(mouse))
+                phys = Physics;
+        }
 
         void IIGUObject.InternalOnIGU() {
 
@@ -111,6 +130,13 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
                 GUI.color = oldColor;
                 GUI.contentColor = oldContentColor;
                 GUI.backgroundColor = oldBackgroundColor;
+            }
+        }
+
+        void IIGUPhysics.CallPhysicsFeedback(Vector2 mouse, ref IGUBasicPhysics phys) {
+            if (LocalConfig.IsVisible) {
+                Physics.IsHotPotato = false;
+                InternalCallPhysicsFeedback(mouse, ref phys);
             }
         }
 
@@ -148,6 +174,7 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
                     else _ = instance.ApplyToContainer(applyToContainer);
             }
             instance.name = name;
+            instance.isPhysicalElement = true;
             instance.myConfig = IGUConfig.Default;
             instance.myColor = IGUColor.DefaultBoxColor;
             instance.IGUAwake();

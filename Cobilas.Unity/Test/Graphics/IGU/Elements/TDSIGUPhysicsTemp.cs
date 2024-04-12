@@ -4,25 +4,23 @@ using System.Linq;
 using System.Threading.Tasks;
 using Cobilas.Unity.Graphics.IGU;
 using Cobilas.Unity.Graphics.IGU.Elements;
-using Cobilas.Unity.Test.Graphics.IGU.Interfaces;
-using Cobilas.Unity.Test.Graphics.IGU.Physics;
+using Cobilas.Unity.Graphics.IGU.Interfaces;
+using Cobilas.Unity.Graphics.IGU.Physics;
 using Cobilas.Unity.Test.Graphics.IGU;
 using UnityEngine;
-using Cobilas.Unity.Graphics.IGU.Interfaces;
 
 namespace Cobilas.Unity.Test.Graphics.IGU.Elements {
-    public class TDSIGUPhysicsTemp : IGUObject, IIGUPhysics {
+    public class TDSIGUPhysicsTemp : IGUObject, IIGUPhysics, ISerializationCallbackReceiver {
         public IGUBasicPhysics _Physics;
-        public IGUBasicPhysics Physics { get => _Physics; set => _Physics = value; }
+        public override IGUBasicPhysics Physics { get => _Physics; set => _Physics = value; }
 
         protected override void IGUAwake() {
             base.IGUAwake();
-            _Physics = new IGUBoxPhysics();
             myRect = IGURect.DefaultButton;
         }
 
         protected override void IGUOnEnable() {
-            _Physics = new IGUBoxPhysics();
+            _Physics = new IGUBoxPhysics(this);
             _Physics.Target = this;
         }
 
@@ -38,14 +36,24 @@ namespace Cobilas.Unity.Test.Graphics.IGU.Elements {
             //(_Physics as IGUBoxPhysics)?.OnDrawGizmos();
         }
 
-        void IIGUPhysics.CallPhysicsFeedback(Vector2 mouse, List<IGUBasicPhysics> phys) {
+        void IIGUPhysics.CallPhysicsFeedback(Vector2 mouse, ref IGUBasicPhysics phys) {
             if (!LocalConfig.IsVisible) return;
             _Physics.IsHotPotato = false;
             // if (parent is IIGUPhysics phy && parent is IIGUClipping)
             //     if (!phy.Physics.CollisionConfirmed(mouse))
             //         return;
             if (_Physics.CollisionConfirmed(mouse))
-                phys[0] = _Physics;
+                phys = _Physics;
+        }
+
+        public void OnBeforeSerialize()
+        {
+            Debug.Log("OnBeforeSerialize");
+        }
+
+        public void OnAfterDeserialize()
+        {
+            Debug.Log("OnAfterDeserialize");
         }
     }
 }

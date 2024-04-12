@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using Cobilas.Unity.Graphics.IGU.Events;
+using Cobilas.Unity.Graphics.IGU.Physics;
 
 namespace Cobilas.Unity.Graphics.IGU.Elements {
     public class IGUHorizontalScrollbar : IGUSliderObject {
@@ -15,6 +16,7 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
             get => sliderObjectThumbStyle;
             set => sliderObjectThumbStyle = value ?? (IGUStyle)"Black horizontal scrollbar border thumb";
         }
+        public override IGUBasicPhysics Physics { get => throw new System.NotImplementedException(); set => throw new System.NotImplementedException(); }
 
         protected override void IGUAwake() {
             base.IGUAwake();
@@ -33,8 +35,8 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
             MaxMinSlider temp = isInt ? maxMinSlider.ToMaxMinSliderInt() : maxMinSlider;
             value = Mathf.Clamp(value, temp.Min, temp.Max - scrollbarThumbSize);
 
-            float valuetemp = BackEndIGU.Slider(LocalRect, isInt ? ValueToInt : value, scrollbarThumbSize, temp, true,
-                     sliderObjectStyle, sliderObjectThumbStyle);
+            float valuetemp = BackEndIGU.Slider(LocalRect, isInt ? ValueToInt : value,
+                    temp, GetInstanceID(), IGUNonePhysics.None, sliderObjectStyle, sliderObjectThumbStyle, true);
 
             if (valuetemp != value) {
                 if (IGUDrawer.GetMouseButtonPress(LocalConfig.MouseType)) {

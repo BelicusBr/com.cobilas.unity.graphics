@@ -2,8 +2,7 @@ using UnityEngine;
 using Cobilas.Unity.Graphics.IGU;
 using Cobilas.Unity.Graphics.IGU.Elements;
 using Cobilas.Unity.Graphics.IGU.Interfaces;
-using Cobilas.Unity.Test.Graphics.IGU.Physics;
-using Cobilas.Unity.Test.Graphics.IGU.Interfaces;
+using Cobilas.Unity.Graphics.IGU.Physics;
 using System.Collections.Generic;
 using Cobilas.Collections;
 
@@ -14,7 +13,7 @@ namespace Cobilas.Unity.Test.Graphics.IGU.Elements {
         [SerializeField] private IGUStyle style;
         [SerializeField] private WindowFocusStatus isFocused;
 
-        IGUBasicPhysics IIGUPhysics.Physics { get => physicsBase; set => physicsBase = value; }
+        public override IGUBasicPhysics Physics { get => physicsBase; set => physicsBase = value; }
         WindowFocusStatus IIGUWindow.IsFocused { get => isFocused; set => isFocused = value; }
 
         public bool IsClipping => true;
@@ -22,14 +21,14 @@ namespace Cobilas.Unity.Test.Graphics.IGU.Elements {
         public Rect RectView { get => throw new System.NotImplementedException(); set => throw new System.NotImplementedException(); }
         public Vector2 ScrollView { get => LocalRect.Position; set => throw new System.NotImplementedException(); }
 
-        void IIGUPhysics.CallPhysicsFeedback(Vector2 mouse, List<IGUBasicPhysics> phys) {
+        void IIGUPhysics.CallPhysicsFeedback(Vector2 mouse, ref IGUBasicPhysics phys) {
             if (!LocalConfig.IsVisible) return;
             physicsBase.IsHotPotato = false;
             // if (parent is IIGUPhysics phy && parent is IIGUClipping)
             //     if (!phy.Physics.CollisionConfirmed(mouse))
             //         return;
             if (physicsBase.CollisionConfirmed(mouse))
-                phys[0] = physicsBase;
+                phys = physicsBase;
         }
 
         protected override void IGUAwake() {
@@ -40,7 +39,7 @@ namespace Cobilas.Unity.Test.Graphics.IGU.Elements {
 
         protected override void IGUOnEnable() {
             base.IGUOnEnable();
-            physicsBase = new IGUMultiPhysics(Triangle.Box);
+            physicsBase = new IGUMultiPhysics(this, Triangle.Box);
             physicsBase.Target = this;
         }
 
