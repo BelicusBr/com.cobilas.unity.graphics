@@ -10,6 +10,7 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
         [SerializeField] protected float value;
         [SerializeField] protected float additionValue;
         [SerializeField] protected IGUTextField textField;
+        [SerializeField] protected IGUBasicPhysics physics;
         [SerializeField] protected MaxMinSlider maxMinSlider;
         [SerializeField] protected IGURepeatButton buttonLeft;
         [SerializeField] protected IGURepeatButton buttonRight;
@@ -20,6 +21,7 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
         public IGUOnClickEvent ButtonRightOnClick => buttonRight.OnClick;
         public MaxMinSlider MaxMin { get => maxMinSlider; set => maxMinSlider = value; }
         public float AdditionValue { get => additionValue; set => additionValue = value; }
+        public override IGUBasicPhysics Physics { get => physics; set => physics = value; }
         public string ToolTip { get => textField.ToolTip; set => textField.ToolTip = value; }
         public bool UseTooltip { get => textField.UseTooltip; set => textField.UseTooltip = value; }
         public IGUStyle TooltipStyle { get => textField.TooltipStyle; set => textField.TooltipStyle = value; }
@@ -27,7 +29,6 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
         public string NumberOfDecimalPlaces { get => numberOfDecimalPlaces; set => numberOfDecimalPlaces = value; }
         public IGUStyle ButtonRightStyle { get => buttonRight.ButtonStyle; set => buttonRight.ButtonStyle = value; }
         public IGUStyle TextFieldStyle { get => textField.TextFieldStyle; set => textField.TextFieldStyle = value; }
-        public override IGUBasicPhysics Physics { get => throw new System.NotImplementedException(); set => throw new System.NotImplementedException(); }
 
         protected override void IGUAwake() {
             base.IGUAwake();
@@ -40,6 +41,8 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
             textField = Create<IGUTextField>($"--[{name}]TextField");
             buttonLeft = Create<IGURepeatButton>($"--[{name}]ButtonLeft");
             buttonRight = Create<IGURepeatButton>($"--[{name}]ButtonRight");
+            physics = IGUBasicPhysics.Create<IGUCollectionPhysics>(this);
+            (physics as IGUCollectionPhysics).OnCollision = true;
             buttonLeft.Text = "<";
             textField.Text = "0";
             buttonRight.Text = ">";

@@ -7,6 +7,7 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
 
         [SerializeField, HideInInspector] 
         protected bool isFocused;
+        [SerializeField] protected IGUBasicPhysics physics;
         [SerializeField] protected IGUOnClickEvent onClick;
         [SerializeField] protected IGUStyle selectableTextStyle;
 
@@ -16,12 +17,13 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
             get => selectableTextStyle;
             set => selectableTextStyle = value ?? (IGUStyle)"Black text field border";
         }
-        public override IGUBasicPhysics Physics { get => throw new System.NotImplementedException(); set => throw new System.NotImplementedException(); }
+        public override IGUBasicPhysics Physics { get => physics; set => physics = value; }
 
         protected override void IGUAwake() {
             base.IGUAwake();
             myRect = IGURect.DefaultTextArea;
             myColor = IGUColor.DefaultBoxColor;
+            physics = IGUBasicPhysics.Create<IGUBoxPhysics>(this);
             selectableTextStyle = (IGUStyle)"Black text field border";
         }
 
@@ -30,7 +32,7 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
             GUISettings oldSettings = GUI.skin.settings;
             SetGUISettings(settings);
 
-            BackEndIGU.SelectableText(LocalRect, MyContent, GetInstanceID(), IGUNonePhysics.None, selectableTextStyle, ref isFocused);
+            BackEndIGU.SelectableText(LocalRect, MyContent, GetInstanceID(), physics, selectableTextStyle, ref isFocused);
             SetGUISettings(oldSettings);
         }
 

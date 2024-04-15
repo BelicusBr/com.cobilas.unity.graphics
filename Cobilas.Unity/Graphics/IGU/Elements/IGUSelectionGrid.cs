@@ -15,6 +15,7 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
         [SerializeField] protected bool useTooltip;
         [SerializeField] protected Vector2 spacing;
         [SerializeField] protected int selectedIndex;
+        [SerializeField] protected IGUBasicPhysics physics;
         [SerializeField] protected IGUGridLayout gridLayout;
         [SerializeField] protected IGUStyle tooltipToggleStype;
         [SerializeField] protected IGUStyle selectionGridToggleStyle;
@@ -25,6 +26,7 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
         public IGUOnSliderIntValueEvent OnSelectedIndex => onSelectedIndex;
         public int xCount { get => _xCount; set => _xCount = value < 1 ? 1 : value; }
         public int SelectedIndex { get => selectedIndex; set => SelectedIndexFunc(value); }
+        public override IGUBasicPhysics Physics { get => physics; set => physics = value; }
         public IGUStyle TooltipStyle { get => tooltipToggleStype; set => tooltipToggleStype = value; }
         public IGUStyle SelectionGridToggleStyle { get => selectionGridToggleStyle; set => selectionGridToggleStyle = value; }
         public bool UseTooltip { 
@@ -45,12 +47,13 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
             get => throw new NotImplementedException();
             set => throw new NotImplementedException();
         }
-        public override IGUBasicPhysics Physics { get => throw new System.NotImplementedException(); set => throw new System.NotImplementedException(); }
 
         public IGUSelectionGridToggle this[int index] => gridLayout[index] as IGUSelectionGridToggle;
 
         protected override void IGUAwake() {
             base.IGUAwake();
+            physics = IGUBasicPhysics.Create<IGUCollectionPhysics>(this);
+            (physics as IGUCollectionPhysics).OnCollision = true;
             gridLayout = IGUObject.Create<IGUGridLayout>($"[{name}]--{nameof(IGUGridLayout)}");
             gridLayout.DirectionalBreak = DirectionalBreak.HorizontalBreak;
             gridLayout.Parent = this;
@@ -75,12 +78,14 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
         }
 
         protected override void LowCallOnIGU() {
-            if (gridLayout.Spacing != spacing)
-                gridLayout.Spacing = spacing;
-            if (gridLayout.CellSize != myRect.Size)
-                gridLayout.CellSize = myRect.Size;
-            if (gridLayout.DirectionalCount != _xCount)
-                gridLayout.DirectionalCount = _xCount;
+            if (Event.current.type == EventType.Layout) {
+                if (gridLayout.Spacing != spacing)
+                    gridLayout.Spacing = spacing;
+                if (gridLayout.CellSize != myRect.Size)
+                    gridLayout.CellSize = myRect.Size;
+                if (gridLayout.DirectionalCount != _xCount)
+                    gridLayout.DirectionalCount = _xCount;
+            }
 
             gridLayout.OnIGU();
         }

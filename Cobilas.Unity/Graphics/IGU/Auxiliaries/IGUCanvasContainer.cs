@@ -4,6 +4,7 @@ using Cobilas.Collections;
 using UnityEngine.SceneManagement;
 using Cobilas.Unity.Graphics.IGU.Interfaces;
 using Cobilas.Unity.Graphics.IGU.Elements;
+using Cobilas.Unity.Graphics.IGU.Physics;
 
 namespace Cobilas.Unity.Graphics.IGU {
     public sealed class IGUCanvasContainer : MonoBehaviour {
@@ -16,6 +17,7 @@ namespace Cobilas.Unity.Graphics.IGU {
         private Action onIGU;
         private Action onToolTip;
         private Action onEndOfFrame;
+        private IGUBasicPhysics.CallPhysicsFeedback callPhysics;
         [SerializeField] private long focusedWindowId;
         [SerializeField] private IGUCanvas[] Containers;
         [SerializeField] private MaxMinSliderInt maxMinDepth;
@@ -25,6 +27,7 @@ namespace Cobilas.Unity.Graphics.IGU {
         public Action OnIGU { get => onIGU; }
         public Action OnToolTip { get => onToolTip; }
         public Action OnEndOfFrame { get => onEndOfFrame; }
+        public IGUBasicPhysics.CallPhysicsFeedback CallPhysics { get => callPhysics; }
 
         private void Awake() {
             focusedWindowId = long.MinValue;
@@ -57,6 +60,7 @@ namespace Cobilas.Unity.Graphics.IGU {
             onIGU = (Action)null;
             onToolTip = (Action)null;
             onEndOfFrame = (Action)null;
+            callPhysics = (IGUBasicPhysics.CallPhysicsFeedback)null;
             Containers[0].Clear();
             for (int I = 1; I < ArrayManipulation.ArrayLength(Containers); I++)
                 if (Containers[I].Status == CanvasType.Volatile)
@@ -69,6 +73,7 @@ namespace Cobilas.Unity.Graphics.IGU {
             onIGU = (Action)null;
             onToolTip = (Action)null;
             onEndOfFrame = (Action)null;
+            callPhysics = (IGUBasicPhysics.CallPhysicsFeedback)null;
             for (int I = 0; I < ArrayManipulation.ArrayLength(Containers); I++)
                 Containers[I].Dispose();
             ArrayManipulation.ClearArraySafe(ref Containers);
@@ -78,8 +83,10 @@ namespace Cobilas.Unity.Graphics.IGU {
             onIGU = (Action)null;
             onToolTip = (Action)null;
             onEndOfFrame = (Action)null;
+            callPhysics = (IGUBasicPhysics.CallPhysicsFeedback)null;
             IGUObject[] elements = IGUCanvas.ReoderDepth(Containers);
             for (long I = 0; I < ArrayManipulation.ArrayLongLength(elements); I++) {
+                callPhysics = AddCallPhysicsFeedbackFunc(elements[I], callPhysics);
                 onIGU += elements[I].OnIGU;
                 if (elements[I] is IIGUToolTip tip) onToolTip += tip.InternalDrawToolTip;
                 if (elements[I] is IIGUEndOfFrame frame) onEndOfFrame += frame.EndOfFrame;                
@@ -133,6 +140,15 @@ namespace Cobilas.Unity.Graphics.IGU {
                 if (container.Containers[I].Status == type)
                     ArrayManipulation.Add(container.Containers[I], ref result);
             return result;
+        }
+
+        private static IGUBasicPhysics.CallPhysicsFeedback AddCallPhysicsFeedbackFunc(IGUObject obj, IGUBasicPhysics.CallPhysicsFeedback call) {
+            if (obj.IsPhysicalElement)
+                call += (obj as IIGUPhysics).CallPhysicsFeedback;
+            if (obj.Physics is IGUCollectionPhysics cphy)
+                for (int I = 0; I < cphy.SubPhysicsCount; I++)
+                    call = AddCallPhysicsFeedbackFunc(cphy.SubPhysics[I].Target, call);
+            return call;
         }
     }
 }

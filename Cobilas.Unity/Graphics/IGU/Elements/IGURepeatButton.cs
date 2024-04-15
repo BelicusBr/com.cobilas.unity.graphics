@@ -21,7 +21,7 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
         protected override void LowCallOnIGU() {
 
             bool restemp = BackEndIGU.RepeatButton(LocalRect, MyContent, buttonStyle,
-                IGUNonePhysics.None, GetInstanceID(), out bool onCheckedTemp);
+                physics, GetInstanceID(), out bool onCheckedTemp);
 
             Event @event = Event.current;
 
@@ -42,14 +42,14 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
             // }
         }
 
-        private void RepeatButtonClick() {
-            onRepeatClick.Invoke();
-            clicked[0] = true;
-            if (onClicked) {
-                onClicked = false;
-                onClick.Invoke();
-            }
-        }
+        // private void RepeatButtonClick() {
+        //     onRepeatClick.Invoke();
+        //     clicked[0] = true;
+        //     if (onClicked) {
+        //         onClicked = false;
+        //         onClick.Invoke();
+        //     }
+        // }
 
         protected override void DrawTooltip()
             => base.DrawTooltip();

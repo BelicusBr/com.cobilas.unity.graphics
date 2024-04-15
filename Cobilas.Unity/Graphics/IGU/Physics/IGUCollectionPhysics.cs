@@ -1,33 +1,31 @@
-using System;
 using UnityEngine;
 using Cobilas.Collections;
-using System.Collections.Generic;
 using Cobilas.Unity.Graphics.IGU.Elements;
-using Cobilas.Unity.Graphics.IGU.Interfaces;
 
 namespace Cobilas.Unity.Graphics.IGU.Physics {
-    [Serializable]
-    public class IGUMultiPhysics : IGUMeshPhysics {
+    public class IGUCollectionPhysics : IGUMeshPhysics {
 
-        [SerializeField] private IGUObject[] subPhysics;
+        [SerializeField] private bool onCollision;
+        [SerializeField] private IGUBasicPhysics[] subPhysics;
 
         public override bool IsHotPotato { get; set; }
         public override Triangle[] Triangles => triangles;
+        public IGUBasicPhysics[] SubPhysics => subPhysics;
+        public int SubPhysicsCount => ArrayManipulation.ArrayLength(subPhysics);
         public override IGUObject Target { get => target; set => target = value; }
-        public override IGUBasicPhysics Parent { get => (parent as IIGUPhysics).Physics; set => parent = value.Target; }
-        public IEnumerable<IGUBasicPhysics> SubPhysics {
-            get {
-                for (int I = 0; I < ArrayManipulation.ArrayLength(subPhysics); I++)
-                    yield return (subPhysics[I] as IIGUPhysics).Physics;
-            }
-        }
+        public bool OnCollision { get => onCollision; set => onCollision = value; }
+        public override IGUBasicPhysics Parent { get => parent; set => parent = value; }
 
-        public IGUMultiPhysics(IGUObject target, Triangle[] triangles) : base(target, triangles) {}
+        protected override void Awake() {
+            base.Awake();
+            onCollision = false;
+        }
 
         public override void SetTriangle(Triangle[] triangles)
             => base.SetTriangle(triangles);
 
         public override bool CollisionConfirmed(Vector2 mouse) {
+            if (onCollision) return true;
             rectHash = BuildBufferTriangles(triangles, bufferTriangles, target, rectHash);
             if (Parent != null)
                 return Triangle.InsideInTriangle(bufferTriangles, mouse) && Parent.CollisionConfirmed(mouse);
@@ -36,17 +34,17 @@ namespace Cobilas.Unity.Graphics.IGU.Physics {
 
         public virtual bool Add(IGUBasicPhysics physics) {
             if (physics == null || (!ArrayManipulation.EmpytArray(subPhysics) &&
-                ArrayManipulation.Exists(physics.Target, subPhysics))) return false;
+                ArrayManipulation.Exists(physics, subPhysics))) return false;
             physics.Parent = this;
-            subPhysics = ArrayManipulation.Add(physics.Target, subPhysics);
+            subPhysics = ArrayManipulation.Add(physics, subPhysics);
             return true;
         }
 
         public virtual bool Remove(IGUBasicPhysics physics) {
             if (physics == null || (!ArrayManipulation.EmpytArray(subPhysics) &&
-                !ArrayManipulation.Exists(physics.Target, subPhysics))) return false;
+                !ArrayManipulation.Exists(physics, subPhysics))) return false;
             physics.Parent = null;
-            subPhysics = ArrayManipulation.Remove(physics.Target, subPhysics);
+            subPhysics = ArrayManipulation.Remove(physics, subPhysics);
             return true;
         }
     }

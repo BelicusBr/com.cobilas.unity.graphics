@@ -9,16 +9,17 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
         [SerializeField] protected ScaleMode scaleMode;
         [SerializeField] protected Vector4 borderWidths;
         [SerializeField] protected Vector4 borderRadiuses;
+        [SerializeField] protected IGUBasicPhysics physics;
 
         public Texture MainTexture { get => texture; set => texture = value; }
         public bool AlphaBlend { get => alphaBlend; set => alphaBlend = value; }
         public float ImageAspect { get => imageAspect; set => imageAspect = value; }
         public ScaleMode MainScaleMode { get => scaleMode; set => scaleMode = value; }
         public Vector4 BorderWidths { get => borderWidths; set => borderWidths = value; }
+        public override IGUBasicPhysics Physics { get => physics; set => physics = value; }
         public Vector4 BorderRadiuses { get => borderRadiuses; set => borderRadiuses = value; }
         public float BorderWidth { get => borderWidths.Summation() / 4f; set => borderWidths = Vector4.one * value; }
         public float BorderRadius { get => borderRadiuses.Summation() / 4f; set => borderRadiuses = Vector4.one * value; }
-        public override IGUBasicPhysics Physics { get => throw new System.NotImplementedException(); set => throw new System.NotImplementedException(); }
 
         protected override void IGUAwake() {
             base.IGUAwake();
@@ -30,6 +31,7 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
             imageAspect = 0f;
             borderWidths = Vector4.zero;
             borderRadiuses = Vector4.zero;
+            physics = IGUBasicPhysics.Create<IGUBoxPhysics>(this);
         }
 
         protected override void LowCallOnIGU() {

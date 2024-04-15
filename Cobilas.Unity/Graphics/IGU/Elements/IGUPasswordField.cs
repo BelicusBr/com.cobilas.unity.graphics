@@ -8,6 +8,7 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
         [SerializeField] protected int maxLength;
         [SerializeField] protected char maskChar;
         [SerializeField] protected IGUOnClickEvent onClick;
+        [SerializeField] protected IGUBasicPhysics physics;
         [SerializeField] protected IGUStyle passwordFieldStyle;
         [SerializeField, HideInInspector] protected bool isFocused;
         [SerializeField] protected IGUTextFieldStringEvent onStringChanged;
@@ -21,7 +22,7 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
             get => passwordFieldStyle;
             set => passwordFieldStyle = value ?? (IGUStyle)"Black text field border";
         }
-        public override IGUBasicPhysics Physics { get => throw new System.NotImplementedException(); set => throw new System.NotImplementedException(); }
+        public override IGUBasicPhysics Physics { get => physics; set => physics = value; }
 
         protected override void IGUAwake() {
             base.IGUAwake();
@@ -31,6 +32,7 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
             onClick = new IGUOnClickEvent();
             myColor = IGUColor.DefaultBoxColor;
             onStringChanged = new IGUTextFieldStringEvent();
+            physics = IGUBasicPhysics.Create<IGUBoxPhysics>(this);
             passwordFieldStyle = (IGUStyle)"Black text field border";
         }
 
@@ -42,7 +44,7 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
             IGUContent contentTemp = GetIGUContentTemp(MyContent.Text, MyContent.Image, MyContent.Tooltip);
 
             BackEndIGU.PasswordField(LocalRect, contentTemp, GetInstanceID(), maxLength,
-                maskChar, IGUNonePhysics.None, passwordFieldStyle, ref isFocused);
+                maskChar, physics, passwordFieldStyle, ref isFocused);
 
             SetGUISettings(oldSettings);
             Event current = Event.current;

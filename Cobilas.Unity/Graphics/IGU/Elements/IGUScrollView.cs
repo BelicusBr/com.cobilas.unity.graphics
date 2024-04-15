@@ -17,6 +17,7 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
         public event Action<IGUScrollView> ScrollViewAction;
         [SerializeField] protected IGURectClip rectClip;
         [SerializeField] protected bool alwaysShowVertical;
+        [SerializeField] protected IGUBasicPhysics physics;
         [SerializeField] protected bool alwaysShowHorizontal;
         [SerializeField] protected IGUScrollViewEvent onScrollView;
         [SerializeField] protected IGUVerticalScrollbar verticalScrollbar;
@@ -27,6 +28,7 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
         public IGUScrollViewEvent OnScrollView => onScrollView;
         public bool VerticalScrollbarIsVisible => verticalScrollbar.MyConfig.IsVisible;
         public bool HorizontalScrollbarIsVisible => horizontalScrollbar.MyConfig.IsVisible;
+        public override IGUBasicPhysics Physics { get => physics; set => physics = value; }
         public Rect RectView { get => rectClip.RectView; set => rectClip.RectView = value; }
         public Vector2 ScrollView { get => rectClip.ScrollView; set => rectClip.ScrollView = value; }
         public bool AlwaysShowVertical { get => alwaysShowVertical; set => alwaysShowVertical = value; }
@@ -37,13 +39,15 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
         public IGUStyle HorizontalScrollbarStyle { get => horizontalScrollbar.SliderObjectStyle; set => horizontalScrollbar.SliderObjectStyle = value; }
         public IGUStyle VerticalScrollbarThumbStyle { get => verticalScrollbar.SliderObjectThumbStyle; set => verticalScrollbar.SliderObjectThumbStyle = value; }
         public IGUStyle HorizontalScrollbarThumbStyle { get => horizontalScrollbar.SliderObjectThumbStyle; set => horizontalScrollbar.SliderObjectThumbStyle = value; }
-        public override IGUBasicPhysics Physics { get => throw new System.NotImplementedException(); set => throw new System.NotImplementedException(); }
 
         protected override void IGUAwake() {
             base.IGUAwake();
+            isPhysicalElement = false;
             rectClip = Create<IGURectClip>($"--[{name}]RectClip");
             verticalScrollbar = Create<IGUVerticalScrollbar>($"--[{name}]VerticalScrollbar");
             horizontalScrollbar = Create<IGUHorizontalScrollbar>($"--[{name}]HorizontalScrollbar");
+            physics = IGUBasicPhysics.Create<IGUCollectionPhysics>(this);
+            (physics as IGUCollectionPhysics).OnCollision = true;
             myRect = IGURect.DefaultTextArea;
             myColor = IGUColor.DefaultBoxColor;
             onScrollView = new IGUScrollViewEvent();

@@ -1,28 +1,32 @@
 ﻿using System;
 using UnityEngine;
 using Cobilas.Collections;
+using Cobilas.Unity.Graphics.IGU.Physics;
 using Cobilas.Unity.Graphics.IGU.Elements;
 using Cobilas.Unity.Graphics.IGU.Interfaces;
-using Cobilas.Unity.Graphics.IGU.Physics;
 
 namespace Cobilas.Unity.Graphics.IGU.Layouts {
     public sealed class IGUVerticalLayout : IGULayout, IIGUSerializationCallbackReceiver {
 
         private event Action<CellCursor> sub_OnIGU;
         [SerializeField] private CellIGUObject[] objects;
+        [SerializeField] private IGUBasicPhysics physics;
         [SerializeField] private VerticalLayoutCellCursor cursor;
 
         public Vector2 GridRect => cursor.GridRect;
         public override int Count => ArrayManipulation.ArrayLength(objects);
         public float Spacing { get => cursor.spacing; set => cursor.spacing = value; }
         public Vector2 CellSize { get => cursor.CellSize; set => cursor.CellSize = value; }
+        public override IGUBasicPhysics Physics { get => physics; set => physics = value; }
         public bool UseCellSize { get => cursor.UseCellSize; set => cursor.UseCellSize = value; }
-        public override IGUBasicPhysics Physics { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
         public override IGUObject this[int index] => objects[index].@object;
 
         protected override void IGUAwake() {
             base.IGUAwake();
+            isPhysicalElement = false;
+            physics = IGUBasicPhysics.Create<IGUCollectionPhysics>(this);
+            (physics as IGUCollectionPhysics).OnCollision = true;
             cursor = new VerticalLayoutCellCursor();
             Spacing = 3f;
             UseCellSize = false;

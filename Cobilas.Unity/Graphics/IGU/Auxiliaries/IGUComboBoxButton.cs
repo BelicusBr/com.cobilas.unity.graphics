@@ -13,6 +13,7 @@ namespace Cobilas.Unity.Graphics.IGU {
         [SerializeField] private IGUContent myContent;
         [SerializeField] private IGUStyle tooltipStyle;
         [SerializeField] private IGUOnClickEvent onClick;
+        [SerializeField] private IGUBasicPhysics physics;
 
         public IGUContent MyContent => myContent;
         public IGUOnClickEvent OnClick => onClick;
@@ -20,10 +21,10 @@ namespace Cobilas.Unity.Graphics.IGU {
         public bool UseTooltip { get => useTooltip; set => useTooltip = value; }
         public string Text { get => MyContent.Text; set => MyContent.Text = value; }
         public Texture Image { get => MyContent.Image; set => MyContent.Image = value; }
+        public override IGUBasicPhysics Physics { get => physics; set => physics = value; }
         public string ToolTip { get => MyContent.Tooltip; set => MyContent.Tooltip = value; }
         public IGUStyle Style { get => style; set => style = value ?? (IGUStyle)"Black button border"; }
         public IGUStyle TooltipStyle { get => tooltipStyle; set => tooltipStyle = value ?? (IGUStyle)"Black box border"; }
-        public override IGUBasicPhysics Physics { get => throw new System.NotImplementedException(); set => throw new System.NotImplementedException(); }
 
         protected override void IGUAwake() {
             base.IGUAwake();
@@ -32,11 +33,12 @@ namespace Cobilas.Unity.Graphics.IGU {
             onClick = new IGUOnClickEvent();
             style = (IGUStyle)"Black button border";
             tooltipStyle = (IGUStyle)"Black box border";
+            physics = IGUBasicPhysics.Create<IGUBoxPhysics>(this);
             myContent = new IGUContent(IGUButton.DefaultContentIGUButton);
         }
 
         protected override void LowCallOnIGU() {
-            if (BackEndIGU.Button(LocalRect, MyContent, style, IGUNonePhysics.None, GetInstanceID()))
+            if (BackEndIGU.Button(LocalRect, MyContent, style, physics, GetInstanceID()))
                 if (IGUDrawer.GetMouseButtonUp(LocalConfig.MouseType))
                     onClick.Invoke();
         }

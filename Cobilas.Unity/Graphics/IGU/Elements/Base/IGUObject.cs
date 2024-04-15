@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
-using Cobilas.Unity.Graphics.IGU.Interfaces;
 using Cobilas.Unity.Graphics.IGU.Physics;
+using Cobilas.Unity.Graphics.IGU.Interfaces;
 
 namespace Cobilas.Unity.Graphics.IGU.Elements {
     public abstract class IGUObject : ScriptableObject, IIGUObject, IIGUPhysics {
@@ -85,11 +85,11 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
 
         private void SetParent(IGUObject parent) {
             if (this.parent != null)
-                if (this.parent.Physics is IGUMultiPhysics mphy)
+                if (this.parent.Physics is IGUCollectionPhysics mphy)
                     _ = mphy.Remove(Physics);
             this.parent = parent;
             if (this.parent != null)
-                if (this.parent.Physics is IGUMultiPhysics mphy)
+                if (this.parent.Physics is IGUCollectionPhysics mphy)
                     _ = mphy.Add(Physics);
         }
 
@@ -164,7 +164,7 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
                 throw new IGUException($"Class {type.Name} does not inherit from class IGUObject.");
             else if (type.IsAbstract) 
                 throw new IGUException("The target class cannot be abstract.");
-            IGUObject instance = (IGUObject)CreateInstance(type.Name);
+            IGUObject instance = (IGUObject)CreateInstance(type);
             if (!string.IsNullOrEmpty(applyToContainer) && 
                 applyToContainer.ToLower() != "none") {
                     if (applyToContainer.ToLower() == "gc")
@@ -199,8 +199,8 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
 
         public static IGURect GetLocalPosition(IGUObject obj) {
             if (obj.parent != null) {
-                if (obj.parent is IIGUClipping cli && cli.IsClipping) 
-                    return obj.myRect.SetScaleFactor(IGUDrawer.ScaleFactor);
+                // if (obj.parent is IIGUClipping cli && cli.IsClipping) 
+                //     return obj.myRect.SetScaleFactor(IGUDrawer.ScaleFactor);
                 IGURect res = obj.myRect;
                 return res.SetScaleFactor(IGUDrawer.ScaleFactor)
                     .SetPosition(res.Position + GetLocalPosition(obj.parent).Position);

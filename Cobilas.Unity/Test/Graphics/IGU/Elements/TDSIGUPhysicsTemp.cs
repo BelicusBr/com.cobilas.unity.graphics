@@ -20,8 +20,7 @@ namespace Cobilas.Unity.Test.Graphics.IGU.Elements {
         }
 
         protected override void IGUOnEnable() {
-            _Physics = new IGUBoxPhysics(this);
-            _Physics.Target = this;
+            _Physics = IGUBasicPhysics.Create<IGUBoxPhysics>(this);
         }
 
         protected override void LowCallOnIGU() {

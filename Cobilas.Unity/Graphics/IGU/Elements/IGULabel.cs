@@ -4,12 +4,13 @@ using Cobilas.Unity.Graphics.IGU.Physics;
 namespace Cobilas.Unity.Graphics.IGU.Elements {
     public class IGULabel : IGUTextObject {
         public const string DefaultIGULabel = "IGU Label";
-        [SerializeField] private bool autoSize;
-        [SerializeField] private IGUStyle labelStyle;
+        [SerializeField] protected bool autoSize;
+        [SerializeField] protected IGUStyle labelStyle;
+        [SerializeField] protected IGUBasicPhysics physics;
 
         public bool AutoSize { get => autoSize; set => autoSize = value; }
+        public override IGUBasicPhysics Physics { get => physics; set => physics = value; }
         public IGUStyle LabelStyle { get => labelStyle; set => labelStyle = value ?? (IGUStyle)"Label"; }
-        public override IGUBasicPhysics Physics { get => throw new System.NotImplementedException(); set => throw new System.NotImplementedException(); }
 
         protected override void IGUAwake() {
             base.IGUAwake();
@@ -18,6 +19,7 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
             labelStyle = (IGUStyle)"Label";
             myColor = IGUColor.DefaultLabelColor;
             content = new IGUContent(DefaultIGULabel);
+            physics = IGUBasicPhysics.Create<IGUBoxPhysics>(this);
         }
 
         protected override void LowCallOnIGU() {

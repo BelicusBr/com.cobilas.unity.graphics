@@ -1,8 +1,8 @@
 ﻿using System;
 using UnityEngine;
 using Cobilas.Unity.Graphics.IGU.Events;
-using Cobilas.Unity.Graphics.IGU.Interfaces;
 using Cobilas.Unity.Graphics.IGU.Physics;
+using Cobilas.Unity.Graphics.IGU.Interfaces;
 
 namespace Cobilas.Unity.Graphics.IGU.Elements {
     public class IGUWindow : IGUTextObject, IIGUClipping {
@@ -12,6 +12,7 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
         [SerializeField] protected Rect dragFlap;
         [SerializeField] protected bool isClipping;
         [SerializeField] protected IGUStyle windowStyle;
+        [SerializeField] protected IGUBasicPhysics physics;
         [SerializeField] protected IGUScrollViewEvent onMovingWindow;
         [SerializeField] protected WindowFocusStatus windowFocusStatus;
 
@@ -23,7 +24,7 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
             set => windowStyle = value ?? (IGUStyle)"Black window border";
         }
         public bool IsClipping => isClipping;
-        public override IGUBasicPhysics Physics { get => throw new System.NotImplementedException(); set => throw new System.NotImplementedException(); }
+        public override IGUBasicPhysics Physics { get => physics; set => physics = value; }
 
         Rect IIGUClipping.RectView { 
             get => throw new NotImplementedException();
@@ -41,13 +42,15 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
             onMovingWindow = new IGUScrollViewEvent();
             content = new IGUContent(DefaultIGUWindow);
             windowStyle = (IGUStyle)"Black window border";
+            physics = IGUBasicPhysics.Create<IGUCollectionPhysics>(this);
+            (physics as IGUCollectionPhysics).SetTriangle(Triangle.Box);
             dragFlap = new Rect(0f, 0f, IGURect.DefaultWindow.Width, 15f);
         }
 
         protected override void LowCallOnIGU() {
 
             IGURect myRectTemp = BackEndIGU.SimpleWindow(LocalRect, dragFlap, LocalRect.Position, MyContent,
-                    windowStyle, IGUNonePhysics.None, GetInstanceID(), internalIndowFunction, ref windowFocusStatus);
+                    windowStyle, physics, GetInstanceID(), internalIndowFunction, ref windowFocusStatus);
 
             if (myRectTemp != myRect)
                 if (IGUDrawer.GetMouseButtonPress(LocalConfig.MouseType))

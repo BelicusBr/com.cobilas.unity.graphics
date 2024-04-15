@@ -11,6 +11,7 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
         [SerializeField] protected bool isTextArea;
         [SerializeField] protected IGUOnClickEvent onClick;
         [SerializeField] protected IGUStyle textFieldStyle;
+        [SerializeField] protected IGUBasicPhysics physics;
         [SerializeField] protected IGUTextFieldKeyCodeEvent onKeyDown;
         [SerializeField] protected IGUTextFieldKeyCharEvent onCharDown;
         [SerializeField] protected IGUTextFieldStringEvent onStringChanged;
@@ -26,7 +27,7 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
             get => textFieldStyle;
             set => textFieldStyle = value ?? (IGUStyle)"Black text field border";
         }
-        public override IGUBasicPhysics Physics { get => throw new System.NotImplementedException(); set => throw new System.NotImplementedException(); }
+        public override IGUBasicPhysics Physics { get => physics; set => physics = value; }
 
         protected override void IGUAwake() {
             base.IGUAwake();
@@ -38,6 +39,7 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
             onCharDown = new IGUTextFieldKeyCharEvent();
             onStringChanged = new IGUTextFieldStringEvent();
             textFieldStyle = (IGUStyle)"Black text field border";
+            physics = IGUBasicPhysics.Create<IGUBoxPhysics>(this);
         }
 
         protected override void LowCallOnIGU() {
@@ -48,7 +50,7 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
 
             IGUContent contentTemp = GetIGUContentTemp(MyContent.Text, MyContent.Image, MyContent.Tooltip);
 
-            BackEndIGU.TextBox(LocalRect, MyContent, GetInstanceID(), maxLength, IGUNonePhysics.None, textFieldStyle, isTextArea, ref isFocused);
+            BackEndIGU.TextBox(LocalRect, MyContent, GetInstanceID(), maxLength, physics, textFieldStyle, isTextArea, ref isFocused);
 
             // if (isTextArea) textTemp = BackEndIGU.TextArea(LocalRect, Text ?? string.Empty, maxLength, textFieldStyle);
             // else textTemp = BackEndIGU.TextField(LocalRect, Text ?? string.Empty, maxLength, textFieldStyle);

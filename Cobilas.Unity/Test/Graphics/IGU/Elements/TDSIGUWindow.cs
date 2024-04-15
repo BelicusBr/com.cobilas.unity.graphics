@@ -39,7 +39,7 @@ namespace Cobilas.Unity.Test.Graphics.IGU.Elements {
 
         protected override void IGUOnEnable() {
             base.IGUOnEnable();
-            physicsBase = new IGUMultiPhysics(this, Triangle.Box);
+            physicsBase = IGUBasicPhysics.Create<IGUCollectionPhysics>(this);
             physicsBase.Target = this;
         }
 

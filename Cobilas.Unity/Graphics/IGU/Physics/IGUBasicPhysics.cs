@@ -4,15 +4,29 @@ using Cobilas.Unity.Graphics.IGU.Elements;
 using Cobilas.Unity.Graphics.IGU.Interfaces;
 
 namespace Cobilas.Unity.Graphics.IGU.Physics {
-    [Serializable]
-    public abstract class IGUBasicPhysics {
+    public abstract class IGUBasicPhysics : ScriptableObject {
         public abstract Triangle[] Triangles { get; }
         public abstract IGUObject Target { get; set; }
         public abstract bool IsHotPotato { get; set; }
         public abstract IGUBasicPhysics Parent { get; set; }
         public delegate void CallPhysicsFeedback(Vector2 mousePosition, ref IGUBasicPhysics phy);
 
+        protected virtual void Awake() {}
+
         public abstract bool CollisionConfirmed(Vector2 mouse);
+
+        public static IGUBasicPhysics Create(Type type, IGUObject target) {
+            if (!type.IsSubclassOf(typeof(IGUBasicPhysics)))
+                throw new IGUException($"Class {type.Name} does not inherit from class IGUBasicPhysics.");
+            else if (type.IsAbstract) 
+                throw new IGUException("The target class cannot be abstract.");
+            IGUBasicPhysics result = (IGUBasicPhysics)CreateInstance(type);
+            result.Target = target;
+            return result;
+        }
+
+        public static T Create<T>(IGUObject target) where T: IGUBasicPhysics
+            => (T)Create(typeof(T), target);
 
         public static float GetGlobalRotation(IGUObject obj)
             => obj.Parent == null ? obj.MyRect.Rotation : obj.MyRect.Rotation + GetGlobalRotation(obj.Parent);
@@ -36,7 +50,7 @@ namespace Cobilas.Unity.Graphics.IGU.Physics {
 
         public static int BuildBufferTriangles(Triangle[] triangles, Triangle[] bufferTriangles, IGUObject obj, int rectHash) {
             if (obj == null) return rectHash;
-            if (rectHash == (rectHash = obj.MyRect.GetHashCode())) return rectHash;
+            if (rectHash == (rectHash = obj.LocalRect.GetHashCode())) return rectHash;
 
             for (int I = 0; I < triangles.Length; I++) {
                 Quaternion quaternion = Quaternion.Euler(Vector3.forward * GetGlobalRotation(obj));

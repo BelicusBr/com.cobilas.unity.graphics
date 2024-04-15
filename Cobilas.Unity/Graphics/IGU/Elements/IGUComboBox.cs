@@ -12,15 +12,16 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
     public class IGUComboBox : IGUObject, IEnumerable<IGUComboBoxButton>, IIGUClipping, IIGUToolTip, IIGUEndOfFrame {
 
         private Action onToolTip;
-        [SerializeField] private int index;
+        [SerializeField] protected int index;
         [SerializeField] protected IGUButton cbx_button;
-        [SerializeField] private IGUOnClickEvent onClick;
-        [SerializeField] private float comboBoxButtonHeight;
+        [SerializeField] protected IGUOnClickEvent onClick;
+        [SerializeField] protected IGUBasicPhysics physics;
+        [SerializeField] protected float comboBoxButtonHeight;
         [SerializeField] protected IGUScrollView cbx_scrollview;
-        [SerializeField] private IGUOnClickEvent onActivatedComboBox;
-        [SerializeField] private IGUComboBoxClickEvent onSelectedIndex;
+        [SerializeField] protected IGUOnClickEvent onActivatedComboBox;
         [SerializeField] protected IGUVerticalLayout cbx_verticalLayout;
-        [SerializeField] private bool adjustComboBoxViewAccordingToTheButtonsPresent;
+        [SerializeField] protected IGUComboBoxClickEvent onSelectedIndex;
+        [SerializeField] protected bool adjustComboBoxViewAccordingToTheButtonsPresent;
         private bool isIgnition;
 
         public string Text => cbx_button.Text;
@@ -102,16 +103,19 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
             get => cbx_scrollview.HorizontalScrollbarThumbStyle;
             set => cbx_scrollview.HorizontalScrollbarThumbStyle = value;
         }
-        public override IGUBasicPhysics Physics { get => throw new System.NotImplementedException(); set => throw new System.NotImplementedException(); }
+        public override IGUBasicPhysics Physics { get => physics; set => physics = value; }
 
         public IGUComboBoxButton this[int index] 
             => cbx_verticalLayout[index] as IGUComboBoxButton;
 
         protected override void IGUAwake() {
             base.IGUAwake();
+            isPhysicalElement = false;
             cbx_button = IGUObject.Create<IGUButton>($"[{name}]--{nameof(IGUButton)}");
             cbx_scrollview = IGUObject.Create<IGUScrollView>($"[{name}]--{nameof(IGUScrollView)}");
             cbx_verticalLayout = IGUObject.Create<IGUVerticalLayout>($"[{name}]--{nameof(IGUVerticalLayout)}");
+            physics = IGUBasicPhysics.Create<IGUCollectionPhysics>(this);
+            (physics as IGUCollectionPhysics).OnCollision = true;
             ScrollViewHeight = 150f;
             AdjustComboBoxView = true;
             CloseComboBoxView = false;

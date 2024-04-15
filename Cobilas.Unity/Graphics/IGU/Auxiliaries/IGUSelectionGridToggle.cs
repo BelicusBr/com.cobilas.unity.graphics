@@ -1,8 +1,8 @@
 ﻿using UnityEngine;
 using Cobilas.Unity.Graphics.IGU.Events;
+using Cobilas.Unity.Graphics.IGU.Physics;
 using Cobilas.Unity.Graphics.IGU.Elements;
 using Cobilas.Unity.Graphics.IGU.Interfaces;
-using Cobilas.Unity.Graphics.IGU.Physics;
 
 namespace Cobilas.Unity.Graphics.IGU {
     public sealed class IGUSelectionGridToggle : IGUObject, IIGUToolTip {
@@ -15,6 +15,7 @@ namespace Cobilas.Unity.Graphics.IGU {
         [SerializeField] private IGUContent myContent;
         [SerializeField] private IGUStyle tooltipStyle;
         [SerializeField] private IGUOnClickEvent onClick;
+        [SerializeField] private IGUBasicPhysics physics;
         [SerializeField] private IGUOnClickEvent checkBoxOn;
         [SerializeField] private IGUOnClickEvent checkBoxOff;
         [SerializeField] private IGUOnCheckedEvent onChecked;
@@ -28,6 +29,7 @@ namespace Cobilas.Unity.Graphics.IGU {
         public bool UseTooltip { get => useTooltip; set => useTooltip = value; }
         public string Text { get => MyContent.Text; set => MyContent.Text = value; }
         public Texture Image { get => MyContent.Image; set => MyContent.Image = value; }
+        public override IGUBasicPhysics Physics { get => physics; set => physics = value; }
         public string ToolTip { get => MyContent.Tooltip; set => MyContent.Tooltip = value; }
         public IGUStyle Style { get => style; set => style = value ?? (IGUStyle)"Black button border"; }
         public IGUStyle TooltipStyle { get => tooltipStyle; set => tooltipStyle = value ?? (IGUStyle)"Black box border"; }
@@ -35,7 +37,6 @@ namespace Cobilas.Unity.Graphics.IGU {
             get => _checked;
             internal set => onChecked.Invoke(checkedtemp = _checked = value);
         }
-        public override IGUBasicPhysics Physics { get => throw new System.NotImplementedException(); set => throw new System.NotImplementedException(); }
 
         protected override void IGUAwake() {
             base.IGUAwake();
@@ -49,12 +50,13 @@ namespace Cobilas.Unity.Graphics.IGU {
             onChecked = new IGUOnCheckedEvent();
             style = (IGUStyle)"Black button border";
             tooltipStyle = (IGUStyle)"Black box border";
+            physics = IGUBasicPhysics.Create<IGUBoxPhysics>(this);
             myContent = new IGUContent(IGUCheckBox.DefaultContantIGUCheckBox);
         }
 
         protected override void LowCallOnIGU() {
 
-            checkedtemp = BackEndIGU.Toggle(LocalRect, checkedtemp, myContent, style, IGUNonePhysics.None,
+            checkedtemp = BackEndIGU.Toggle(LocalRect, checkedtemp, myContent, style, physics,
                 GetInstanceID(), out _);
 
             bool isRect = LocalRect.Contains(IGUDrawer.MousePosition);

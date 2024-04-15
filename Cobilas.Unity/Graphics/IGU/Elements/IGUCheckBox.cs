@@ -11,7 +11,7 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
         [SerializeField] protected bool checkedtemp;
         [SerializeField] protected IGUStyle checkBoxStyle;
         [SerializeField] protected IGUOnClickEvent onClick;
-        [SerializeField] protected IGUBoxPhysics boxPhysics;
+        [SerializeField] protected IGUBasicPhysics physics;
         [SerializeField] protected IGUOnClickEvent checkBoxOn;
         [SerializeField] protected IGUOnClickEvent checkBoxOff;
         [SerializeField] protected IGUOnCheckedEvent onChecked;
@@ -28,7 +28,7 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
             get => _checked;
             set => onChecked.Invoke(_checked = checkedtemp = value);
         }
-        public override IGUBasicPhysics Physics { get => boxPhysics; set => boxPhysics = (IGUBoxPhysics)value; }
+        public override IGUBasicPhysics Physics { get => physics; set => physics = value; }
 
         protected override void IGUAwake() {
             base.IGUAwake();
@@ -37,16 +37,16 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
             checkBoxOn = new IGUOnClickEvent();
             checkBoxOff = new IGUOnClickEvent();
             onChecked = new IGUOnCheckedEvent();
-            boxPhysics = new IGUBoxPhysics(this);
             onclicked = checkedtemp = _checked = false;
             checkBoxStyle = (IGUStyle)"Black toggle border";
             content = new IGUContent(DefaultContantIGUCheckBox);
+            physics = IGUBasicPhysics.Create<IGUBoxPhysics>(this);
         }
 
         protected override void LowCallOnIGU() {
             checkBoxStyle.RichText = richText;
             checkedtemp = BackEndIGU.Toggle(LocalRect, checkedtemp, MyContent, checkBoxStyle,
-                IGUNonePhysics.None, GetInstanceID(), out bool onclickedTemp);
+                physics, GetInstanceID(), out bool onclickedTemp);
 
             Event @event = Event.current;
             bool isRect = LocalRect.Contains(IGUDrawer.MousePosition);

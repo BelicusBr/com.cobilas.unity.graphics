@@ -4,19 +4,19 @@ using Cobilas.Unity.Graphics.IGU.Physics;
 namespace Cobilas.Unity.Graphics.IGU.Elements {
     public class IGUBox : IGUTextObject {
         public const string DefaultIGUBox = "IGU Box";
-        [SerializeField] private IGUStyle boxStyle;
-        [SerializeField] private IGUBoxPhysics boxPhysics;
+        [SerializeField] protected IGUStyle boxStyle;
+        [SerializeField] protected IGUBasicPhysics physics;
 
+        public override IGUBasicPhysics Physics { get => physics; set => physics = value; }
         public IGUStyle BoxStyle { get => boxStyle; set => boxStyle = value ?? (IGUStyle)"Black box border"; }
-        public override IGUBasicPhysics Physics { get => boxPhysics; set => boxPhysics = (IGUBoxPhysics)value; }
 
         protected override void IGUAwake() {
             base.IGUAwake();
             myRect = IGURect.DefaultBox;
             myColor = IGUColor.DefaultBoxColor;
-            boxPhysics = new IGUBoxPhysics(this);
             boxStyle = (IGUStyle)"Black box border";
             content = new IGUContent(DefaultIGUBox);
+            physics = IGUBasicPhysics.Create<IGUBoxPhysics>(this);
         }
 
         protected override void LowCallOnIGU() {

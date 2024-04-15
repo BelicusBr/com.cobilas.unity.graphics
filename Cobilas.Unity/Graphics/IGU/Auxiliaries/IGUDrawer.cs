@@ -2,6 +2,7 @@
 using System.Collections;
 using Cobilas.Collections;
 using UnityEngine.SceneManagement;
+using Cobilas.Unity.Graphics.IGU.Physics;
 using Cobilas.Unity.Management.Container;
 using Cobilas.Unity.Graphics.IGU.Elements;
 using Cobilas.Unity.Graphics.IGU.Interfaces;
@@ -63,6 +64,13 @@ namespace Cobilas.Unity.Graphics.IGU {
         private void OnGUI() {
             GUIUtility.ScaleAroundPivot(ScaleFactor, Vector2.zero);
             mousePosition = Event.current.mousePosition;
+
+            IGUBasicPhysics result = null;
+            canvasContainer.CallPhysics?.Invoke(mousePosition, ref result);
+            if (result != null) {
+                Debug.Log(result.Target.name);
+                result.IsHotPotato = true;
+            }
             
             canvasContainer.OnIGU?.Invoke();
             canvasContainer.OnToolTip?.Invoke();

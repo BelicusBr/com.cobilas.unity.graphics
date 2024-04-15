@@ -4,20 +4,22 @@ using Cobilas.Unity.Graphics.IGU.Physics;
 
 namespace Cobilas.Unity.Graphics.IGU.Elements {
     public class IGUHorizontalSlider : IGUSliderObject {
+        [SerializeField] protected IGUBasicPhysics physics;
         [SerializeField] protected IGUStyle horizontalSliderThumb;
         [SerializeField] protected IGUOnSliderValueEvent onModifiedSlider;
         [SerializeField] protected IGUOnSliderIntValueEvent onModifiedSliderInt;
 
         public IGUOnSliderValueEvent OnModifiedSlider => onModifiedSlider;
         public IGUOnSliderIntValueEvent OnModifiedSliderInt => onModifiedSliderInt;
+        public override IGUBasicPhysics Physics { get => physics; set => physics = value; }
         public IGUStyle HorizontalSliderThumb { get => horizontalSliderThumb; set => horizontalSliderThumb = value; }
-        public override IGUBasicPhysics Physics { get => throw new System.NotImplementedException(); set => throw new System.NotImplementedException(); }
 
         protected override void IGUAwake() {
             base.IGUAwake();
             myColor = IGUColor.DefaultBoxColor;
             onModifiedSlider = new IGUOnSliderValueEvent();
             onModifiedSliderInt = new IGUOnSliderIntValueEvent();
+            physics = IGUBasicPhysics.Create<IGUBoxPhysics>(this);
             sliderObjectStyle = (IGUStyle)"Black horizontal slider border";
             horizontalSliderThumb = (IGUStyle)"Black horizontal slider border thumb";
         }
@@ -30,7 +32,7 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
             value = Mathf.Clamp(value, temp.Min, temp.Max);
 
             float valuetemp = BackEndIGU.Slider(LocalRect, isInt ? ValueToInt : value, temp, GetInstanceID(),
-                IGUNonePhysics.None, sliderObjectStyle, horizontalSliderThumb, true);
+                physics, sliderObjectStyle, horizontalSliderThumb, true);
 
             if (valuetemp != value)
                 if (IGUDrawer.GetMouseButtonPress(LocalConfig.MouseType)) {
