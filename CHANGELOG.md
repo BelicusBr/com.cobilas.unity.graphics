@@ -1,6 +1,11 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+# [4.6.2] (18/04/2024)
+## Fixed
+The `IGUCanvasContainer` class used the `IGUObject.OnIGU()` method to render the IGU element instead of the `IIGUObject.InternalOnIGU()` method. \
+When using the `IGUObject.OnIGU()` method in the `IGUCanvasContainer` class, the colors of the IGU element were not modified.
+
 # [4.6.1] (07/03/2024)
 ## Removed
 The `IIGUObject.AlteredDepth(List<IIGUObject>, int)` method was removed due to the fact that the `IGUObject.MyConfig` property already fulfilled this function.
