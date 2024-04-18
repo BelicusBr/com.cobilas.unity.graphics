@@ -29,7 +29,11 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
         public void OnIGU() {
             GUI.SetNextControlName(name);
             IGUConfig config = LocalConfig;
+            // if (name == "Item[1]")
+            //     Debug.Log($"[{name}]{config.IsVisible}");
             if (config.IsVisible) {
+                Matrix4x4 oldMatrix = GUI.matrix;
+                GUIUtility.RotateAroundPivot(myRect.Rotation, LocalRect.Position);
                 bool oldEnabled = GUI.enabled;
                 GUI.enabled = config.IsEnabled;
                 myRect.SetScaleFactor(IGUDrawer.ScaleFactor);
@@ -37,7 +41,9 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
                 (this as IIGUObject).InternalPreOnIGU();
                 LowCallOnIGU();
                 (this as IIGUObject).InternalPostOnIGU();
+                
                 GUI.enabled = oldEnabled;
+                GUI.matrix = oldMatrix;
             }
         }
 
@@ -134,6 +140,8 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
         }
 
         void IIGUPhysics.CallPhysicsFeedback(Vector2 mouse, ref IGUBasicPhysics phys) {
+            if (name == "Item[1]")
+                Debug.Log($"[{name}]{LocalConfig.IsVisible}");
             if (LocalConfig.IsVisible) {
                 Physics.IsHotPotato = false;
                 InternalCallPhysicsFeedback(mouse, ref phys);
@@ -199,8 +207,6 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
 
         public static IGURect GetLocalPosition(IGUObject obj) {
             if (obj.parent != null) {
-                // if (obj.parent is IIGUClipping cli && cli.IsClipping) 
-                //     return obj.myRect.SetScaleFactor(IGUDrawer.ScaleFactor);
                 IGURect res = obj.myRect;
                 return res.SetScaleFactor(IGUDrawer.ScaleFactor)
                     .SetPosition(res.Position + GetLocalPosition(obj.parent).Position);

@@ -9,7 +9,7 @@ using Cobilas.Unity.Graphics.IGU.Physics;
 using Cobilas.Unity.Graphics.IGU.Interfaces;
 
 namespace Cobilas.Unity.Graphics.IGU.Elements {
-    public class IGUComboBox : IGUObject, IEnumerable<IGUComboBoxButton>, IIGUClipping, IIGUToolTip, IIGUEndOfFrame {
+    public class IGUComboBox : IGUObject, IEnumerable<IGUComboBoxButton>, IIGUToolTip, IIGUEndOfFrame {
 
         private Action onToolTip;
         [SerializeField] protected int index;
@@ -28,7 +28,7 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
         public Texture Image => cbx_button.Image;
         public IGUOnClickEvent OnClick => onClick;
         public int ButtonCount => cbx_verticalLayout.Count;
-        public bool IsClipping => cbx_scrollview.IsClipping;
+        //public bool IsClipping => cbx_scrollview.IsClipping;
         public int Index { get => index; set => SetIndex(value); }
         public IGUComboBoxClickEvent OnSelectedIndex => onSelectedIndex;
         public IGUOnClickEvent OnActivatedComboBox => onActivatedComboBox;
@@ -138,7 +138,8 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
 
         protected override void IGUOnEnable() {
             base.IGUOnEnable();
-            cbx_scrollview.ScrollViewAction += (scv)=>{
+            cbx_scrollview.ScrollViewAction += (scv) => {
+                cbx_verticalLayout.MyRect = cbx_verticalLayout.MyRect.SetPosition(-scv.ScrollView);
                 cbx_verticalLayout.OnIGU();
             };
             cbx_scrollview.OnScrollView.AddListener(ChangeVisibility);

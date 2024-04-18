@@ -63,13 +63,13 @@ namespace Cobilas.Unity.Graphics.IGU {
 
         private void OnGUI() {
             GUIUtility.ScaleAroundPivot(ScaleFactor, Vector2.zero);
-            mousePosition = Event.current.mousePosition;
+            Event current = Event.current;
+            mousePosition = current.mousePosition;
 
-            IGUBasicPhysics result = null;
-            canvasContainer.CallPhysics?.Invoke(mousePosition, ref result);
-            if (result != null) {
-                Debug.Log(result.Target.name);
-                result.IsHotPotato = true;
+            if (current.type == EventType.Layout) {
+                IGUBasicPhysics result = null;
+                canvasContainer.CallPhysics?.Invoke(mousePosition, ref result);
+                if (result != null) result.IsHotPotato = true;
             }
             
             canvasContainer.OnIGU?.Invoke();

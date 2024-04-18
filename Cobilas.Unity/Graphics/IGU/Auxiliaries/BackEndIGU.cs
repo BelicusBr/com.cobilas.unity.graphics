@@ -1,25 +1,18 @@
 using System;
 using UnityEngine;
 using System.Text;
-using Cobilas.Collections;
 using Cobilas.Unity.Graphics.IGU.Physics;
 using Cobilas.Unity.Graphics.IGU.Elements;
 
 namespace Cobilas.Unity.Graphics.IGU {
     public static class BackEndIGU {
 
-        private static int indexMatrix = 0;
         private static Rect rectTemp = Rect.zero;
-        private static Matrix4x4[] matrix = new Matrix4x4[0];
 
-        public static void Label(IGURect rect, IGUContent content, IGUStyle style, int ID) {
-            BeginRotation(rect);
-            ((GUIStyle)style).DrawRepaint((Rect)rect, (GUIContent)content, ID);
-            EndRotation();
-        }
+        public static void Label(IGURect rect, IGUContent content, IGUStyle style, int ID)
+            => ((GUIStyle)style).DrawRepaint((Rect)rect, (GUIContent)content, ID);
 
         public static bool Button(IGURect rect, IGUContent content, IGUStyle style, IGUBasicPhysics phy, int ID, bool isFocused) {
-            BeginRotation(rect);
             Event @event = Event.current;
             bool isHover = rect.Contains(@event.mousePosition) && phy.IsHotPotato && GUI.enabled;
             switch (@event.GetTypeForControl(ID)) {
@@ -38,7 +31,6 @@ namespace Cobilas.Unity.Graphics.IGU {
                     }
                     GUIUtility.hotControl = 0;
                     @event.Use();
-                    EndRotation();
                     return true;
                 case EventType.Repaint:
                     ((GUIStyle)style).Draw(
@@ -47,7 +39,6 @@ namespace Cobilas.Unity.Graphics.IGU {
                         false, isFocused);
                     goto default;
                 default:
-                    EndRotation();
                     return false;
             }
         }
@@ -56,7 +47,6 @@ namespace Cobilas.Unity.Graphics.IGU {
             => Button(rect, content, style, phy, ID, false);
 
         public static bool RepeatButton(IGURect rect, IGUContent content, IGUStyle style, IGUBasicPhysics phy, int ID, bool isFocused, out bool onClick) {
-            BeginRotation(rect);
             Event @event = Event.current;
             bool isHover = rect.Contains(@event.mousePosition) && phy.IsHotPotato && GUI.enabled;
             onClick = false;
@@ -77,7 +67,6 @@ namespace Cobilas.Unity.Graphics.IGU {
                     }
                     GUIUtility.hotControl = 0;
                     @event.Use();
-                    EndRotation();
                     return true;
                 case EventType.Repaint:
                     ((GUIStyle)style).Draw(
@@ -86,7 +75,6 @@ namespace Cobilas.Unity.Graphics.IGU {
                         false, isFocused);
                     return ID == GUIUtility.hotControl && isHover;
                 default:
-                    EndRotation();
                     return false;
             }
         }
@@ -95,7 +83,6 @@ namespace Cobilas.Unity.Graphics.IGU {
             => RepeatButton(rect, content, style, phy, ID, false, out onClick);
 
         public static bool Toggle(IGURect rect, bool value, IGUContent content, IGUStyle style, IGUBasicPhysics phy, int ID, bool isFocused, out bool onClick) {
-            BeginRotation(rect);
             Event @event = Event.current;
             bool isHover = rect.Contains(@event.mousePosition) && phy.IsHotPotato && GUI.enabled;
             onClick = false;
@@ -124,7 +111,6 @@ namespace Cobilas.Unity.Graphics.IGU {
                         value, isFocused);
                     goto default;
                 default: 
-                    EndRotation();
                     return value;
             }
         } 
@@ -133,7 +119,6 @@ namespace Cobilas.Unity.Graphics.IGU {
             => Toggle(rect, value, content, style, phy, ID, false, out onClick);
 
         public static float Slider(IGURect rect, float value, float size, MaxMinSlider maxMin, int ID, IGUBasicPhysics phy, IGUStyle style, IGUStyle styleThumb, bool isHoriz, bool isFocused) {
-            BeginRotation(rect);
             Event @event = Event.current;
             GUIStyle sstyle = (GUIStyle)style;
             GUIStyle sstyleThumb = (GUIStyle)styleThumb;
@@ -203,7 +188,6 @@ namespace Cobilas.Unity.Graphics.IGU {
                         false, false);
                     break;
             }
-            EndRotation();
             return slider.NormalSize == 1f ? slider.Min : Mathf.Clamp(slider.Value, slider.Min, slider.Max);
         }
 
@@ -214,7 +198,6 @@ namespace Cobilas.Unity.Graphics.IGU {
             => Slider(rect, value, 0f, maxMin, ID, phy, style, styleThumb, isHoriz, false);
 
         public static IGURect SimpleWindow(IGURect rect, Rect rectDrag, Vector2 clippingScrollOffset, IGUContent content, IGUStyle style, IGUBasicPhysics phy, int ID, Action<int, Vector2> function, ref WindowFocusStatus focusStatus) {
-            BeginRotation(rect);
             Event @event = Event.current;
             GUIStyle winStyle = (GUIStyle)style;
             WindowStatus window = (WindowStatus)GUIUtility.GetStateObject(typeof(WindowStatus), ID);
@@ -256,7 +239,6 @@ namespace Cobilas.Unity.Graphics.IGU {
             }
             IGURect rectClip = rect;
             Clipping(rectClip.SetRotation(0f), clippingScrollOffset, window.ClippingFunc);
-            EndRotation();
             return rect;
         }
 
@@ -267,7 +249,6 @@ namespace Cobilas.Unity.Graphics.IGU {
             => InternalTextBox(rect, content, ID, maxLength, phy, style, mask, false, true, ref isFocused);
 
         public static void SelectableText(IGURect rect, IGUContent content, int ID, IGUBasicPhysics phy, IGUStyle style, ref bool isFocused) {
-            BeginRotation(rect);
             Event current = Event.current;
             TextEditor editor = (TextEditor)GUIUtility.GetStateObject(typeof(TextEditor), ID);
             editor.text = content.Text;
@@ -374,11 +355,9 @@ namespace Cobilas.Unity.Graphics.IGU {
                     break;
             }
             editor.UpdateScrollOffsetIfNeeded(current);
-            EndRotation();
         }
 
         private static void InternalTextBox(IGURect rect, IGUContent content, int ID, int maxLength, IGUBasicPhysics phy, IGUStyle style, char mask, bool isMultiline, bool isPasswordField, ref bool isFocused) {
-            BeginRotation(rect);
             Event @event = Event.current;
             GUIStyle textStyle = (GUIStyle)style;
             TextEditorStatus textEditorStatus = (TextEditorStatus)GUIUtility.GetStateObject(typeof(TextEditorStatus), ID);
@@ -561,7 +540,6 @@ namespace Cobilas.Unity.Graphics.IGU {
                     break;
             }
             textEditorStatus.UpdateScrollOffsetIfNeeded(@event);
-            EndRotation();
             if (textEditorStatus.IsMaxLength) {
                 GUI.changed = false;
                 return;
@@ -570,19 +548,14 @@ namespace Cobilas.Unity.Graphics.IGU {
         }
 
         public static void Clipping(IGURect rect, Vector2 scrollOffset, Action<Vector2> clippinFunc) {
-            BeginRotation(rect);
             scrollOffset = Vector2.zero - rect.Position + scrollOffset;
             GUI.BeginClip(GetRectTemp(rect), scrollOffset, Vector2.zero, false);
             clippinFunc(scrollOffset);
             GUI.EndClip();
-            EndRotation();
         }
 
-        public static void TextureBox(IGURect rect, Texture image, ScaleMode scaleMode, bool alphaBlend, float imageAspect, Color color, Vector4 borderWidths, Vector4 borderRadiuses) {
-            BeginRotation(rect);
-            GUI.DrawTexture(GetRectTemp(rect), image, scaleMode, alphaBlend, imageAspect, color, borderWidths, borderRadiuses);
-            EndRotation();
-        }
+        public static void TextureBox(IGURect rect, Texture image, ScaleMode scaleMode, bool alphaBlend, float imageAspect, Color color, Vector4 borderWidths, Vector4 borderRadiuses)
+            => GUI.DrawTexture(GetRectTemp(rect), image, scaleMode, alphaBlend, imageAspect, color, borderWidths, borderRadiuses);
 
         private static Rect GetRectTemp(IGURect rect) {
             rectTemp.position = rect.Position;
@@ -593,18 +566,6 @@ namespace Cobilas.Unity.Graphics.IGU {
         private static void FocusWindow(int id) {
             GUI.FocusWindow(id);
             IGUCanvasContainer.FocusWindow(id);
-        }
-
-        private static void BeginRotation(IGURect rect) {
-            ++indexMatrix;
-            if (matrix.Length < indexMatrix)
-                ArrayManipulation.Resize(ref matrix, indexMatrix);
-            matrix[indexMatrix - 1] = GUI.matrix;
-            GUIUtility.RotateAroundPivot(rect.Rotation, rect.ModifiedRect.Position);
-        }
-
-        private static void EndRotation() {
-            GUI.matrix = matrix[--indexMatrix];
         }
 
         private static bool IsCopyOrPasteEvent(Event @event) {

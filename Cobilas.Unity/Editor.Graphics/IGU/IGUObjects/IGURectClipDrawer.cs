@@ -58,9 +58,9 @@ namespace Cobilas.Unity.Editor.Graphics.IGU {
                     DrawBackground(position = MoveDown(position, pheight + BlankSpace),
                         EditorGUI.GetPropertyHeight(SerializedPropertyType.Rect, EditorGUIUtility.TrTempContent("Rect View")) +
                         BlankSpace);
-                    ++EditorGUI.indentLevel;
-                    obj.RectView = EditorGUI.RectField(position, EditorGUIUtility.TrTempContent("Rect View"), obj.RectView);
-                    --EditorGUI.indentLevel;
+                    // ++EditorGUI.indentLevel;
+                    // obj.RectView = EditorGUI.RectField(position, EditorGUIUtility.TrTempContent("Rect View"), obj.RectView);
+                    // --EditorGUI.indentLevel;
                 }
                 serialized.ApplyModifiedProperties();
             }

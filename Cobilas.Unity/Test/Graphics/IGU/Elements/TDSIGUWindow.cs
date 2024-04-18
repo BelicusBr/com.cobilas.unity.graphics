@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using Cobilas.Collections;
 
 namespace Cobilas.Unity.Test.Graphics.IGU.Elements {
-    public sealed class TDSIGUWindow : IGUObject, IIGUWindow, IIGUClipping, IIGUPhysics {
+    public sealed class TDSIGUWindow : IGUObject, IIGUWindow, IIGUPhysics {
         public GUI.WindowFunction windowFunction;
         private IGUBasicPhysics physicsBase;
         [SerializeField] private IGUStyle style;

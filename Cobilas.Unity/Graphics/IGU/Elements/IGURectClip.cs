@@ -1,21 +1,21 @@
 ﻿using System;
 using UnityEngine;
 using Cobilas.Unity.Graphics.IGU.Physics;
-using Cobilas.Unity.Graphics.IGU.Interfaces;
 
 namespace Cobilas.Unity.Graphics.IGU.Elements {
-    public class IGURectClip : IGUObject, IIGUClipping {
+    public class IGURectClip : IGUObject {
 
         public event Action<Vector2> RectClipAction;
         [SerializeField] protected Rect rectView;
-        [SerializeField] protected bool isClipping;
         [SerializeField] protected bool autoInvert;
+        [SerializeField] private bool renderOffSet;
         [SerializeField] protected Vector2 scrollView;
         [SerializeField] protected IGUBasicPhysics physics;
 
-        public bool IsClipping => isClipping;
-        public bool AutoInvert { get => autoInvert; set => autoInvert = value; }
+        // public bool IsClipping => isClipping;
         public Rect RectView { get => rectView; set => rectView = value; }
+        public bool AutoInvert { get => autoInvert; set => autoInvert = value; }
+        public bool RenderOffSet { get => renderOffSet; set => renderOffSet = value; }
         public Vector2 ScrollView { 
             get => rectView.position = scrollView.Invert(autoInvert, autoInvert);
             set => rectView.position = scrollView = value.Invert(autoInvert, autoInvert);
@@ -24,7 +24,8 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
 
         protected override void IGUAwake() {
             base.IGUAwake();
-            autoInvert = true;
+            autoInvert =
+            renderOffSet = true;
             isPhysicalElement = false;
             myRect = IGURect.DefaultBox;
             myColor = IGUColor.DefaultBoxColor;
@@ -34,13 +35,10 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
         }
 
         protected override void LowCallOnIGU() {
-            BackEndIGU.Clipping(LocalRect, scrollView, ClipFunc);
+            BackEndIGU.Clipping(LocalRect, renderOffSet ? ScrollView : Vector2.zero, ClipFunc);
         }
 
-        private void ClipFunc(Vector2 scrollOffset) {
-            isClipping = true;
-            RectClipAction?.Invoke(scrollOffset);
-            isClipping = false;
-        }
+        private void ClipFunc(Vector2 scrollOffset) 
+            => RectClipAction?.Invoke(scrollOffset);
     }
 }

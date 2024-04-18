@@ -22,7 +22,7 @@
         "files.exclude": {
             "**/*.meta": true
         },
-        "dotnet.preferCSharpExtension": false,
+        "dotnet.preferCSharpExtension": true,
         "dotnet.backgroundAnalysis.analyzerDiagnosticsScope": "openFiles",
         "dotnet.dotnetPath": "C:/Program Files/dotnet",
         "dotnet.defaultSolution": "com.unity.test.sln"

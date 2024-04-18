@@ -18,6 +18,13 @@ namespace Cobilas.Unity.Graphics.IGU {
 #endif
 
         public static readonly Rect rectTemp = Rect.zero;
+        private readonly static IGURect zero = new IGURect(Vector2.zero, Vector2.zero, Vector2.zero, Vector2.zero);
+        private readonly static IGURect defaultBox = new IGURect(Vector2.zero, new Vector2(50f, 50f), Vector2.zero, Vector2.one);
+        private readonly static IGURect defaultButton = new IGURect(Vector2.zero, new Vector2(130f, 25f), Vector2.zero, Vector2.one);
+        private readonly static IGURect defaultSlider = new IGURect(Vector2.zero, new Vector2(130f, 15f), Vector2.zero, Vector2.one);
+        private readonly static IGURect defaultWindow = new IGURect(Vector2.zero, new Vector2(230f, 350f), Vector2.zero, Vector2.one);
+        private readonly static IGURect defaultTextArea = new IGURect(Vector2.zero, new Vector2(250f, 250f), Vector2.zero, Vector2.one);
+        private readonly static IGURect defaultSelectionGrid = new IGURect(Vector2.zero, new Vector2(60f, 25f), Vector2.zero, Vector2.one);
 
         public float X => x;
         public float Y => y;
@@ -45,13 +52,13 @@ namespace Cobilas.Unity.Graphics.IGU {
         public float Left => x + width;
         public Vector2 Center => new Vector2(x + width * .5f, y + height * .5f);
 
-        public static IGURect Zero => new IGURect(Vector2.zero, Vector2.zero, Vector2.zero, Vector2.zero);
-        public static IGURect DefaultBox => new IGURect(Vector2.zero, new Vector2(50f, 50f), Vector2.zero, Vector2.one);
-        public static IGURect DefaultButton => new IGURect(Vector2.zero, new Vector2(130f, 25f), Vector2.zero, Vector2.one);
-        public static IGURect DefaultSlider => new IGURect(Vector2.zero, new Vector2(130f, 15f), Vector2.zero, Vector2.one);
-        public static IGURect DefaultWindow => new IGURect(Vector2.zero, new Vector2(230f, 350f), Vector2.zero, Vector2.one);
-        public static IGURect DefaultTextArea => new IGURect(Vector2.zero, new Vector2(250f, 250f), Vector2.zero, Vector2.one);
-        public static IGURect DefaultSelectionGrid => new IGURect(Vector2.zero, new Vector2(60f, 25f), Vector2.zero, Vector2.one);
+        public static IGURect Zero => zero;
+        public static IGURect DefaultBox => defaultBox;
+        public static IGURect DefaultButton => defaultButton;
+        public static IGURect DefaultSlider => defaultSlider;
+        public static IGURect DefaultWindow => defaultWindow;
+        public static IGURect DefaultTextArea => defaultTextArea;
+        public static IGURect DefaultSelectionGrid => defaultSelectionGrid;
 
         public IGURect(float x, float y, float width, float height, float pivotX, float pivotY, float SFWidth, float SFHeight) {
             this.x = x;
@@ -143,10 +150,15 @@ namespace Cobilas.Unity.Graphics.IGU {
         }
 
         public override int GetHashCode()
-            => base.GetHashCode() >> x.GetHashCode() ^ y.GetHashCode() <<
-            width.GetHashCode() ^ height.GetHashCode() >> scaleFactorWidth.GetHashCode() ^
-            scaleFactorHeight.GetHashCode() << pivotX.GetHashCode() ^ pivotY.GetHashCode() >>
-            rotation.GetHashCode();
+            => (base.GetHashCode() ^ (rotation.GetHashCode() << 2)) >> 
+            (x.GetHashCode() ^ (y.GetHashCode() << 2)) <<
+            (width.GetHashCode() ^ (height.GetHashCode() << 2)) >>
+            (scaleFactorWidth.GetHashCode() ^ (scaleFactorHeight.GetHashCode() << 2)) <<
+            (pivotX.GetHashCode() ^ (pivotY.GetHashCode() << 2));
+            // => base.GetHashCode() >> x.GetHashCode() << y.GetHashCode() >>
+            // width.GetHashCode() << height.GetHashCode() >> scaleFactorWidth.GetHashCode() <<
+            // scaleFactorHeight.GetHashCode() << pivotX.GetHashCode() >> pivotY.GetHashCode() <<
+            // rotation.GetHashCode();
 
         public override bool Equals(object obj)
             => obj is IGURect rect && Equals(rect);

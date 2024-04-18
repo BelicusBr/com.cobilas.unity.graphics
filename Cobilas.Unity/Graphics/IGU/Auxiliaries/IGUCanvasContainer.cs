@@ -86,8 +86,9 @@ namespace Cobilas.Unity.Graphics.IGU {
             callPhysics = (IGUBasicPhysics.CallPhysicsFeedback)null;
             IGUObject[] elements = IGUCanvas.ReoderDepth(Containers);
             for (long I = 0; I < ArrayManipulation.ArrayLongLength(elements); I++) {
-                callPhysics = AddCallPhysicsFeedbackFunc(elements[I], callPhysics);
-                onIGU += elements[I].OnIGU;
+                foreach (IIGUPhysics item in GetAllPhysics(elements[I]))
+                    callPhysics += item.CallPhysicsFeedback;
+                onIGU += (elements[I] as IIGUObject).InternalOnIGU;
                 if (elements[I] is IIGUToolTip tip) onToolTip += tip.InternalDrawToolTip;
                 if (elements[I] is IIGUEndOfFrame frame) onEndOfFrame += frame.EndOfFrame;                
             }
@@ -149,6 +150,16 @@ namespace Cobilas.Unity.Graphics.IGU {
                 for (int I = 0; I < cphy.SubPhysicsCount; I++)
                     call = AddCallPhysicsFeedbackFunc(cphy.SubPhysics[I].Target, call);
             return call;
+        }
+
+        private static IIGUPhysics[] GetAllPhysics(IGUObject obj) {
+            IIGUPhysics[] result = new IIGUPhysics[0];
+            if (obj.IsPhysicalElement)
+                ArrayManipulation.Add((obj as IIGUPhysics), ref result);
+            if (obj.Physics is IGUCollectionPhysics cphy)
+                for (int I = 0; I < cphy.SubPhysicsCount; I++)
+                    ArrayManipulation.Add(GetAllPhysics(cphy.SubPhysics[I].Target), ref result);
+            return result;
         }
     }
 }

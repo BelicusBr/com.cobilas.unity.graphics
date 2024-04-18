@@ -2,10 +2,9 @@
 using UnityEngine;
 using Cobilas.Unity.Graphics.IGU.Events;
 using Cobilas.Unity.Graphics.IGU.Physics;
-using Cobilas.Unity.Graphics.IGU.Interfaces;
 
 namespace Cobilas.Unity.Graphics.IGU.Elements {
-    public class IGUWindow : IGUTextObject, IIGUClipping {
+    public class IGUWindow : IGUTextObject {
         public event GUI.WindowFunction windowFunction;
         public const string DefaultIGUWindow = "IGU Window";
 
@@ -25,15 +24,6 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
         }
         public bool IsClipping => isClipping;
         public override IGUBasicPhysics Physics { get => physics; set => physics = value; }
-
-        Rect IIGUClipping.RectView { 
-            get => throw new NotImplementedException();
-            set => throw new NotImplementedException();
-        }
-        Vector2 IIGUClipping.ScrollView {
-            get => throw new NotImplementedException();
-            set => throw new NotImplementedException();
-        }
 
         protected override void IGUAwake() {
             base.IGUAwake();
