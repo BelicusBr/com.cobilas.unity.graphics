@@ -81,7 +81,7 @@ namespace Cobilas.Unity.Graphics.IGU {
             onEndOfFrame = (Action)null;
             foreach (IGUDepthDictionary item1 in ReoderDepth(Containers))
                 foreach (Elements.IGUObject item2 in item1) {
-                    onIGU += item2.OnIGU;
+                    onIGU += (item2 as IIGUObject).InternalOnIGU;
                     if (item2 is IIGUToolTip tip) onToolTip += tip.InternalDrawToolTip;
                     if (item2 is IIGUEndOfFrame frame) onEndOfFrame += frame.EndOfFrame;
                 }
