@@ -130,8 +130,10 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
             cbx_button.Parent = cbx_scrollview.Parent = this;
             cbx_verticalLayout.Parent = cbx_scrollview;
 
-            for (int I = 0; I < 10; I++)
+            for (int I = 0; I < 10; I++) {
                 Add($"Item[{I}]");
+                //Debug.Log($"CH[{cbx_verticalLayout[I].name}]{cbx_verticalLayout[I].Parent is null}");
+            }
             isIgnition = true;
             SetIndex(0);
         }

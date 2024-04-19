@@ -58,6 +58,7 @@ namespace Cobilas.Unity.Graphics.IGU {
             while (true) {
                 yield return new WaitForEndOfFrame();
                 canvasContainer.OnEndOfFrame?.Invoke();
+                IGUCanvasContainer.RefreshPhyEvents();
             }
         }
 

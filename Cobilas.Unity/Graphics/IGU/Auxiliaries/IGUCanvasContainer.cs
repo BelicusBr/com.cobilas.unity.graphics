@@ -14,10 +14,11 @@ namespace Cobilas.Unity.Graphics.IGU {
             Permanent = 2
         }
 
-        private Action onIGU;
-        private Action onToolTip;
-        private Action onEndOfFrame;
-        private IGUBasicPhysics.CallPhysicsFeedback callPhysics;
+        private event Action onIGU;
+        private event Action onToolTip;
+        private event Action onEndOfFrame;
+        private IGUPhyContainer phyContainer;
+        private event IGUBasicPhysics.CallPhysicsFeedback callPhysics;
         [SerializeField] private long focusedWindowId;
         [SerializeField] private IGUCanvas[] Containers;
         [SerializeField] private MaxMinSliderInt maxMinDepth;
@@ -40,6 +41,7 @@ namespace Cobilas.Unity.Graphics.IGU {
         private void OnEnable() {
             if (container == null)
                 container = this;
+            phyContainer = new IGUPhyContainer();
 
             RefreshEvents();
 
@@ -85,9 +87,8 @@ namespace Cobilas.Unity.Graphics.IGU {
             onEndOfFrame = (Action)null;
             callPhysics = (IGUBasicPhysics.CallPhysicsFeedback)null;
             IGUObject[] elements = IGUCanvas.ReoderDepth(Containers);
+            phyContainer.RefreshPhysics(elements);
             for (long I = 0; I < ArrayManipulation.ArrayLongLength(elements); I++) {
-                foreach (IIGUPhysics item in GetAllPhysics(elements[I]))
-                    callPhysics += item.CallPhysicsFeedback;
                 onIGU += (elements[I] as IIGUObject).InternalOnIGU;
                 if (elements[I] is IIGUToolTip tip) onToolTip += tip.InternalDrawToolTip;
                 if (elements[I] is IIGUEndOfFrame frame) onEndOfFrame += frame.EndOfFrame;                
@@ -121,6 +122,10 @@ namespace Cobilas.Unity.Graphics.IGU {
         public static void FocusWindow(int id) => container.InternalFocusWindow(id);
 
         public static void RefreshEvents() => container.InternalRefreshEvents();
+
+        public static void RefreshPhyEvents() {
+            container.callPhysics = container.phyContainer.GetCallPhysicsFeedback();
+        }
 
         public static IGUCanvas GetGenericContainer() => container.Containers[0];
 

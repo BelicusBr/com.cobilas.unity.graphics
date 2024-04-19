@@ -6,6 +6,7 @@ using Cobilas.Unity.Graphics.IGU.Interfaces;
 namespace Cobilas.Unity.Graphics.IGU.Elements {
     public abstract class IGUObject : ScriptableObject, IIGUObject, IIGUPhysics {
         private bool isBuild;
+        private static bool retroName;
         [SerializeField] protected IGURect myRect;
         [SerializeField] protected IGUColor myColor;
         [SerializeField] protected IGUObject parent;
@@ -29,8 +30,6 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
         public void OnIGU() {
             GUI.SetNextControlName(name);
             IGUConfig config = LocalConfig;
-            // if (name == "Item[1]")
-            //     Debug.Log($"[{name}]{config.IsVisible}");
             if (config.IsVisible) {
                 Matrix4x4 oldMatrix = GUI.matrix;
                 GUIUtility.RotateAroundPivot(myRect.Rotation, LocalRect.Position);
@@ -141,11 +140,13 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
 
         void IIGUPhysics.CallPhysicsFeedback(Vector2 mouse, ref IGUBasicPhysics phys) {
             if (name == "Item[1]")
-                Debug.Log($"[{name}]{LocalConfig.IsVisible}");
+            //     Debug.Log($"[{name}]{LocalConfig.IsVisible}");
+            retroName = true;
             if (LocalConfig.IsVisible) {
                 Physics.IsHotPotato = false;
                 InternalCallPhysicsFeedback(mouse, ref phys);
             }
+            retroName = false;
         }
 
         void IIGUObject.InternalPreOnIGU() => PreOnIGU();
@@ -195,6 +196,9 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
         }
 
         public static IGUConfig GetLocalConfig(IGUObject obj) {
+            if (retroName)
+                Debug.Log($"[{obj.name}]{obj.MyConfig.IsVisible}");
+                
             if (obj.parent != null) {
                 IGUConfig myConfig = obj.myConfig;
                 IGUConfig config = GetLocalConfig(obj.parent);
