@@ -1,6 +1,5 @@
 using System;
 using UnityEngine;
-using Cobilas.Unity.Graphics.IGU;
 
 namespace Cobilas.Unity.Graphics.IGU {
     internal sealed class SliderStatus {

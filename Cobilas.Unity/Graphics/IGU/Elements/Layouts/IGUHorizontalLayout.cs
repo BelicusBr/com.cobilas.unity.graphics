@@ -11,6 +11,7 @@ namespace Cobilas.Unity.Graphics.IGU.Layouts {
         [SerializeField] private CellIGUObject[] objects;
         [SerializeField] private IGUBasicPhysics physics;
         [SerializeField] private HorizontalLayoutCellCursor cursor;
+        private IGUBasicPhysics.CallPhysicsFeedback callPhysicsFeedback;
 
         public Vector2 GridRect => cursor.GridRect;
         public override int Count => ArrayManipulation.ArrayLength(objects);
@@ -23,9 +24,8 @@ namespace Cobilas.Unity.Graphics.IGU.Layouts {
 
         protected override void IGUAwake() {
             base.IGUAwake();
-            isPhysicalElement = false;
-            physics = IGUBasicPhysics.Create<IGUCollectionPhysics>(this);
-            (physics as IGUCollectionPhysics).OnCollision = true;
+            //isPhysicalElement = false;
+            physics = IGUBasicPhysics.Create<IGUBoxPhysics>(this, true);
             cursor = new HorizontalLayoutCellCursor();
             Spacing = 3f;
             UseCellSize = false;
@@ -95,9 +95,15 @@ namespace Cobilas.Unity.Graphics.IGU.Layouts {
 
         private void RefreshOnIGUEvent() {
             sub_OnIGU = (Action<CellCursor>)null;
-            for (int I = 0; I < Count; I++)
+            callPhysicsFeedback = (IGUBasicPhysics.CallPhysicsFeedback)null;
+            for (int I = 0; I < Count; I++) {
                 sub_OnIGU += objects[I].OnIGU;
+                callPhysicsFeedback += (objects[I].@object as IIGUPhysics).CallPhysicsFeedback;
+            }
         }
+
+        protected override void InternalCallPhysicsFeedback(Vector2 mouse, ref IGUBasicPhysics phys)
+            => callPhysicsFeedback?.Invoke(mouse, ref phys);
 
         void IIGUSerializationCallbackReceiver.Reserialization() {
 #if UNITY_EDITOR

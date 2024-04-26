@@ -7,40 +7,34 @@ using System.Collections.Generic;
 using Cobilas.Collections;
 
 namespace Cobilas.Unity.Test.Graphics.IGU.Elements {
-    public sealed class TDSIGUWindow : IGUObject, IIGUWindow, IIGUPhysics {
+    public sealed class TDSIGUWindow : IGUObject, IIGUWindow, IIGUClippingPhysics {
         public GUI.WindowFunction windowFunction;
         private IGUBasicPhysics physicsBase;
         [SerializeField] private IGUStyle style;
         [SerializeField] private WindowFocusStatus isFocused;
+        [SerializeField] private IGUPhysicsClippingContainer phyContainer;
 
         public override IGUBasicPhysics Physics { get => physicsBase; set => physicsBase = value; }
-        WindowFocusStatus IIGUWindow.IsFocused { get => isFocused; set => isFocused = value; }
+        
+        WindowFocusStatus IIGUWindow.IsFocused { get => isFocused; }
 
         public bool IsClipping => true;
 
         public Rect RectView { get => throw new System.NotImplementedException(); set => throw new System.NotImplementedException(); }
         public Vector2 ScrollView { get => LocalRect.Position; set => throw new System.NotImplementedException(); }
 
-        void IIGUPhysics.CallPhysicsFeedback(Vector2 mouse, ref IGUBasicPhysics phys) {
-            if (!LocalConfig.IsVisible) return;
-            physicsBase.IsHotPotato = false;
-            // if (parent is IIGUPhysics phy && parent is IIGUClipping)
-            //     if (!phy.Physics.CollisionConfirmed(mouse))
-            //         return;
-            if (physicsBase.CollisionConfirmed(mouse))
-                phys = physicsBase;
-        }
-
         protected override void IGUAwake() {
             base.IGUAwake();
             myRect = IGURect.DefaultWindow;
             style = (IGUStyle)"Black window border";
+            phyContainer = new IGUPhysicsClippingContainer();
         }
 
         protected override void IGUOnEnable() {
             base.IGUOnEnable();
-            physicsBase = IGUBasicPhysics.Create<IGUCollectionPhysics>(this);
+            physicsBase = IGUBasicPhysics.Create<IGUBoxPhysics>(this);
             physicsBase.Target = this;
+            phyContainer.RefreshEvents();
         }
 
         protected override void LowCallOnIGU() {
@@ -49,7 +43,16 @@ namespace Cobilas.Unity.Test.Graphics.IGU.Elements {
                 funcwin, ref isFocused);
         }
 
+        protected override void InternalCallPhysicsFeedback(Vector2 mouse, ref IGUBasicPhysics phys)
+            => phyContainer.CallPhysicsFeedback(mouse, ref phys);
+
         private void funcwin (int id, Vector2 vector)
             => windowFunction?.Invoke(id);
+
+        public bool AddOtherPhysics(IGUObject obj)
+            => phyContainer.AddOtherPhysics(obj);
+
+        public bool RemoveOtherPhysics(IGUObject obj)
+            => phyContainer.RemoveOtherPhysics(obj);
     }
 }

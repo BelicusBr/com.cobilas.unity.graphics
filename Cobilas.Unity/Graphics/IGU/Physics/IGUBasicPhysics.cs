@@ -1,13 +1,13 @@
 ﻿using System;
 using UnityEngine;
 using Cobilas.Unity.Graphics.IGU.Elements;
-using Cobilas.Unity.Graphics.IGU.Interfaces;
 
 namespace Cobilas.Unity.Graphics.IGU.Physics {
     public abstract class IGUBasicPhysics : ScriptableObject {
         public abstract Triangle[] Triangles { get; }
         public abstract IGUObject Target { get; set; }
         public abstract bool IsHotPotato { get; set; }
+        public abstract bool IsFixedCollision { get; set; }
         public abstract IGUBasicPhysics Parent { get; set; }
         public delegate void CallPhysicsFeedback(Vector2 mousePosition, ref IGUBasicPhysics phy);
 
@@ -15,18 +15,25 @@ namespace Cobilas.Unity.Graphics.IGU.Physics {
 
         public abstract bool CollisionConfirmed(Vector2 mouse);
 
-        public static IGUBasicPhysics Create(Type type, IGUObject target) {
+        public static IGUBasicPhysics Create(Type type, IGUObject target, bool isFixedCollision) {
             if (!type.IsSubclassOf(typeof(IGUBasicPhysics)))
                 throw new IGUException($"Class {type.Name} does not inherit from class IGUBasicPhysics.");
             else if (type.IsAbstract) 
                 throw new IGUException("The target class cannot be abstract.");
             IGUBasicPhysics result = (IGUBasicPhysics)CreateInstance(type);
             result.Target = target;
+            result.IsFixedCollision = isFixedCollision;
             return result;
         }
 
+        public static IGUBasicPhysics Create(Type type, IGUObject target)
+            => Create(type, target, false);
+
+        public static T Create<T>(IGUObject target, bool isFixedCollision) where T: IGUBasicPhysics
+            => (T)Create(typeof(T), target, isFixedCollision);
+
         public static T Create<T>(IGUObject target) where T: IGUBasicPhysics
-            => (T)Create(typeof(T), target);
+            => (T)Create(typeof(T), target, false);
 
         public static float GetGlobalRotation(IGUObject obj)
             => obj.Parent == null ? obj.MyRect.Rotation : obj.MyRect.Rotation + GetGlobalRotation(obj.Parent);
@@ -35,8 +42,6 @@ namespace Cobilas.Unity.Graphics.IGU.Physics {
             if (obj.Parent != null) {
                 IGURect res = obj.MyRect;
                 Vector2 position = res.Position;
-                // if (obj.Parent is IIGUClipping cli && cli.IsClipping) 
-                //     return res.SetPosition(position + cli.ScrollView);
                 if (!noRotation) {
                     Quaternion quaternion = Quaternion.Euler(Vector3.forward * GetGlobalRotation(obj.Parent));
                     position = quaternion.GenerateDirectionRight() * position.x +
@@ -53,7 +58,6 @@ namespace Cobilas.Unity.Graphics.IGU.Physics {
             float globalRotation = GetGlobalRotation(obj);
             IGURect local = obj.LocalRect.SetRotation(globalRotation);
             if (rectHash == (rectHash = local.GetHashCode())) return rectHash;
-            Debug.Log($"[{obj.name}][{local}]{rectHash}");
 
             for (int I = 0; I < triangles.Length; I++) {
                 Quaternion quaternion = Quaternion.Euler(Vector3.forward * globalRotation);

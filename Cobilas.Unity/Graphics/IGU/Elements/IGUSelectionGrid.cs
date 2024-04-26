@@ -19,6 +19,7 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
         [SerializeField] protected IGUGridLayout gridLayout;
         [SerializeField] protected IGUStyle tooltipToggleStype;
         [SerializeField] protected IGUStyle selectionGridToggleStyle;
+        protected IGUBasicPhysics.CallPhysicsFeedback callPhysicsFeedback;
         [SerializeField] protected IGUOnSliderIntValueEvent onSelectedIndex;
 
         public int ToggleCount => gridLayout.Count;
@@ -52,8 +53,7 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
 
         protected override void IGUAwake() {
             base.IGUAwake();
-            physics = IGUBasicPhysics.Create<IGUCollectionPhysics>(this);
-            (physics as IGUCollectionPhysics).OnCollision = true;
+            physics = IGUBasicPhysics.Create<IGUBoxPhysics>(this, true);
             gridLayout = IGUObject.Create<IGUGridLayout>($"[{name}]--{nameof(IGUGridLayout)}");
             gridLayout.DirectionalBreak = DirectionalBreak.HorizontalBreak;
             gridLayout.Parent = this;
@@ -69,9 +69,11 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
 
         protected override void IGUOnEnable() {
             onToolTip = (Action)null;
+            callPhysicsFeedback = (IGUBasicPhysics.CallPhysicsFeedback)null;
             for (int I = 0; I < ToggleCount; I++) {
                 IGUSelectionGridToggle temp = gridLayout[I] as IGUSelectionGridToggle;
                 onToolTip += (temp as IIGUToolTip).InternalDrawToolTip;
+                callPhysicsFeedback += (temp as IIGUPhysics).CallPhysicsFeedback;
                 temp.OnChecked.RemoveAllListeners();
                 temp.OnChecked.AddListener((b) => SetEvent(b, temp));
             }
@@ -101,6 +103,7 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
             button.Style = selectionGridToggleStyle;
             button.TooltipStyle = tooltipToggleStype;
             onToolTip += (button as IIGUToolTip).InternalDrawToolTip;
+            callPhysicsFeedback += (button as IIGUPhysics).CallPhysicsFeedback;
             button.OnChecked.AddListener((b) => SetEvent(b, button));
             gridLayout.Add(button);
         }
@@ -126,9 +129,11 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
             if (gridLayout.Remove(index, true))
                 if (ToggleCount != 0) {
                     onToolTip = (Action)null;
+                    callPhysicsFeedback = (IGUBasicPhysics.CallPhysicsFeedback)null;
                     RecursiveList((c, i) => { 
                         c.Index = i;
                         onToolTip += (c as IIGUToolTip).InternalDrawToolTip;
+                        callPhysicsFeedback += (c as IIGUPhysics).CallPhysicsFeedback;
                     }, 0, gridLayout);
                 }
         }
@@ -139,6 +144,9 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
             for (int I = 0; I < ToggleCount; I++)
                 yield return this[I];
         }
+
+        protected override void InternalCallPhysicsFeedback(Vector2 mouse, ref IGUBasicPhysics phys)
+            => callPhysicsFeedback?.Invoke(mouse, ref phys);
 
         private void SelectedIndexFunc(int index) {
             if (index < 0 || index >= ToggleCount)

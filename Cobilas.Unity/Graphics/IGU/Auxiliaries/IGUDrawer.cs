@@ -68,10 +68,10 @@ namespace Cobilas.Unity.Graphics.IGU {
             mousePosition = current.mousePosition;
 
             if (current.type == EventType.Layout) {
+            }
                 IGUBasicPhysics result = null;
                 canvasContainer.CallPhysics?.Invoke(mousePosition, ref result);
                 if (result != null) result.IsHotPotato = true;
-            }
             
             canvasContainer.OnIGU?.Invoke();
             canvasContainer.OnToolTip?.Invoke();

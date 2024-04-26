@@ -21,6 +21,7 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
         [SerializeField] protected IGUOnClickEvent onActivatedComboBox;
         [SerializeField] protected IGUVerticalLayout cbx_verticalLayout;
         [SerializeField] protected IGUComboBoxClickEvent onSelectedIndex;
+        protected IGUBasicPhysics.CallPhysicsFeedback callPhysicsFeedback;
         [SerializeField] protected bool adjustComboBoxViewAccordingToTheButtonsPresent;
         private bool isIgnition;
 
@@ -110,12 +111,12 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
 
         protected override void IGUAwake() {
             base.IGUAwake();
-            isPhysicalElement = false;
+            //isPhysicalElement = false;
             cbx_button = IGUObject.Create<IGUButton>($"[{name}]--{nameof(IGUButton)}");
             cbx_scrollview = IGUObject.Create<IGUScrollView>($"[{name}]--{nameof(IGUScrollView)}");
             cbx_verticalLayout = IGUObject.Create<IGUVerticalLayout>($"[{name}]--{nameof(IGUVerticalLayout)}");
-            physics = IGUBasicPhysics.Create<IGUCollectionPhysics>(this);
-            (physics as IGUCollectionPhysics).OnCollision = true;
+            cbx_scrollview += cbx_verticalLayout;
+            physics = IGUBasicPhysics.Create<IGUBoxPhysics>(this, true);
             ScrollViewHeight = 150f;
             AdjustComboBoxView = true;
             CloseComboBoxView = false;
@@ -130,10 +131,8 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
             cbx_button.Parent = cbx_scrollview.Parent = this;
             cbx_verticalLayout.Parent = cbx_scrollview;
 
-            for (int I = 0; I < 10; I++) {
+            for (int I = 0; I < 10; I++)
                 Add($"Item[{I}]");
-                //Debug.Log($"CH[{cbx_verticalLayout[I].name}]{cbx_verticalLayout[I].Parent is null}");
-            }
             isIgnition = true;
             SetIndex(0);
         }
@@ -144,6 +143,9 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
                 cbx_verticalLayout.MyRect = cbx_verticalLayout.MyRect.SetPosition(-scv.ScrollView);
                 cbx_verticalLayout.OnIGU();
             };
+            callPhysicsFeedback = (IGUBasicPhysics.CallPhysicsFeedback)null;
+            callPhysicsFeedback += (cbx_button as IIGUPhysics).CallPhysicsFeedback;
+            callPhysicsFeedback += (cbx_scrollview as IIGUPhysics).CallPhysicsFeedback;
             cbx_scrollview.OnScrollView.AddListener(ChangeVisibility);
             cbx_button.OnClick.AddListener(ChangeCbxScrollviewVisibility);
             #if UNITY_EDITOR
@@ -223,6 +225,9 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
             for (int I = 0; I < ButtonCount; I++)
                 yield return cbx_verticalLayout[I] as IGUComboBoxButton;
         }
+
+        protected override void InternalCallPhysicsFeedback(Vector2 mouse, ref IGUBasicPhysics phys)
+            => callPhysicsFeedback?.Invoke(mouse, ref phys);
 
         protected override void LowCallOnIGU() {
             cbx_button.MyRect = cbx_button.MyRect.SetPosition(Vector2.zero).SetSize(myRect.Size);

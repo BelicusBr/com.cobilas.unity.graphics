@@ -41,8 +41,7 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
             textField = Create<IGUTextField>($"--[{name}]TextField");
             buttonLeft = Create<IGURepeatButton>($"--[{name}]ButtonLeft");
             buttonRight = Create<IGURepeatButton>($"--[{name}]ButtonRight");
-            physics = IGUBasicPhysics.Create<IGUCollectionPhysics>(this);
-            (physics as IGUCollectionPhysics).OnCollision = true;
+            physics = IGUBasicPhysics.Create<IGUBoxPhysics>(this);
             buttonLeft.Text = "<";
             textField.Text = "0";
             buttonRight.Text = ">";
@@ -86,6 +85,11 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
             buttonRight.OnRepeatClick.AddListener(() => ModValue(additionValue));
         }
 
+        protected override void InternalCallPhysicsFeedback(Vector2 mouse, ref IGUBasicPhysics phys) {
+            (textField as IIGUPhysics).CallPhysicsFeedback(mouse, ref phys);
+            (buttonLeft as IIGUPhysics).CallPhysicsFeedback(mouse, ref phys);
+            (buttonRight as IIGUPhysics).CallPhysicsFeedback(mouse, ref phys);
+        }
 
         private void ModValue(float value) {
             this.value += value;

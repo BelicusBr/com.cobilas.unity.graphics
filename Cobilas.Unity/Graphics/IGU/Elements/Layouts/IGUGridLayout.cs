@@ -12,6 +12,7 @@ namespace Cobilas.Unity.Graphics.IGU.Layouts {
         [SerializeField] private CellIGUObject[] objects;
         [SerializeField] private IGUBasicPhysics physics;
         [SerializeField] private GridLayoutCellCursor cursor;
+        private IGUBasicPhysics.CallPhysicsFeedback callPhysicsFeedback;
 
         public override int Count => ArrayManipulation.ArrayLength(objects);
         public Vector2 Spacing { get => cursor.spacing; set => cursor.spacing = value; }
@@ -24,9 +25,7 @@ namespace Cobilas.Unity.Graphics.IGU.Layouts {
 
         protected override void IGUAwake() {
             base.IGUAwake();
-            physics = IGUBasicPhysics.Create<IGUCollectionPhysics>(this);
-            isPhysicalElement = false;
-            (physics as IGUCollectionPhysics).OnCollision = true;
+            physics = IGUBasicPhysics.Create<IGUBoxPhysics>(this, true);
             cursor = new GridLayoutCellCursor();
             DirectionalCount = 3;
             cursor.UseCellSize = true;
@@ -90,6 +89,9 @@ namespace Cobilas.Unity.Graphics.IGU.Layouts {
         public override void Clear()
             => Clear(false);
 
+        protected override void InternalCallPhysicsFeedback(Vector2 mouse, ref IGUBasicPhysics phys)
+            => callPhysicsFeedback?.Invoke(mouse, ref phys);
+
         private int IndexOf(IGUObject item) {
             for (int I = 0; I < Count; I++)
                 if (objects[I] == item)
@@ -99,8 +101,11 @@ namespace Cobilas.Unity.Graphics.IGU.Layouts {
 
         private void RefreshOnIGUEvent() {
             sub_OnIGU = (Action<CellCursor>)null;
-            for (int I = 0; I < Count; I++)
+            callPhysicsFeedback = (IGUBasicPhysics.CallPhysicsFeedback)null;
+            for (int I = 0; I < Count; I++) {
                 sub_OnIGU += objects[I].OnIGU;
+                callPhysicsFeedback += (objects[I].@object as IIGUPhysics).CallPhysicsFeedback;
+            }
         }
 
         void IIGUSerializationCallbackReceiver.Reserialization() {

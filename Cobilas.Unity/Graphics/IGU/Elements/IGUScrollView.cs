@@ -12,7 +12,7 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
      * (") => &quot;
      * (') => &apos;
      */
-    public class IGUScrollView : IGUObject, IIGUSerializationCallbackReceiver {
+    public class IGUScrollView : IGUObject, IIGUClippingPhysics {
 
         public event Action<IGUScrollView> ScrollViewAction;
         [SerializeField] protected Rect rectView;
@@ -41,12 +41,10 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
 
         protected override void IGUAwake() {
             base.IGUAwake();
-            isPhysicalElement = false;
             rectClip = Create<IGURectClip>($"--[{name}]RectClip");
             verticalScrollbar = Create<IGUVerticalScrollbar>($"--[{name}]VerticalScrollbar");
             horizontalScrollbar = Create<IGUHorizontalScrollbar>($"--[{name}]HorizontalScrollbar");
-            physics = IGUBasicPhysics.Create<IGUCollectionPhysics>(this);
-            (physics as IGUCollectionPhysics).OnCollision = true;
+            physics = IGUBasicPhysics.Create<IGUBoxPhysics>(this);
             myRect = IGURect.DefaultTextArea;
             myColor = IGUColor.DefaultBoxColor;
             onScrollView = new IGUScrollViewEvent();
@@ -55,7 +53,12 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
             alwaysShowHorizontal =
             rectClip.RenderOffSet = false;
             rectClip.Parent = verticalScrollbar.Parent = horizontalScrollbar.Parent = this;
-            (this as IIGUSerializationCallbackReceiver).Reserialization();
+        }
+
+        protected override void IGUOnEnable() {
+            rectClip.RectClipAction += (r) => {
+                ScrollViewAction?.Invoke(this);
+            };
         }
 
         protected override void LowCallOnIGU() {
@@ -67,37 +70,29 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
                 verticalScrollbar.SliderObjectStyle.FixedWidth : 0f;
 
             rectClip.MyRect = rectClip.MyRect.SetSize(myRect.Size - vfix).SetPosition(Vector2Int.zero);
-            Vector2 vsize = rectView.size - (rectView.size - (rectClip.MyRect.Size + vfix));
+            Vector2 vsize = myRect.Size - (rectView.size - myRect.Size);
+
+            //Debug.Log($"[{name}]vsize:{vsize}:{rectView.size}:{rectClip.MyRect.Size}:{rectView.size - rectClip.MyRect.Size}");
             
             vsize.x = rectView.width < myRect.Width ? rectView.width : vsize.x;
             vsize.y = rectView.height < myRect.Height ? rectView.height : vsize.y;
             verticalScrollbar.MaxMinValue = verticalScrollbar.MaxMinValue.Set(0f, rectView.height);
             horizontalScrollbar.MaxMinValue = horizontalScrollbar.MaxMinValue.Set(0f, rectView.width);
 
-            if (vfix.x != 0f || alwaysShowHorizontal) {
-                if (!verticalScrollbar.MyConfig.IsVisible)
-                    verticalScrollbar.MyConfig = verticalScrollbar.MyConfig.SetVisible(true);
+            verticalScrollbar.MyConfig = verticalScrollbar.MyConfig.SetVisible(vfix.x != 0f || alwaysShowHorizontal);
+            horizontalScrollbar.MyConfig = horizontalScrollbar.MyConfig.SetVisible(vfix.y != 0f || alwaysShowVertical);
 
-                verticalScrollbar.MyRect = verticalScrollbar.MyRect.SetSize(vfix.x, rectClip.MyRect.Height)
-                    .SetPosition(rectClip.MyRect.Width, 0f);
-                verticalScrollbar.ScrollbarThumbSize = vsize.y;
-                if (alwaysShowVertical)
-                    verticalScrollbar.MyConfig = verticalScrollbar.MyConfig.SetEnabled(rectView.height > myRect.Height);
-            } else {
-                if (verticalScrollbar.MyConfig.IsVisible)
-                    verticalScrollbar.MyConfig = verticalScrollbar.MyConfig.SetVisible(false);
-            }
+            verticalScrollbar.MyRect = verticalScrollbar.MyRect.SetSize(vfix.x, rectClip.MyRect.Height)
+                .SetPosition(rectClip.MyRect.Width, 0f);
+            verticalScrollbar.ScrollbarThumbSize = vsize.y;
+            if (alwaysShowVertical)
+                verticalScrollbar.MyConfig = verticalScrollbar.MyConfig.SetEnabled(rectView.height > myRect.Height);
             
-            if (vfix.y != 0f || alwaysShowVertical) {
-                horizontalScrollbar.MyRect = horizontalScrollbar.MyRect.SetSize(rectClip.MyRect.Width, vfix.y)
-                    .SetPosition(0f, rectClip.MyRect.Height);
-                horizontalScrollbar.ScrollbarThumbSize = vsize.x;
-                if (alwaysShowHorizontal)
-                    horizontalScrollbar.MyConfig = horizontalScrollbar.MyConfig.SetEnabled(rectView.width > myRect.Width);
-            } else {
-                if (horizontalScrollbar.MyConfig.IsVisible)
-                    horizontalScrollbar.MyConfig = horizontalScrollbar.MyConfig.SetVisible(false);
-            }
+            horizontalScrollbar.MyRect = horizontalScrollbar.MyRect.SetSize(rectClip.MyRect.Width, vfix.y)
+                .SetPosition(0f, rectClip.MyRect.Height);
+            horizontalScrollbar.ScrollbarThumbSize = vsize.x;
+            if (alwaysShowHorizontal)
+                horizontalScrollbar.MyConfig = horizontalScrollbar.MyConfig.SetEnabled(rectView.width > myRect.Width);
             
             verticalScrollbar.OnIGU();
             horizontalScrollbar.OnIGU();
@@ -117,10 +112,26 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
                     onScrollView.Invoke(scrollView);
         }
 
-        void IIGUSerializationCallbackReceiver.Reserialization() {
-            rectClip.RectClipAction += (r) => {
-                ScrollViewAction?.Invoke(this);
-            };
+        protected override void InternalCallPhysicsFeedback(Vector2 mouse, ref IGUBasicPhysics phys) {
+            (verticalScrollbar as IIGUPhysics).CallPhysicsFeedback(mouse, ref phys);
+            (horizontalScrollbar as IIGUPhysics).CallPhysicsFeedback(mouse, ref phys);
+            (rectClip as IIGUPhysics).CallPhysicsFeedback(mouse, ref phys);
+        }
+
+        public bool AddOtherPhysics(IGUObject obj)
+            => rectClip.AddOtherPhysics(obj);
+
+        public bool RemoveOtherPhysics(IGUObject obj)
+            => rectClip.RemoveOtherPhysics(obj);
+
+        public static IGUScrollView operator +(IGUScrollView A, IIGUPhysics B) {
+            _ = A.AddOtherPhysics(B.Physics.Target);
+            return A;
+        }
+
+        public static IGUScrollView operator -(IGUScrollView A, IIGUPhysics B) {
+            _ = A.RemoveOtherPhysics(B.Physics.Target);
+            return A;
         }
     }
 }

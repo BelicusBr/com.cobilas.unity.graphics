@@ -1,7 +1,6 @@
-using System;
+using UnityEngine;
 using Cobilas.Unity.Graphics.IGU;
 using Cobilas.Unity.Graphics.IGU.Elements;
-using UnityEngine;
 
 public class TDS_IGUComun : MonoBehaviour {
 

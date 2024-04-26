@@ -4,11 +4,14 @@ using Cobilas.Unity.Graphics.IGU.Elements;
 
 namespace Cobilas.Unity.Graphics.IGU.Physics {
     public sealed class IGUNonePhysics : IGUBasicPhysics {
-        private readonly static IGUNonePhysics none = new IGUNonePhysics();
+        [SerializeField] private IGUObject target;
 
+        private readonly static IGUNonePhysics none = Create<IGUNonePhysics>(null);
+
+        public override IGUObject Target { get => target; set => target = value; }
         public override Triangle[] Triangles => throw new NotImplementedException();
         public override bool IsHotPotato { get => true; set => throw new NotImplementedException(); }
-        public override IGUObject Target { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public override bool IsFixedCollision { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
         public override IGUBasicPhysics Parent { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
         public static IGUNonePhysics None => none;

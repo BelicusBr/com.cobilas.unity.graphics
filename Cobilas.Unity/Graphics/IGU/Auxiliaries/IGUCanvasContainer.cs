@@ -2,9 +2,9 @@ using System;
 using UnityEngine;
 using Cobilas.Collections;
 using UnityEngine.SceneManagement;
-using Cobilas.Unity.Graphics.IGU.Interfaces;
-using Cobilas.Unity.Graphics.IGU.Elements;
 using Cobilas.Unity.Graphics.IGU.Physics;
+using Cobilas.Unity.Graphics.IGU.Elements;
+using Cobilas.Unity.Graphics.IGU.Interfaces;
 
 namespace Cobilas.Unity.Graphics.IGU {
     public sealed class IGUCanvasContainer : MonoBehaviour {
@@ -17,7 +17,6 @@ namespace Cobilas.Unity.Graphics.IGU {
         private event Action onIGU;
         private event Action onToolTip;
         private event Action onEndOfFrame;
-        private IGUPhyContainer phyContainer;
         private event IGUBasicPhysics.CallPhysicsFeedback callPhysics;
         [SerializeField] private long focusedWindowId;
         [SerializeField] private IGUCanvas[] Containers;
@@ -30,6 +29,8 @@ namespace Cobilas.Unity.Graphics.IGU {
         public Action OnEndOfFrame { get => onEndOfFrame; }
         public IGUBasicPhysics.CallPhysicsFeedback CallPhysics { get => callPhysics; }
 
+        public static IGUCanvasContainer CurrentContainer => container;
+
         private void Awake() {
             focusedWindowId = long.MinValue;
             Containers = new IGUCanvas[] {
@@ -41,9 +42,8 @@ namespace Cobilas.Unity.Graphics.IGU {
         private void OnEnable() {
             if (container == null)
                 container = this;
-            phyContainer = new IGUPhyContainer();
 
-            RefreshEvents();
+            InternalRefreshEvents();
 
             SceneManager.sceneLoaded += SceneLoaded;
             SceneManager.sceneUnloaded += SceneUnloaded;
@@ -52,7 +52,7 @@ namespace Cobilas.Unity.Graphics.IGU {
 
         //A ação está sendo duplicada
         private void ActiveSceneChanged(Scene scene1, Scene scene2) {
-            RefreshEvents();
+            InternalRefreshEvents();
         }
 
         private void SceneLoaded(Scene scene, LoadSceneMode mode) {
@@ -85,51 +85,42 @@ namespace Cobilas.Unity.Graphics.IGU {
             onIGU = (Action)null;
             onToolTip = (Action)null;
             onEndOfFrame = (Action)null;
-            callPhysics = (IGUBasicPhysics.CallPhysicsFeedback)null;
             IGUObject[] elements = IGUCanvas.ReoderDepth(Containers);
-            phyContainer.RefreshPhysics(elements);
             for (long I = 0; I < ArrayManipulation.ArrayLongLength(elements); I++) {
                 onIGU += (elements[I] as IIGUObject).InternalOnIGU;
                 if (elements[I] is IIGUToolTip tip) onToolTip += tip.InternalDrawToolTip;
                 if (elements[I] is IIGUEndOfFrame frame) onEndOfFrame += frame.EndOfFrame;                
             }
+            InternalRefreshPhyEvents();
         }
 
-        private void InternalFocusWindow(int id) {
-            if (id == focusedWindowId) return;
-            focusedWindowId = id;
-            for (int I = 0; I < ArrayManipulation.ArrayLength(Containers); I++)
-                for (int J = 0; J < Containers[I].ElementsCount; J++) {
-                    IGUObject temp = Containers[I][J];
-                    if (temp is IIGUWindow win) {
-                        if (win.GetInstanceID() == id) win.IsFocused = WindowFocusStatus.Focused;
-                        else if (win.IsFocused != WindowFocusStatus.None)
-                            win.IsFocused = WindowFocusStatus.Unfocused;
-                    }
-                }
+        private void InternalRefreshPhyEvents() {
+            callPhysics = (IGUBasicPhysics.CallPhysicsFeedback)null;
+            IGUObject[] elements = IGUCanvas.ReoderDepth(Containers);
+            for (long I = 0; I < ArrayManipulation.ArrayLongLength(elements); I++) {
+                IIGUPhysics phyTemp = elements[I] as IIGUPhysics;
+                if (phyTemp.IsPhysicalElement)
+                    callPhysics += phyTemp.CallPhysicsFeedback;
+            }
         }
 
         public static IGUCanvas GetOrCreateIGUCanvas(string name, CanvasType type = CanvasType.All) {
             IGUCanvas res = GetGUCanvas(name, CanvasType.All);
             if (res == null) {
                 res = new IGUCanvas(name, type == CanvasType.All ? CanvasType.Volatile : type);
-                ArrayManipulation.Add(res, ref container.Containers);
-                container.InternalRefreshEvents();
+                ArrayManipulation.Add(res, ref CurrentContainer.Containers);
+                IGUCanvasContainer.RefreshEvents();
             }
             return res;
         }
 
-        public static void FocusWindow(int id) => container.InternalFocusWindow(id);
+        public static void RefreshEvents() => IGUCanvasContainer.CurrentContainer.InternalRefreshEvents();
 
-        public static void RefreshEvents() => container.InternalRefreshEvents();
+        public static void RefreshPhyEvents() => IGUCanvasContainer.CurrentContainer.InternalRefreshPhyEvents();
 
-        public static void RefreshPhyEvents() {
-            container.callPhysics = container.phyContainer.GetCallPhysicsFeedback();
-        }
+        public static IGUCanvas GetGenericContainer() => IGUCanvasContainer.CurrentContainer.Containers[0];
 
-        public static IGUCanvas GetGenericContainer() => container.Containers[0];
-
-        public static IGUCanvas GetPermanentGenericContainer() => container.Containers[1];
+        public static IGUCanvas GetPermanentGenericContainer() => IGUCanvasContainer.CurrentContainer.Containers[1];
 
         public static IGUCanvas GetGUCanvas(string name, CanvasType type = CanvasType.All) {
             foreach (IGUCanvas item in GetAllIGUCanvas(type))
@@ -140,30 +131,11 @@ namespace Cobilas.Unity.Graphics.IGU {
 
         public static IGUCanvas[] GetAllIGUCanvas(CanvasType type = CanvasType.All) {
             if (type == CanvasType.All)
-                return container.Containers;
+                return CurrentContainer.Containers;
             IGUCanvas[] result = null;
-            for (int I = 0; I < ArrayManipulation.ArrayLength(container.Containers); I++)
-                if (container.Containers[I].Status == type)
-                    ArrayManipulation.Add(container.Containers[I], ref result);
-            return result;
-        }
-
-        private static IGUBasicPhysics.CallPhysicsFeedback AddCallPhysicsFeedbackFunc(IGUObject obj, IGUBasicPhysics.CallPhysicsFeedback call) {
-            if (obj.IsPhysicalElement)
-                call += (obj as IIGUPhysics).CallPhysicsFeedback;
-            if (obj.Physics is IGUCollectionPhysics cphy)
-                for (int I = 0; I < cphy.SubPhysicsCount; I++)
-                    call = AddCallPhysicsFeedbackFunc(cphy.SubPhysics[I].Target, call);
-            return call;
-        }
-
-        private static IIGUPhysics[] GetAllPhysics(IGUObject obj) {
-            IIGUPhysics[] result = new IIGUPhysics[0];
-            if (obj.IsPhysicalElement)
-                ArrayManipulation.Add((obj as IIGUPhysics), ref result);
-            if (obj.Physics is IGUCollectionPhysics cphy)
-                for (int I = 0; I < cphy.SubPhysicsCount; I++)
-                    ArrayManipulation.Add(GetAllPhysics(cphy.SubPhysics[I].Target), ref result);
+            for (int I = 0; I < ArrayManipulation.ArrayLength(CurrentContainer.Containers); I++)
+                if (CurrentContainer.Containers[I].Status == type)
+                    ArrayManipulation.Add(CurrentContainer.Containers[I], ref result);
             return result;
         }
     }

@@ -1,41 +1,44 @@
 using System;
 using UnityEngine;
 using System.Text;
+using System.Collections.Generic;
 using Cobilas.Unity.Graphics.IGU.Physics;
 using Cobilas.Unity.Graphics.IGU.Elements;
 
 namespace Cobilas.Unity.Graphics.IGU {
     public static class BackEndIGU {
-
         private static Rect rectTemp = Rect.zero;
+        private readonly static List<int> controlList = new List<int>();
 
         public static void Label(IGURect rect, IGUContent content, IGUStyle style, int ID)
             => ((GUIStyle)style).DrawRepaint((Rect)rect, (GUIContent)content, ID);
 
-        public static bool Button(IGURect rect, IGUContent content, IGUStyle style, IGUBasicPhysics phy, int ID, bool isFocused) {
+        public static bool Button(IGURect rect, IGUContent content, IGUStyle style, IGUBasicPhysics phy, int ID, bool isFocused, out bool onClick) {
             Event @event = Event.current;
             bool isHover = rect.Contains(@event.mousePosition) && phy.IsHotPotato && GUI.enabled;
-            switch (@event.GetTypeForControl(ID)) {
+            onClick = false;
+            switch (@event.type) {
                 case EventType.MouseDown:
                     if (isHover) {
-                        GUIUtility.hotControl = ID;
+                        PullID(ID);
+                        onClick = true;
                         @event.Use();
                     }
                     goto default;
                 case EventType.MouseUp:
-                    if (GUIUtility.hotControl != ID)
+                    if (!IDInControlList(ID))
                         goto default;
                     else if (!isHover) {
-                        GUIUtility.hotControl = 0;
+                        PushID(ID);
                         goto default;
                     }
-                    GUIUtility.hotControl = 0;
+                    PushID(ID);
                     @event.Use();
-                    return true;
+                    return GUI.enabled = true;
                 case EventType.Repaint:
                     ((GUIStyle)style).Draw(
                         GetRectTemp(rect), IGUTextObject.GetGUIContentTemp(content),
-                        isHover, ID == GUIUtility.hotControl,
+                        isHover, IDInControlList(ID),
                         false, isFocused);
                     goto default;
                 default:
@@ -43,8 +46,11 @@ namespace Cobilas.Unity.Graphics.IGU {
             }
         }
 
+        public static bool Button(IGURect rect, IGUContent content, IGUStyle style, IGUBasicPhysics phy, int ID, out bool onClick)
+            => Button(rect, content, style, phy, ID, false, out onClick);
+
         public static bool Button(IGURect rect, IGUContent content, IGUStyle style, IGUBasicPhysics phy, int ID)
-            => Button(rect, content, style, phy, ID, false);
+            => Button(rect, content, style, phy, ID, false, out _);
 
         public static bool RepeatButton(IGURect rect, IGUContent content, IGUStyle style, IGUBasicPhysics phy, int ID, bool isFocused, out bool onClick) {
             Event @event = Event.current;
@@ -54,26 +60,26 @@ namespace Cobilas.Unity.Graphics.IGU {
                 case EventType.MouseDown:
                     if (isHover) {
                         onClick = true;
-                        GUIUtility.hotControl = ID;
+                        PullID(ID);
                         @event.Use();
                     }
                     goto default;
                 case EventType.MouseUp:
-                    if (GUIUtility.hotControl != ID)
+                    if (!IDInControlList(ID))
                         goto default;
                     else if (!isHover) {
-                        GUIUtility.hotControl = 0;
+                        PushID(ID);
                         goto default;
                     }
-                    GUIUtility.hotControl = 0;
+                    PushID(ID);
                     @event.Use();
-                    return true;
+                    return GUI.enabled = true;
                 case EventType.Repaint:
                     ((GUIStyle)style).Draw(
                         GetRectTemp(rect), IGUTextObject.GetGUIContentTemp(content),
-                        isHover, ID == GUIUtility.hotControl,
+                        isHover, IDInControlList(ID),
                         false, isFocused);
-                    return ID == GUIUtility.hotControl && isHover;
+                    return IDInControlList(ID) && isHover;
                 default:
                     return false;
             }
@@ -89,25 +95,27 @@ namespace Cobilas.Unity.Graphics.IGU {
             switch (@event.GetTypeForControl(ID)) {
                 case EventType.MouseDown:
                     if (isHover) {
-                        GUIUtility.hotControl = ID;
+                        PullID(ID);
                         onClick = true;
                         @event.Use();
                     }
                     goto default;
                 case EventType.MouseUp:
-                    if (!isHover) {
-                        GUIUtility.hotControl = 0;
+                    if (!IDInControlList(ID))
                         goto default;
-                    } else if (GUIUtility.hotControl != ID)
+                    else if (!isHover) {
+                        PushID(ID);
                         goto default;
-                    GUIUtility.hotControl = 0;
+                    }
+                    PushID(ID);
                     value = !value;
+                    GUI.enabled = true;
                     @event.Use();
                     goto default;
                 case EventType.Repaint:
                     ((GUIStyle)style).Draw(
                         GetRectTemp(rect), IGUTextObject.GetGUIContentTemp(content),
-                        isHover, ID == GUIUtility.hotControl,
+                        isHover, IDInControlList(ID),
                         value, isFocused);
                     goto default;
                 default: 
@@ -136,6 +144,8 @@ namespace Cobilas.Unity.Graphics.IGU {
                 Vector2 vecSize = (rect.Size - (Vector2.right * sstyleThumb.padding.horizontal +
                     Vector2.up * sstyleThumb.padding.vertical)) * slider.NormalSize;
 
+                Debug.Log($"{rect.Size}:{slider.NormalSize}");
+
                 rect = rect.SetSize(isHoriz ? Vector2.up * sstyle.fixedHeight + rect.Size.Multiplication(Vector2.right) :
                     Vector2.right * sstyle.fixedWidth + rect.Size.Multiplication(Vector2.up));
 
@@ -156,35 +166,36 @@ namespace Cobilas.Unity.Graphics.IGU {
                     if (!phy.IsHotPotato)
                         break;
                     else if (slider.NormalSize == 1f) {
-                        GUIUtility.hotControl = ID;
+                        PullID(ID);
                         @event.Use();
                         break;
                     } else if (isHover) {
                         slider.PlaceThumbOnMouse(@event.mousePosition - rect.Position - rectThumb.size * .5f);
-                        GUIUtility.hotControl = ID;
+                        PullID(ID);
                         slider.startedPosition = @event.mousePosition;
                         slider.startedThumbPosition = slider.GetThumbPosition();
                         @event.Use();
                     } else if (isThumbHover) {
-                        GUIUtility.hotControl = ID;
+                        PullID(ID);
                         slider.startedPosition = @event.mousePosition;
                         slider.startedThumbPosition = rectThumb.position - rect.Position;
                         @event.Use();
                     }
                     break;
                 case EventType.MouseUp:
-                    GUIUtility.hotControl = 0;
+                    PushID(ID);
                     break;
                 case EventType.MouseDrag:
-                    if (ID == GUIUtility.hotControl && slider.NormalSize != 1f) {
+                    if (IDInControlList(ID) && slider.NormalSize != 1f) {
                         slider.currentPosition = @event.mousePosition;
                         slider.CalculatorThumbPosition();
+                        GUI.changed = true;
                         @event.Use();
                     }
                     break;
                 case EventType.Repaint:
                     sstyle.Draw(GetRectTemp(rect), GUIContent.none, ID);
-                    sstyleThumb.Draw(rectThumb, isThumbHover, ID == GUIUtility.hotControl,
+                    sstyleThumb.Draw(rectThumb, isThumbHover, IDInControlList(ID),
                         false, false);
                     break;
             }
@@ -206,29 +217,26 @@ namespace Cobilas.Unity.Graphics.IGU {
             rectDrag.position += rect.Position;
 
             bool isHover = rect.Contains(@event.mousePosition) && phy.IsHotPotato && GUI.enabled;
-            bool isDrag = rectDrag.Contains(@event.mousePosition);
 
             switch (@event.type) {
                 case EventType.MouseDown:
-                    if (isHover) {
-                        focusStatus = WindowFocusStatus.Focused;
-                        GUI.FocusWindow(ID);
-                    }
-                    if (!isHover || !isDrag) { 
+                    if (!isHover) { 
+                        PushID(window.CurrentID);
                         window.CurrentID = 0;
                         if (focusStatus == WindowFocusStatus.Focused)
                             focusStatus = WindowFocusStatus.Unfocused;
                         break;
                     }
-                    GUIUtility.hotControl = window.CurrentID = ID;
+                    focusStatus = WindowFocusStatus.Focused;
+                    PullID(window.CurrentID = ID);
                     window.CurrentPosition = @event.mousePosition - rect.Position;
                     break;
                 case EventType.MouseUp:
-                    if (GUIUtility.hotControl == ID)
-                        GUIUtility.hotControl = 0;
+                    if (IDInControlList(ID))
+                        PushID(ID);
                     break;
                 case EventType.MouseDrag:
-                    if (GUIUtility.hotControl == ID) {
+                    if (IDInControlList(ID)) {
                         rect = rect.SetPosition(@event.mousePosition - window.CurrentPosition);
                         GUI.changed = true;
                     }
@@ -268,16 +276,15 @@ namespace Cobilas.Unity.Graphics.IGU {
                         isFocused = false;
                         editor.OnLostFocus();
                     }
-                    if (GUIUtility.hotControl == ID) {
+                    if (IDInControlList(ID)) {
                         editor.MouseDragSelectsWholeWords(false);
-                        GUIUtility.hotControl = 0;
+                        PushID(ID);
                         current.Use();
                     }
                     break;
                 case EventType.MouseDown:
                     if (!isHover) break;
-                    GUIUtility.hotControl =
-                        GUIUtility.keyboardControl = ID;
+                    PullID(GUIUtility.keyboardControl = ID);
                     if (!isFocused) {
                         isFocused = true;
                         editor.OnFocus();
@@ -296,7 +303,7 @@ namespace Cobilas.Unity.Graphics.IGU {
                     current.Use();
                     break;
                 case EventType.MouseDrag:
-                    if (GUIUtility.hotControl == ID) {
+                    if (IDInControlList(ID)) {
                         if (current.shift) editor.MoveCursorToPosition(current.mousePosition);
                         else editor.SelectToPosition(current.mousePosition);
                         current.Use();
@@ -398,16 +405,15 @@ namespace Cobilas.Unity.Graphics.IGU {
 
             switch (@event.type) {
                 case EventType.MouseUp:
-                    if (GUIUtility.hotControl == ID) {
+                    if (IDInControlList(ID)) {
                         textEditorStatus.MouseDragSelectsWholeWords(isFocused = false);
-                        GUIUtility.hotControl = 0;
+                        PushID(ID);
                         @event.Use();
                     }
                     break;
                 case EventType.MouseDown:
                     if (!isHover) break;
-                    GUIUtility.hotControl =
-                        GUIUtility.keyboardControl = ID;
+                    PullID(GUIUtility.keyboardControl = ID);
                     isFocused = true;
                     textEditorStatus.OnFocus();
                     textEditorStatus.MoveCursorToPosition(@event.mousePosition);
@@ -424,7 +430,7 @@ namespace Cobilas.Unity.Graphics.IGU {
                     @event.Use();
                     break;
                 case EventType.MouseDrag:
-                    if (GUIUtility.hotControl == ID) {
+                    if (IDInControlList(ID)) {
                         if (@event.shift) textEditorStatus.MoveCursorToPosition(@event.mousePosition);
                         else textEditorStatus.SelectToPosition(@event.mousePosition);
                         @event.Use();
@@ -563,11 +569,6 @@ namespace Cobilas.Unity.Graphics.IGU {
             return rectTemp;
         }
 
-        private static void FocusWindow(int id) {
-            GUI.FocusWindow(id);
-            IGUCanvasContainer.FocusWindow(id);
-        }
-
         private static bool IsCopyOrPasteEvent(Event @event) {
             bool result;
             if (SystemInfo.operatingSystemFamily == OperatingSystemFamily.MacOSX) {
@@ -581,5 +582,23 @@ namespace Cobilas.Unity.Graphics.IGU {
 
         private static bool IsCopyOrPasteControl(Event A, Event B)
             => A.modifiers == B.modifiers && A.keyCode == B.keyCode;
+
+        /// <summary>Will add the id in the hot controls list.</summary>
+        private static void PullID(int id) {
+            if (!controlList.Contains(id))
+                controlList.Add(id);
+        }
+
+        /// <summary>Checks if the ID is in the hot controls list.</summary>
+        /// <param name="id">The id that will be checked.</param>
+        /// <returns>Will return if the id is in the hot controls list.</returns>
+        private static bool IDInControlList(int id)
+            => controlList.Contains(id);
+
+        /// <summary>Will remove the id in the hot controls list.</summary>
+        private static void PushID(int id) {
+            if (controlList.Contains(id))
+                controlList.Remove(id);
+        }
     }
 }

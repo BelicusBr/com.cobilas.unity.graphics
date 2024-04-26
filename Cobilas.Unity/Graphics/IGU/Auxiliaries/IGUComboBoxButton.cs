@@ -35,12 +35,16 @@ namespace Cobilas.Unity.Graphics.IGU {
             tooltipStyle = (IGUStyle)"Black box border";
             physics = IGUBasicPhysics.Create<IGUBoxPhysics>(this);
             myContent = new IGUContent(IGUButton.DefaultContentIGUButton);
+            Debug.Log($"[{GetInstanceID()}]{name}");
         }
 
         protected override void LowCallOnIGU() {
-            if (BackEndIGU.Button(LocalRect, MyContent, style, physics, GetInstanceID()))
+            if (BackEndIGU.Button(LocalRect, MyContent, style, physics, GetInstanceID(), out bool onc)) {
+                Debug.Log($"[{GetInstanceID()}]CBXB:{name}");
                 if (IGUDrawer.GetMouseButtonUp(LocalConfig.MouseType))
                     onClick.Invoke();
+            }
+            if (onc) Debug.Log($"onc:[{GetInstanceID()}]CBXB:{name}");
         }
 
         void IIGUToolTip.InternalDrawToolTip() {
