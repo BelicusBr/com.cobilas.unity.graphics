@@ -144,8 +144,6 @@ namespace Cobilas.Unity.Graphics.IGU {
                 Vector2 vecSize = (rect.Size - (Vector2.right * sstyleThumb.padding.horizontal +
                     Vector2.up * sstyleThumb.padding.vertical)) * slider.NormalSize;
 
-                Debug.Log($"{rect.Size}:{slider.NormalSize}");
-
                 rect = rect.SetSize(isHoriz ? Vector2.up * sstyle.fixedHeight + rect.Size.Multiplication(Vector2.right) :
                     Vector2.right * sstyle.fixedWidth + rect.Size.Multiplication(Vector2.up));
 

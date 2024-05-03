@@ -1,9 +1,10 @@
 ﻿using System;
 using UnityEngine;
+using System.Globalization;
 
 namespace Cobilas.Unity.Graphics.IGU {
     [Serializable]
-    public struct MaxMinSliderInt : IEquatable<MaxMinSliderInt> {
+    public struct MaxMinSliderInt : IEquatable<MaxMinSliderInt>, IFormattable {
         [SerializeField] private int min;
         [SerializeField] private int max;
 #if UNITY_EDITOR
@@ -41,6 +42,15 @@ namespace Cobilas.Unity.Graphics.IGU {
             this.min = min;
             this.max = max;
             return this;
+        }
+
+        public override string ToString()
+            => ToString("N", CultureInfo.CurrentCulture);
+
+        public string ToString(string format, IFormatProvider formatProvider) {
+            string num1 = min.ToString(format, formatProvider);
+            string num2 = max.ToString(format, formatProvider);
+            return string.Format("(Min:{0} Max{1})", num1, num2);
         }
 
         public static bool operator ==(MaxMinSliderInt A, MaxMinSliderInt B) => A.Equals(B);

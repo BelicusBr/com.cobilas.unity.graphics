@@ -16,9 +16,20 @@ using System;
 
 public class IGU_TDS : MonoBehaviour {
 
-    public IGURect rect;
-    public IGUColor color;
-    public IGUConfig config;
+#region GUI.Slider
+    public Rect rect = new Rect(350f, 0f, 130f, 25f);
+    public float value;
+    public float size;
+    public MaxMinSlider maxMin = new MaxMinSlider(0f, 150f);
+    [Header("Styles")]
+    public GUIStyle verticalScrollbar;
+    public GUIStyle verticalScrollbarThumb;
+#endregion
+#region TDSBackEndIGU.Slider
+    public IGURect rect2 = new IGURect(350f, 50f, 130f, 25f);
+    public float size2;
+    public float value2;
+#endregion
 
     public IGUContent content = IGUContent.none;
     [SerializeField] private IGUComboBox comboBox;
@@ -31,6 +42,7 @@ public class IGU_TDS : MonoBehaviour {
     }
 
     private void Awake() {
+
         comboBox = IGUObject.Create<IGUComboBox>("#TDS1");
         _ = comboBox.ApplyToPermanentGenericContainer();
         comboBox.UseTooltip = true;
@@ -48,6 +60,20 @@ public class IGU_TDS : MonoBehaviour {
         comboBox.Index = 0;
 
         DontDestroyOnLoad(gameObject);
+    }
+
+    private void OnGUI() {
+
+        if (verticalScrollbar == null)
+            verticalScrollbar = GUI.skin.horizontalScrollbar;
+        if (verticalScrollbarThumb == null)
+            verticalScrollbarThumb = GUI.skin.horizontalScrollbarThumb;
+
+        int id = GUIUtility.GetControlID(FocusType.Passive, rect);
+        value = GUI.Slider(rect, value, size, maxMin.Min, maxMin.Max, verticalScrollbar, verticalScrollbarThumb, true, id);
+        
+        id = GUIUtility.GetControlID(FocusType.Passive, (Rect)rect2);
+        value2 = TDSBackEndIGU.Slider(rect2, value2, size2, maxMin, id, true, true, verticalScrollbar, verticalScrollbarThumb);
     }
 
     private void OnEnable() {
