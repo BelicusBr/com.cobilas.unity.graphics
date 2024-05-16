@@ -8,7 +8,7 @@
   "unity": "2019.1",
   "unityRelease": "0b5",
   "type": "library",
-  "author": "B\u00e9licusBr",
+  "author": "BélicusBr",
   "repository": {
     "url": "git+https://github.com/BelicusBr/com.cobilas.unity.graphics.git",
     "type": "git"
@@ -31,8 +31,8 @@
   ],
   "license": "MIT",
   "dependencies": {
-    "com.cobilas.unity.utility": "2.10.4",
-    "com.cobilas.unity.core.net4x": "1.4.2",
-    "com.cobilas.unity.management.runtime": "2.2.2"
+    "com.cobilas.unity.core.net4x": "1.5.0",
+    "com.cobilas.unity.management.runtime": "2.2.2",
+    "com.cobilas.unity.utility": "2.10.4"
   }
 }
