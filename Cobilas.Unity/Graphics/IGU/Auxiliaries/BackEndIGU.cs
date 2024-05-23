@@ -126,85 +126,87 @@ namespace Cobilas.Unity.Graphics.IGU {
         public static bool Toggle(IGURect rect, bool value, IGUContent content, IGUStyle style, IGUBasicPhysics phy, int ID, out bool onClick)
             => Toggle(rect, value, content, style, phy, ID, false, out onClick);
 
-        public static float Slider(IGURect rect, float value, float size, MaxMinSlider maxMin, int ID, IGUBasicPhysics phy, IGUStyle style, IGUStyle styleThumb, bool isHoriz, bool isFocused) {
-            Event @event = Event.current;
-            GUIStyle sstyle = (GUIStyle)style;
-            GUIStyle sstyleThumb = (GUIStyle)styleThumb;
-            SliderStatus slider = (SliderStatus)GUIUtility.GetStateObject(typeof(SliderStatus), ID);
+        public static float Slider(IGURect rect, float value, float size, MaxMinSlider maxMin, IGUBasicPhysics phy, int id, bool useScrollWheel, bool isHoriz, IGUStyle slider, IGUStyle thumb) {
+            Rect rect_slider = (Rect)rect;
+            Event current = Event.current;
+            Rect rect_slider_thumb = Rect.zero;
+            GUIStyle i_thumb = (GUIStyle)thumb;
+            GUIStyle i_slider = (GUIStyle)slider;
+            SliderStatus sliderStatus = (SliderStatus)GUIUtility.GetStateObject(typeof(SliderStatus), id);
 
-            Rect rectThumb = Rect.zero;
-            slider.isHoriz = isHoriz;
-            slider.SetMinMax(maxMin);
-            slider.Size = size;
+            sliderStatus.Size = size;
+            sliderStatus.Value = value;
+            sliderStatus.MaxMin = maxMin;
+            sliderStatus.isHoriz = isHoriz;
 
-            if (slider.NormalSize == 1f) {
-                rectThumb.size = isHoriz ? Vector2.right * rect.Width + Vector2.up * sstyleThumb.fixedHeight :
-                    Vector2.right * sstyleThumb.fixedWidth + Vector2.up * rect.Height;
-            } else {
-                Vector2 vecSize = (rect.Size - (Vector2.right * sstyleThumb.padding.horizontal +
-                    Vector2.up * sstyleThumb.padding.vertical)) * slider.NormalSize;
+            float sizeClamp = (isHoriz ? rect_slider.width : rect_slider.height) -
+                ((isHoriz ? i_slider.padding.horizontal : i_slider.padding.vertical) +
+                (isHoriz ? i_thumb.padding.left : i_thumb.padding.top));
 
-                rect = rect.SetSize(isHoriz ? Vector2.up * sstyle.fixedHeight + rect.Size.Multiplication(Vector2.right) :
-                    Vector2.right * sstyle.fixedWidth + rect.Size.Multiplication(Vector2.up));
+            sliderStatus.Size = sliderStatus.Size > sizeClamp ? sizeClamp : sliderStatus.Size;
 
-                rectThumb.size = isHoriz ? Vector2.right * (sstyleThumb.padding.horizontal + vecSize.x) + Vector2.up * sstyleThumb.fixedHeight :
-                    Vector2.right * sstyleThumb.fixedWidth + Vector2.up * (sstyleThumb.padding.vertical + vecSize.y);
-            }
+            Vector2 snum1 = (isHoriz ? Vector2.right * (size - i_thumb.padding.left) : Vector2.up * (size - i_thumb.padding.top)).Clamp(0f, size);
+            Vector2 snum2 = Vector2.right * i_thumb.padding.horizontal + Vector2.up * i_thumb.padding.vertical;
 
-            slider.Value = value;
-            slider.rectSize = rect.Size - rectThumb.size;
+            rect_slider_thumb.position = rect_slider.position +
+                Vector2.right * (isHoriz ? i_thumb.margin.right + i_slider.padding.right : i_thumb.margin.left + i_slider.padding.left) + 
+                Vector2.up * (isHoriz ? i_thumb.margin.bottom + i_slider.padding.bottom : i_thumb.margin.top + i_slider.padding.top);
+            rect_slider_thumb.size = snum1 + snum2;
 
-            rectThumb.position = slider.NormalSize == 1f ? rect.Position : rect.Position + slider.GetThumbPosition();
+            sliderStatus.rectSize = rect_slider.size - rect_slider_thumb.size -
+                (isHoriz ? Vector2.right * i_slider.padding.horizontal : Vector2.up * i_slider.padding.vertical);
+            sliderStatus.startThumbPosition = rect_slider_thumb.position;
 
-            bool isHover = rect.Contains(@event.mousePosition) && phy.IsHotPotato && GUI.enabled;
-            bool isThumbHover = rectThumb.Contains(@event.mousePosition) && phy.IsHotPotato && GUI.enabled;
+            float clamp_s_x = i_slider.fixedWidth <= 0 ? rect.Width : Mathf.Clamp(rect.Width, 0f, i_slider.fixedWidth);
+            float clamp_s_y = i_slider.fixedHeight <= 0 ? rect.Height : Mathf.Clamp(rect.Height, 0f, i_slider.fixedHeight);
 
-            switch (@event.type) {
+            bool isHover = rect.SetSize(clamp_s_x, clamp_s_y).Contains(current.mousePosition) && phy.IsHotPotato && GUI.enabled;
+
+            switch (current.type) {
                 case EventType.MouseDown:
-                    if (!phy.IsHotPotato)
-                        break;
-                    else if (slider.NormalSize == 1f) {
-                        PullID(ID);
-                        @event.Use();
-                        break;
-                    } else if (isHover) {
-                        slider.PlaceThumbOnMouse(@event.mousePosition - rect.Position - rectThumb.size * .5f);
-                        PullID(ID);
-                        slider.startedPosition = @event.mousePosition;
-                        slider.startedThumbPosition = slider.GetThumbPosition();
-                        @event.Use();
-                    } else if (isThumbHover) {
-                        PullID(ID);
-                        slider.startedPosition = @event.mousePosition;
-                        slider.startedThumbPosition = rectThumb.position - rect.Position;
-                        @event.Use();
+                    if (isHover) {
+                        PullID(id);
+                        sliderStatus.startPosition = current.mousePosition;
+                        sliderStatus.CalculatorThumbPosition(current.mousePosition, rect_slider_thumb.size, rect_slider);
+                        current.Use();
                     }
                     break;
                 case EventType.MouseUp:
-                    PushID(ID);
+                    if (IDInControlList(id)) {
+                        PushID(id);
+                        current.Use();
+                    }
                     break;
                 case EventType.MouseDrag:
-                    if (IDInControlList(ID) && slider.NormalSize != 1f) {
-                        slider.currentPosition = @event.mousePosition;
-                        slider.CalculatorThumbPosition();
-                        GUI.changed = true;
-                        @event.Use();
+                    if (!IDInControlList(id)) break;
+                    sliderStatus.CalculatorThumbPosition(current.mousePosition, rect_slider_thumb.size, rect_slider);
+                    current.Use();
+                    break;
+                case EventType.ScrollWheel:
+                    if (isHover && useScrollWheel) {
+                        sliderStatus.Value += current.delta.y;
+                        current.Use();
                     }
                     break;
                 case EventType.Repaint:
-                    sstyle.Draw(GetRectTemp(rect), GUIContent.none, ID);
-                    sstyleThumb.Draw(rectThumb, isThumbHover, IDInControlList(ID),
-                        false, false);
+                    rect_slider_thumb.position = sliderStatus.GetThumbPosition();
+                    i_slider.Draw(rect_slider, GUIContent.none, id);
+                    i_thumb.Draw(rect_slider_thumb, rect_slider_thumb.Contains(current.mousePosition), 
+                        GUIUtility.hotControl == id, false, false);
                     break;
             }
-            return slider.NormalSize == 1f ? slider.Min : Mathf.Clamp(slider.Value, slider.Min, slider.Max);
+
+            return sliderStatus.Value;
         }
 
-        public static float Slider(IGURect rect, float value, float size, MaxMinSlider maxMin, int ID, IGUBasicPhysics phy, IGUStyle style, IGUStyle styleThumb, bool isHoriz)
-            => Slider(rect, value, size, maxMin, ID, phy, style, styleThumb, isHoriz, false);
+        public static float Slider(IGURect rect, float value, float size, MaxMinSlider maxMin, IGUBasicPhysics phy, int id, bool isHoriz, IGUStyle slider, IGUStyle thumb)
+            => Slider(rect, value, size, maxMin, phy, id, false, isHoriz, slider, thumb);
 
-        public static float Slider(IGURect rect, float value, MaxMinSlider maxMin, int ID, IGUBasicPhysics phy, IGUStyle style, IGUStyle styleThumb, bool isHoriz)
-            => Slider(rect, value, 0f, maxMin, ID, phy, style, styleThumb, isHoriz, false);
+        public static float Slider(IGURect rect, float value, MaxMinSlider maxMin, IGUBasicPhysics phy, int id, bool useScrollWheel, bool isHoriz, IGUStyle slider, IGUStyle thumb)
+            => Slider(rect, value, 0f, maxMin, phy, id, useScrollWheel, isHoriz, slider, thumb);
+
+        public static float Slider(IGURect rect, float value, MaxMinSlider maxMin, IGUBasicPhysics phy, int id, bool isHoriz, IGUStyle slider, IGUStyle thumb)
+            => Slider(rect, value, 0f, maxMin, phy, id, false, isHoriz, slider, thumb);
 
         public static IGURect SimpleWindow(IGURect rect, Rect rectDrag, Vector2 clippingScrollOffset, IGUContent content, IGUStyle style, IGUBasicPhysics phy, int ID, Action<int, Vector2> function, ref WindowFocusStatus focusStatus) {
             Event @event = Event.current;
