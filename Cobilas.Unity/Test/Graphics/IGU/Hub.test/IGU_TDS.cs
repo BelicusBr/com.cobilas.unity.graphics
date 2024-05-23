@@ -13,6 +13,7 @@ using Cobilas.Unity.Test.Graphics.IGU;
 using BEIGU = Cobilas.Unity.Graphics.IGU.BackEndIGU;
 using System.Linq;
 using System;
+using Cobilas.Unity.Graphics.IGU.Physics;
 
 public class IGU_TDS : MonoBehaviour {
 
@@ -60,22 +61,34 @@ public class IGU_TDS : MonoBehaviour {
         DontDestroyOnLoad(gameObject);
     }
 
+    private IGUStyle hstl_scrollbar;
+    private IGUStyle hstl_scrollbarThumb;
+    private IGUStyle vstl_scrollbar;
+    private IGUStyle vstl_scrollbarThumb;
+
     private void OnGUI() {
         Matrix4x4 old = GUI.matrix;
         GUIUtility.RotateAroundPivot(rect2.Rotation, (rect.position + rect2.Position) / 2f);
         GUIStyle stl_scrollbar = isHoriz ? GUI.skin.horizontalScrollbar : GUI.skin.verticalScrollbar;
         GUIStyle stl_scrollbarThumb = isHoriz ? GUI.skin.horizontalScrollbarThumb : GUI.skin.verticalScrollbarThumb;
 
+        IGUStyle istl_scrollbar = isHoriz ? hstl_scrollbar : vstl_scrollbar;
+        IGUStyle istl_scrollbarThumb = isHoriz ? hstl_scrollbarThumb : vstl_scrollbarThumb;
+
         int id = GUIUtility.GetControlID(FocusType.Passive, rect);
         value = GUI.Slider(rect, value, size, maxMin.Min, maxMin.Max, stl_scrollbar, stl_scrollbarThumb, isHoriz, id);
         
         id = GUIUtility.GetControlID(FocusType.Passive, (Rect)rect2);
-        value2 = TDSBackEndIGU.Slider(rect2, value2, size2, maxMin, id, true, isHoriz, stl_scrollbar, stl_scrollbarThumb);
+        value2 = BackEndIGU.Slider(rect2, value2, size2, maxMin, IGUNonePhysics.None, id, true, isHoriz, istl_scrollbar, istl_scrollbarThumb);
         GUI.matrix = old;
     }
 
     private void OnEnable() {
         comboBox.OnSelectedIndex.AddListener(SceneChange);
+        hstl_scrollbar = new IGUStyle("Black horizontal scrollbar border");
+        hstl_scrollbarThumb = new IGUStyle("Black horizontal scrollbar border thumb");
+        vstl_scrollbar = new IGUStyle("Black vertical scrollbar border");
+        vstl_scrollbarThumb = new IGUStyle("Black vertical scrollbar border thumb");
     }
 
     void SceneChange(IGUComboBoxButton button) {
