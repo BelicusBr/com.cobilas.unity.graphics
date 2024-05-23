@@ -31,8 +31,8 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
             MaxMinSlider temp = isInt ? maxMinSlider.ToMaxMinSliderInt() : maxMinSlider;
             value = Mathf.Clamp(value, temp.Min, temp.Max);
 
-            float valuetemp = BackEndIGU.Slider(LocalRect, isInt ? ValueToInt : value, temp, GetInstanceID(),
-                physics, sliderObjectStyle, horizontalSliderThumb, true);
+            float valuetemp = BackEndIGU.Slider(LocalRect, isInt ? ValueToInt : value, temp, physics,
+                GetInstanceID(), useScrollWheel, true, sliderObjectStyle, horizontalSliderThumb);
 
             if (valuetemp != value)
                 if (IGUDrawer.GetMouseButtonPress(LocalConfig.MouseType)) {

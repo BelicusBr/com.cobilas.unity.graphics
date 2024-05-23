@@ -4,6 +4,7 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
     public abstract class IGUSliderObject : IGUObject {
         [SerializeField] protected bool isInt;
         [SerializeField] protected float value;
+        [SerializeField] protected bool useScrollWheel;
         [SerializeField] protected MaxMinSlider maxMinSlider;
         [SerializeField] protected IGUStyle sliderObjectStyle;
 
@@ -11,13 +12,14 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
         public float Value { get => value; set => this.value = value; }
         public int ValueToInt { get => (int)value; set => this.value = value; }
         public MaxMinSlider MaxMinValue { get => maxMinSlider; set => maxMinSlider = value; }
+        protected bool UseScrollWheel { get => useScrollWheel; set => useScrollWheel = value; }
         public IGUStyle SliderObjectStyle { get => sliderObjectStyle; set => sliderObjectStyle = value; }
 
         protected override void IGUAwake() {
             base.IGUAwake();
             myRect = IGURect.DefaultSlider;
             value = 0f;
-            isInt = false;
+            isInt = useScrollWheel = false;
             maxMinSlider = new MaxMinSlider(0f, 30f);
         }
 
