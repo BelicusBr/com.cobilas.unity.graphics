@@ -36,7 +36,10 @@ namespace Cobilas.Unity.Test.Graphics.IGU {
                 (isHoriz ? Vector2.right * slider.padding.horizontal : Vector2.up * slider.padding.vertical);
             sliderStatus.startThumbPosition = rect_slider_thumb.position;
 
-            bool isHover = rect.Contains(current.mousePosition);
+            float clamp_s_x = slider.fixedWidth <= 0 ? rect.Width : Mathf.Clamp(rect.Width, 0f, slider.fixedWidth);
+            float clamp_s_y = slider.fixedHeight <= 0 ? rect.Height : Mathf.Clamp(rect.Height, 0f, slider.fixedHeight);
+
+            bool isHover = rect.SetSize(clamp_s_x, clamp_s_y).Contains(current.mousePosition);
 
             switch (current.type) {
                 case EventType.MouseDown:

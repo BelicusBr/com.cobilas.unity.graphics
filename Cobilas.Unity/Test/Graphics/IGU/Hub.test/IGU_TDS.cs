@@ -16,14 +16,12 @@ using System;
 
 public class IGU_TDS : MonoBehaviour {
 
+    public bool isHoriz = true;
 #region GUI.Slider
     public Rect rect = new Rect(350f, 0f, 130f, 25f);
     public float value;
     public float size;
     public MaxMinSlider maxMin = new MaxMinSlider(0f, 150f);
-    [Header("Styles")]
-    public GUIStyle verticalScrollbar;
-    public GUIStyle verticalScrollbarThumb;
 #endregion
 #region TDSBackEndIGU.Slider
     public IGURect rect2 = new IGURect(350f, 50f, 130f, 25f);
@@ -63,17 +61,17 @@ public class IGU_TDS : MonoBehaviour {
     }
 
     private void OnGUI() {
-
-        if (verticalScrollbar == null)
-            verticalScrollbar = GUI.skin.horizontalScrollbar;
-        if (verticalScrollbarThumb == null)
-            verticalScrollbarThumb = GUI.skin.horizontalScrollbarThumb;
+        Matrix4x4 old = GUI.matrix;
+        GUIUtility.RotateAroundPivot(rect2.Rotation, (rect.position + rect2.Position) / 2f);
+        GUIStyle stl_scrollbar = isHoriz ? GUI.skin.horizontalScrollbar : GUI.skin.verticalScrollbar;
+        GUIStyle stl_scrollbarThumb = isHoriz ? GUI.skin.horizontalScrollbarThumb : GUI.skin.verticalScrollbarThumb;
 
         int id = GUIUtility.GetControlID(FocusType.Passive, rect);
-        value = GUI.Slider(rect, value, size, maxMin.Min, maxMin.Max, verticalScrollbar, verticalScrollbarThumb, true, id);
+        value = GUI.Slider(rect, value, size, maxMin.Min, maxMin.Max, stl_scrollbar, stl_scrollbarThumb, isHoriz, id);
         
         id = GUIUtility.GetControlID(FocusType.Passive, (Rect)rect2);
-        value2 = TDSBackEndIGU.Slider(rect2, value2, size2, maxMin, id, true, true, verticalScrollbar, verticalScrollbarThumb);
+        value2 = TDSBackEndIGU.Slider(rect2, value2, size2, maxMin, id, true, isHoriz, stl_scrollbar, stl_scrollbarThumb);
+        GUI.matrix = old;
     }
 
     private void OnEnable() {

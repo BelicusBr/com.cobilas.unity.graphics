@@ -6,6 +6,8 @@ using System.Diagnostics.CodeAnalysis;
 
 #endif
 
+[assembly: SuppressMessage("", "IDE0090", Scope = "module")]
+[assembly: SuppressMessage("", "IDE0074", Scope = "module")]
 [assembly: SuppressMessage("", "IDE1006", Scope = "module")]
 [assembly: SuppressMessage("", "IDE0028", Scope = "module")]
 [assembly: SuppressMessage("", "IDE0017", Scope = "module")]
