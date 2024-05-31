@@ -4,12 +4,12 @@ using Cobilas.Unity.Graphics.IGU.Physics;
 using Cobilas.Unity.Graphics.IGU.Interfaces;
 
 namespace Cobilas.Unity.Graphics.IGU.Elements {
-    public class IGURectClip : IGUObject, IIGUClippingPhysics {
+    public class IGURectClip : IGUObject, IIGUClipping, IIGUClippingPhysics {
 
         public event Action<Vector2> RectClipAction;
         [SerializeField] protected Rect rectView;
         [SerializeField] protected bool autoInvert;
-        [SerializeField] private bool renderOffSet;
+        [SerializeField] protected bool renderOffSet;
         [SerializeField] protected Vector2 scrollView;
         [SerializeField] protected IGUBasicPhysics physics;
         [SerializeField] protected IGUPhysicsClippingContainer phyContainer;
@@ -41,7 +41,7 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
         }
 
         protected override void LowCallOnIGU() {
-            BackEndIGU.Clipping(LocalRect, renderOffSet ? ScrollView : Vector2.zero, ClipFunc);
+            BackEndIGU.Clipping(LocalRect, renderOffSet ? scrollView : Vector2.zero, ClipFunc);
         }
 
         public bool AddOtherPhysics(IGUObject obj)

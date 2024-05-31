@@ -35,12 +35,11 @@ namespace Cobilas.Unity.Graphics.IGU.Elements {
 
         protected override void LowCallOnIGU() {
             buttonStyle.RichText = richText;
-            if (BackEndIGU.Button(LocalRect, MyContent, buttonStyle, physics, GetInstanceID(), out bool onc))
+            if (BackEndIGU.Button(LocalRect, MyContent, buttonStyle, physics, GetInstanceID(), out bool _))
                 if (IGUDrawer.GetMouseButtonUp(LocalConfig.MouseType)) {
                     onClick.Invoke();
                     clicked[1] = true;
                 }
-            if (onc) UnityEngine.Debug.Log($"onc:BT:{GetInstanceID()}");
         }
 
         protected virtual void Reset() {

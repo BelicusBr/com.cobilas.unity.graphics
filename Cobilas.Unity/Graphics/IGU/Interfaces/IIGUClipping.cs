@@ -1,9 +1,10 @@
-// using UnityEngine;
+using UnityEngine;
 
-// namespace Cobilas.Unity.Graphics.IGU.Interfaces {
-//     public interface IIGUClipping {
-//         bool IsClipping { get; }
-//         Rect RectView { get; set;}
-//         Vector2 ScrollView { get; set; }
-//     }
-// }
+namespace Cobilas.Unity.Graphics.IGU.Interfaces {
+    public interface IIGUClipping {
+        Rect RectView { get; set; }
+        bool AutoInvert { get; set; }
+        bool RenderOffSet { get; set; }
+        Vector2 ScrollView { get; set; }
+    }
+}
