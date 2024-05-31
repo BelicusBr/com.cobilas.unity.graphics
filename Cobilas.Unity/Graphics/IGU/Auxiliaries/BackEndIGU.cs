@@ -139,19 +139,14 @@ namespace Cobilas.Unity.Graphics.IGU {
             sliderStatus.MaxMin = maxMin;
             sliderStatus.isHoriz = isHoriz;
 
-            float sizeClamp = (isHoriz ? rect_slider.width : rect_slider.height) -
-                ((isHoriz ? i_slider.padding.horizontal : i_slider.padding.vertical) +
-                (isHoriz ? i_thumb.padding.left : i_thumb.padding.top));
+            Vector2 snum = Vector2.right * i_thumb.padding.horizontal + Vector2.up * i_thumb.padding.vertical;
 
-            sliderStatus.Size = sliderStatus.Size > sizeClamp ? sizeClamp : sliderStatus.Size;
-
-            Vector2 snum1 = (isHoriz ? Vector2.right * (size - i_thumb.padding.left) : Vector2.up * (size - i_thumb.padding.top)).Clamp(0f, size);
-            Vector2 snum2 = Vector2.right * i_thumb.padding.horizontal + Vector2.up * i_thumb.padding.vertical;
+            size *= (isHoriz ? rect.Width - snum.x : rect.Height - snum.y) / Mathf.Abs(maxMin.Max - maxMin.Min);
 
             rect_slider_thumb.position = rect_slider.position +
                 Vector2.right * (isHoriz ? i_thumb.margin.right + i_slider.padding.right : i_thumb.margin.left + i_slider.padding.left) + 
                 Vector2.up * (isHoriz ? i_thumb.margin.bottom + i_slider.padding.bottom : i_thumb.margin.top + i_slider.padding.top);
-            rect_slider_thumb.size = snum1 + snum2;
+            rect_slider_thumb.size = snum + (isHoriz ? size * Vector2.right : size * Vector2.up);
 
             sliderStatus.rectSize = rect_slider.size - rect_slider_thumb.size -
                 (isHoriz ? Vector2.right * i_slider.padding.horizontal : Vector2.up * i_slider.padding.vertical);
